@@ -1,109 +1,18 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRight, Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { useState, useTransition } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import * as z from "zod";
-import { signUp } from "@/app/(public)/_actions/sign-up";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { PasswordStrengthIndicator } from "@/utils/PasswordStrengthIndicator";
-import { logIn } from "../_actions/login";
-
-const formSchema = z.object({
-  name: z.string().optional(),
-  email: z.email({ message: "Por favor, insira um e-mail válido." }),
-  password: z
-    .string()
-    .min(8, { message: "A senha deve ter pelo menos 8 caracteres." }),
-});
-
-const signUpSchema = formSchema.extend({
-  name: z
-    .string()
-    .min(3, { message: "O nome deve ter pelo menos 3 caracteres." }),
-});
+import { LoginForm } from "../_components/loginForm";
+import { SignUpForm } from "../_components/signUpForm";
 
 export default function SignUpPage() {
   const [isLogin, setIsLogin] = useState(false);
-  const [isPending, startTransition] = useTransition();
-  const [showPassword, setShowPassword] = useState(false);
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(isLogin ? formSchema : signUpSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      password: "",
-    },
-  });
-
-  const password = form.watch("password");
 
   const handleToggleForm = () => {
     setIsLogin(!isLogin);
-    form.reset();
-    setShowPassword(false);
   };
-
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    startTransition(async () => {
-      if (isLogin) {
-        const result = await logIn(values);
-        if (!result.success) {
-          const { fieldErrors } = result.error;
-          if (fieldErrors) {
-            (
-              Object.keys(fieldErrors) as Array<keyof typeof fieldErrors>
-            ).forEach((field) => {
-              const errors = fieldErrors[field];
-              if (errors?.[0]) {
-                form.setError(field, { message: errors[0] });
-              }
-            });
-          } else {
-            toast.error(result.error.message);
-          }
-        } else {
-          toast.success(result.message);
-          redirect("/dashboard");
-        }
-      } else {
-        const result = await signUp(values);
-
-        if (!result.success) {
-          if (result.error.fieldErrors) {
-            Object.entries(result.error.fieldErrors).forEach(
-              ([field, errors]) => {
-                if (errors && errors.length > 0) {
-                  form.setError(field as "name" | "email" | "password", {
-                    message: errors[0],
-                  });
-                }
-              },
-            );
-          } else {
-            toast.error(result.error.message);
-          }
-        } else {
-          toast.success(result.message);
-        }
-      }
-    });
-  }
-
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white flex overflow-hidden">
@@ -144,107 +53,7 @@ export default function SignUpPage() {
             </p>
           </div>
 
-          {/* Form */}
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              {!isLogin && (
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-xs font-medium uppercase tracking-wider text-gray-400">
-                        Nome
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Seu nome"
-                          {...field}
-                          className="h-12 bg-[#1a1a1a] border-[#2a2a2a] text-white placeholder:text-gray-500 focus-visible:ring-[#16a34a] focus-visible:border-[#16a34a]"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              )}
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-xs font-medium uppercase tracking-wider text-gray-400">
-                      Digite seu e-mail de trabalho
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="me@example.com"
-                        {...field}
-                        className="h-12 bg-[#1a1a1a] border-[#2a2a2a] text-white placeholder:text-gray-500 focus-visible:ring-[#16a34a] focus-visible:border-[#16a34a]"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-xs font-medium uppercase tracking-wider text-gray-400">
-                      Digite sua senha
-                    </FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Input
-                          type={showPassword ? "text" : "password"}
-                          placeholder="••••••••••••"
-                          {...field}
-                          className="h-12 bg-[#1a1a1a] border-[#2a2a2a] text-white placeholder:text-gray-500 focus-visible:ring-[#16a34a] focus-visible:border-[#16a34a] pr-12"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors"
-                        >
-                          {showPassword ? (
-                            <EyeOff className="w-5 h-5" />
-                          ) : (
-                            <Eye className="w-5 h-5" />
-                          )}
-                        </button>
-                      </div>
-                    </FormControl>
-                    {!isLogin && password && (
-                      <PasswordStrengthIndicator password={password} />
-                    )}
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {isLogin && (
-                <div className="flex justify-end">
-                  <Link
-                    href="/forgot-password"
-                    className="text-sm text-[#16a34a] hover:text-[#22c55e] transition-colors"
-                  >
-                    Esqueceu sua senha?
-                  </Link>
-                </div>
-              )}
-
-              <Button
-                type="submit"
-                disabled={isPending}
-                className="w-full h-12 bg-[#16a34a] hover:bg-[#15803d] text-white font-medium uppercase text-sm tracking-wider"
-              >
-                {isLogin ? "Entrar" : "Comece de graça"}
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
-            </form>
-          </Form>
+          {isLogin ? <LoginForm /> : <SignUpForm />}
 
           {/* Divider */}
           <div className="space-y-4">

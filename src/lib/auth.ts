@@ -7,7 +7,7 @@ export const auth = betterAuth({
     provider: "postgresql",
   }),
   emailAndPassword: {
-    enabled: false,
+    enabled: true,
     requireEmailVerification: false,
     minPasswordLength: 8,
   },

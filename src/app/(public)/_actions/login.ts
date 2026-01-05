@@ -1,11 +1,12 @@
 "use server";
 
+import { headers } from "next/headers";
 import * as z from "zod";
 import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
 
 const loginSchema = z.object({
   email: z
+    .string()
     .email({ message: "Por favor, insira um e-mail válido." })
     .toLowerCase()
     .trim(),
@@ -15,19 +16,19 @@ const loginSchema = z.object({
     .max(100, { message: "A senha deve ter no máximo 100 caracteres." }),
 });
 
+type LoginFormData = z.infer<typeof loginSchema>;
+
 type LogInResponse =
   | { success: true; message: string }
   | {
       success: false;
       error: {
         message: string;
-        fieldErrors?: Partial<
-          Record<keyof z.infer<typeof loginSchema>, string[]>
-        >;
+        fieldErrors?: Partial<Record<keyof LoginFormData, string[]>>;
       };
     };
 
-export async function logIn(data: unknown): Promise<LogInResponse> {
+export async function logIn(data: LoginFormData): Promise<LogInResponse> {
   const result = loginSchema.safeParse(data);
 
   if (!result.success) {
@@ -40,32 +41,33 @@ export async function logIn(data: unknown): Promise<LogInResponse> {
     };
   }
 
-  try {
-    const { email, password } = result.data;
+  const { email, password } = result.data;
 
+  try {
     await auth.api.signInEmail({
       body: {
         email,
         password,
-        rememberMe: false,
+        rememberMe: true,
       },
-      // This endpoint requires session cookies.
       headers: await headers(),
     });
 
-    return { success: true, message: "Login bem-sucedido!" };
+    return {
+      success: true,
+      message: "Login bem-sucedido!",
+    };
   } catch (error) {
-    // Log do erro para debug (sem expor ao cliente)
     console.error("Erro no login:", error);
 
-    // Tratamento de erros específicos
     if (error instanceof Error) {
-      // Verifica se é erro de credenciais inválidas
+      const msg = error.message.toLowerCase();
+
       if (
-        error.message.toLowerCase().includes("invalid") ||
-        error.message.toLowerCase().includes("inválido") ||
-        error.message.toLowerCase().includes("not found") ||
-        error.message.toLowerCase().includes("incorrect")
+        msg.includes("invalid") ||
+        msg.includes("inválido") ||
+        msg.includes("not found") ||
+        msg.includes("incorrect")
       ) {
         return {
           success: false,
@@ -75,32 +77,22 @@ export async function logIn(data: unknown): Promise<LogInResponse> {
         };
       }
 
-      // Verifica se a conta não foi verificada
-      if (
-        error.message.toLowerCase().includes("not verified") ||
-        error.message.toLowerCase().includes("não verificad")
-      ) {
+      if (msg.includes("not verified") || msg.includes("não verificad")) {
         return {
           success: false,
           error: {
-            message: "Por favor, verifique seu e-mail antes de fazer login.",
+            message: "Verifique seu e-mail antes de fazer login.",
           },
         };
       }
-
-      return {
-        success: false,
-        error: {
-          message: "Não foi possível realizar o login. Tente novamente.",
-        },
-      };
     }
 
     return {
       success: false,
       error: {
-        message: "Ocorreu um erro inesperado ao fazer login.",
+        message: "Erro ao realizar login. Tente novamente.",
       },
     };
   }
 }
+

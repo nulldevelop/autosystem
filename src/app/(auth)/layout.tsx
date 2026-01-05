@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "@/styles/globals.css";
 import { redirect } from "next/navigation";
 import {
@@ -10,15 +9,6 @@ import {
 import { getSession } from "@/lib/getSession";
 import { AppSidebar } from "./dashboard/_components/app-sidebar";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "AutoSystem - Dashboard",
@@ -30,16 +20,15 @@ export default async function AuthLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await getSession();
-
-  if (!session) {
+  const sessionData = await getSession();
+  if (!sessionData) {
     console.log("No active session found, redirecting to login.");
     redirect("/");
   }
   return (
     <html lang="pt-BR" suppressHydrationWarning className="dark">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black text-white`}
+        className={`antialiased bg-black text-white`}
       >
         <SidebarProvider>
           <AppSidebar />
@@ -57,7 +46,6 @@ export default async function AuthLayout({
 
             <main className="flex-1 p-6 relative">
               <div className="absolute top-0 left-1/4 w-1/2 h-1/2 bg-green-500/5 blur-[120px] pointer-events-none rounded-full" />
-
               <div className="relative z-10">{children}</div>
             </main>
           </SidebarInset>
