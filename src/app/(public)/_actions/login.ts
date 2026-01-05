@@ -2,6 +2,7 @@
 
 import * as z from "zod";
 import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 const loginSchema = z.object({
   email: z
@@ -46,7 +47,10 @@ export async function logIn(data: unknown): Promise<LogInResponse> {
       body: {
         email,
         password,
+        rememberMe: false,
       },
+      // This endpoint requires session cookies.
+      headers: await headers(),
     });
 
     return { success: true, message: "Login bem-sucedido!" };

@@ -1,0 +1,77 @@
+"use client";
+
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+
+const BackgroundAnimation = () => (
+  <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+    <div
+      className="absolute inset-0 opacity-[0.1]"
+      style={{
+        backgroundImage: `linear-gradient(#22c55e 1px, transparent 1px), linear-gradient(90deg, #22c55e 1px, transparent 1px)`,
+        backgroundSize: "60px 60px",
+        maskImage: "radial-gradient(ellipse at center, black, transparent 80%)",
+      }}
+    />
+
+    {/* Esfera de Luz Verde (Topo Esquerda) */}
+    <motion.div
+      animate={{
+        scale: [1, 1.2, 1],
+        opacity: [0.2, 0.4, 0.2],
+        x: [0, 50, 0],
+      }}
+      transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+      className="absolute -top-20 -left-20 w-150 h-150 bg-green-500/20 blur-[120px] rounded-full"
+    />
+
+    {/* Esfera de Luz Laranja (Baixo Direita) */}
+    <motion.div
+      animate={{
+        scale: [1, 1.3, 1],
+        opacity: [0.1, 0.3, 0.1],
+        x: [0, -50, 0],
+      }}
+      transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+      className="absolute bottom-0 right-0 w-175 h-175 bg-orange-500/10 blur-[140px] rounded-full"
+    />
+  </div>
+);
+
+export default function DashboardPage() {
+  return (
+    <div className="relative min-h-screen bg-black text-white selection:bg-orange-500 selection:text-white overflow-x-hidden">
+      <BackgroundAnimation />
+        <div className="relative z-10 flex justify-between items-center p-6 max-w-7xl mx-auto border-b border-white/10 backdrop-blur-md">
+            <div className="text-2xl font-black tracking-tighter italic">
+                AUTO<span className="text-green-500">SYSTEM</span>
+            </div>
+            <Button
+              variant="outline"
+              className="hidden md:block border-green-500 text-green-500 hover:bg-green-500 hover:text-black"
+            >
+              Sair
+            </Button>
+        </div>
+
+      {/* --- HERO SECTION --- */}
+      <section className="relative z-10 pt-24 pb-32">
+        <div className="max-w-7xl mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            className="max-w-4xl"
+          >
+            <h1 className="text-6xl md:text-8xl font-black mb-8 leading-[0.9] tracking-tighter">
+              SEU PAINEL <span className="text-green-500">DE CONTROLE</span>
+            </h1>
+            <p className="text-xl text-gray-400 mb-10 max-w-xl leading-relaxed">
+              Bem-vindo ao AutoSystem. Gerencie sua oficina com eficiência.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+    </div>
+  );
+}

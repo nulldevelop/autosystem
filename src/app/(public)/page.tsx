@@ -10,6 +10,7 @@ import {
   Package,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 // --- COMPONENTE DE ANIMAÇÃO DE FUNDO ---
 const BackgroundAnimation = () => (
@@ -94,12 +95,14 @@ export default function LandingPage() {
             Preços
           </a>
         </div>
-        <Button
-          variant="outline"
-          className="hidden md:block border-green-500 text-green-500 hover:bg-green-500 hover:text-black"
-        >
-          Acessar Sistema
-        </Button>
+        <Link href="/auth">
+          <Button
+            variant="outline"
+            className="hidden md:block border-green-500 text-green-500 hover:bg-green-500 transition-all"
+          >
+            Acessar Sistema
+          </Button>
+        </Link>
       </nav>
 
       {/* --- HERO SECTION --- */}

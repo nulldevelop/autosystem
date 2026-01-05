@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight, Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import router from "next/router";
+import { redirect } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -36,7 +36,6 @@ const signUpSchema = formSchema.extend({
     .string()
     .min(3, { message: "O nome deve ter pelo menos 3 caracteres." }),
 });
-
 
 export default function SignUpPage() {
   const [isLogin, setIsLogin] = useState(false);
@@ -79,7 +78,7 @@ export default function SignUpPage() {
           }
         } else {
           toast.success(result.message);
-          router.push("/dashboard");
+          redirect("/dashboard");
         }
       } else {
         const result = await signUp(values);
@@ -104,6 +103,7 @@ export default function SignUpPage() {
       }
     });
   }
+
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white flex overflow-hidden">

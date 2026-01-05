@@ -7,7 +7,9 @@ export const auth = betterAuth({
     provider: "postgresql",
   }),
   emailAndPassword: {
-    enabled: true,
+    enabled: false,
+    requireEmailVerification: false,
+    minPasswordLength: 8,
   },
   socialProviders: {
     google: {
