@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Bell,
   Box,
@@ -9,7 +7,6 @@ import {
   DollarSign,
   LayoutDashboard,
   Settings,
-  User2,
   Users,
   Wrench,
 } from "lucide-react";
@@ -32,46 +29,57 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
+
 import { LogoutButton } from "./logout-button";
+import { getBudgetsCount } from "../_data-access/get-budgets-count";
+import { getCustomersCount } from "../_data-access/get-customers-count";
+import { getVehiclesCount } from "../_data-access/get-vehicles-count";
 
-// Módulos focados no AutoSystem
-const allGestaoItems = [
-  {
-    title: "Orçamentos",
-    url: "/dashboard/budget",
-    icon: ClipboardList,
-    color: "text-orange-500",
-  },
-  {
-    title: "Financeiro",
-    url: "/dashboard/financeiro",
-    icon: DollarSign,
-    color: "text-green-500",
-  },
-  {
-    title: "Estoque",
-    url: "/dashboard/estoque",
-    icon: Box,
-  },
-  {
-    title: "Serviços/O.S",
-    url: "/dashboard/servicos",
-    icon: Wrench,
-    badge: "Novo",
-  },
-  {
-    title: "Clientes",
-    url: "/dashboard/customer",
-    icon: Users,
-  },
-  {
-    title: "Veículos",
-    url: "/dashboard/vehicle",
-    icon: Car,
-  },
-];
+export async function AppSidebar({
+  ...props
+}: React.ComponentProps<typeof Sidebar>) {
+  const customersCount = await getCustomersCount();
+  const vehiclesCount = await getVehiclesCount();
+  const budgetsCount = await getBudgetsCount();
+  // Módulos focados no AutoSystem
+  const allGestaoItems = [
+    {
+      title: "Orçamentos",
+      url: "/dashboard/budget",
+      icon: ClipboardList,
+      color: "text-orange-500",
+      badge: budgetsCount,
+    },
+    {
+      title: "Financeiro",
+      url: "/dashboard/financeiro",
+      icon: DollarSign,
+      color: "text-green-500",
+    },
+    {
+      title: "Estoque",
+      url: "/dashboard/estoque",
+      icon: Box,
+    },
+    {
+      title: "Serviços/O.S",
+      url: "/dashboard/servicos",
+      icon: Wrench,
+    },
+    {
+      title: "Clientes",
+      url: "/dashboard/customer",
+      icon: Users,
+      badge: customersCount,
+    },
+    {
+      title: "Veículos",
+      url: "/dashboard/vehicle",
+      icon: Car,
+      badge: vehiclesCount,
+    },
+  ];
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const menuGroups = [
     {
       title: "Geral",
@@ -139,8 +147,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         <span className="font-semibold tracking-tight ">
                           {item.title}
                         </span>
-                        {item.badge && (
-                          <span className="ml-auto bg-orange-500 text-[10px] text-black font-black px-1.5 py-0.5 rounded italic">
+                        {item.badge && item.badge > 0 && (
+                          <span className="font-roboto-mono ml-auto flex items-center rounded bg-green-500 px-1.5 py-0.5 text-[14px] font-bold text-white">
                             {item.badge}
                           </span>
                         )}

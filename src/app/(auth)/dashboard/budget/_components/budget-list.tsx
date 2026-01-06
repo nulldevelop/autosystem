@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,11 +10,27 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { Budget } from "@/generated/prisma/client";
+import type { Status } from "@/generated/prisma/client";
+import type { BudgetWithRelations } from "@/types/budget";
 import { CreateBudgetForm } from "./create-budget-form";
 
+const STATUS_LABEL: Record<Status, string> = {
+  pending: "Pendente",
+  aproved: "Aprovado",
+  rejected: "Rejeitado",
+};
+
+const STATUS_VARIANT: Record<
+  Status,
+  "default" | "secondary" | "destructive" | "outline"
+> = {
+  pending: "secondary",
+  aproved: "default",
+  rejected: "destructive",
+};
+
 interface BudgetListProps {
-  budgets: Budget[];
+  budgets: BudgetWithRelations[];
 }
 
 export function BudgetList({ budgets }: BudgetListProps) {
@@ -25,8 +42,7 @@ export function BudgetList({ budgets }: BudgetListProps) {
         <div>
           <h1 className="text-2xl font-bold">Orçamentos</h1>
           <p className="text-muted-foreground">
-            Gerencie seus orçamentos aqui. Adicione, edite ou remova
-            orçamentos.
+            Gerencie seus orçamentos aqui. Adicione, edite ou remova orçamentos.
           </p>
         </div>
         <Button onClick={() => setCreateBudgetModalOpen(true)}>
@@ -39,10 +55,14 @@ export function BudgetList({ budgets }: BudgetListProps) {
           <Card key={budget.id}>
             <CardHeader>
               <CardTitle>Orçamento #{budget.id.substring(0, 6)}</CardTitle>
-              <CardDescription>
-                Status: {budget.status}
+              <CardDescription className="flex items-center gap-2">
+                <p>Status:</p>
+                <Badge variant={STATUS_VARIANT[budget.status]}>
+                  {STATUS_LABEL[budget.status]}
+                </Badge>
               </CardDescription>
             </CardHeader>
+
             <CardContent className="space-y-2">
               <p className="text-sm text-muted-foreground">
                 <span className="font-semibold">Valor Total:</span>{" "}
@@ -52,14 +72,14 @@ export function BudgetList({ budgets }: BudgetListProps) {
                 }).format(budget.totalAmount)}
               </p>
               <p className="text-sm text-muted-foreground">
-                <span className="font-semibold">Cliente ID:</span>{" "}
-                {budget.customerId}
+                <span className="font-semibold">Cliente:</span>{" "}
+                {budget.customer?.name ?? "N/A"}
               </p>
               <p className="text-sm text-muted-foreground">
-                <span className="font-semibold">Veículo ID:</span>{" "}
-                {budget.vehicleId}
+                <span className="font-semibold">Veículo:</span>{" "}
+                {budget.vehicle?.model ?? "N/A"}
               </p>
-               <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-muted-foreground">
                 <span className="font-semibold">Observações:</span>{" "}
                 {budget.observacoes || "N/A"}
               </p>
