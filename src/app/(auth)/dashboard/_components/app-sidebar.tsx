@@ -3,6 +3,7 @@
 import {
   Bell,
   Box,
+  Car,
   ClipboardList,
   DollarSign,
   FileBarChart,
@@ -50,6 +51,7 @@ const allGestaoItems = [
     title: "Serviços/O.S",
     url: "/dashboard/servicos",
     icon: Wrench,
+    badge: "Novo",
   },
   {
     title: "Clientes",
@@ -57,10 +59,9 @@ const allGestaoItems = [
     icon: Users,
   },
   {
-    title: "Relatórios",
-    url: "/dashboard/relatorios",
-    icon: FileBarChart,
-    badge: "Novo",
+    title: "Veículos",
+    url: "/dashboard/vehicle",
+    icon: Car,
   },
 ];
 
@@ -120,16 +121,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     <SidebarMenuButton
                       asChild
                       tooltip={item.title}
-                      className="hover:bg-green-500/10 hover:text-green-500 transition-all duration-200 group py-5"
+                      className="transition-all duration-200 group py-5"
                     >
                       <a href={item.url} className="flex items-center gap-3">
                         <item.icon
                           className={`size-5 transition-colors ${
                             item.color ||
-                            "text-zinc-500 group-hover:text-green-500"
+                            "text-zinc-500 hover:text-green-500 group-data-active:text-green-500"
                           }`}
                         />
-                        <span className="font-semibold tracking-tight">
+                        <span className="font-semibold tracking-tight ">
                           {item.title}
                         </span>
                         {item.badge && (

@@ -153,7 +153,7 @@ model Vehicle {
   marca          String
   model          String
   year           Int
-  licensePlate   String        @unique
+  licensePlate   String
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
   budgets        Budget[]
@@ -162,6 +162,7 @@ model Vehicle {
   organization   Organization? @relation(fields: [organizationId], references: [id])
   organizationId String?
 
+  @@unique([licensePlate, organizationId])
   @@map("vehicle")
 }
 

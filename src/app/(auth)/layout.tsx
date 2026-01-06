@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "@/styles/globals.css";
 import { redirect } from "next/navigation";
+import { Toaster } from "sonner";
 import {
   SidebarInset,
   SidebarProvider,
@@ -8,7 +9,6 @@ import {
 } from "@/components/ui/sidebar";
 import { getSession } from "@/lib/getSession";
 import { AppSidebar } from "./dashboard/_components/app-sidebar";
-
 
 export const metadata: Metadata = {
   title: "AutoSystem - Dashboard",
@@ -27,9 +27,7 @@ export default async function AuthLayout({
   }
   return (
     <html lang="pt-BR" suppressHydrationWarning className="dark">
-      <body
-        className={`antialiased  text-white`}
-      >
+      <body className={`antialiased  text-white`}>
         <SidebarProvider>
           <AppSidebar />
           <SidebarInset className="bg-black">
@@ -47,6 +45,7 @@ export default async function AuthLayout({
             <main className="flex-1 p-6 relative">
               <div className="absolute top-0 left-1/4 w-1/2 h-1/2 bg-green-500/10 blur-[140px] pointer-events-none rounded-full" />
               <div className="relative z-10">{children}</div>
+              <Toaster richColors />
             </main>
           </SidebarInset>
         </SidebarProvider>
