@@ -12,17 +12,39 @@ const createBudgetSchema = z.object({
   vehicleId: z.string().uuid({
     message: "ID do veículo inválido.",
   }),
-  totalAmount: z.number().positive({
-    message: "O valor total deve ser um número positivo.",
-  }),
   observacoes: z.string().optional(),
+  profitMargin: z.number().min(0, {
+    message: "A margem de lucro não pode ser negativa.",
+  }),
+  items: z
+    .array(
+      z.object({
+        productId: z.string(),
+        productName: z.string().optional(),
+        quantity: z.number().min(1, {
+          message: "A quantidade deve ser pelo menos 1.",
+        }),
+        unitPrice: z.number().min(0, {
+          message: "O preço unitário não pode ser negativo.",
+        }),
+      }),
+    )
+    .min(1, {
+      message: "Adicione pelo menos um item ao orçamento.",
+    }),
 });
 
 interface CreateBudgetInput {
   customerId: string;
   vehicleId: string;
-  totalAmount: number;
   observacoes?: string;
+  profitMargin: number;
+  items: Array<{
+    productId: string;
+    productName?: string;
+    quantity: number;
+    unitPrice: number;
+  }>;
 }
 
 interface CreateBudgetResponse {
@@ -51,7 +73,8 @@ export async function createBudget(
       const firstError =
         errors.customerId?.[0] ||
         errors.vehicleId?.[0] ||
-        errors.totalAmount?.[0] ||
+        errors.profitMargin?.[0] ||
+        errors.items?.[0] ||
         "Dados inválidos";
 
       return {
@@ -60,17 +83,55 @@ export async function createBudget(
       };
     }
 
-    const { customerId, vehicleId, totalAmount, observacoes } =
+    const { customerId, vehicleId, observacoes, profitMargin, items } =
       validationResult.data;
 
-    const budget = await prisma.budget.create({
-      data: {
-        customerId,
-        vehicleId,
-        totalAmount,
-        observacoes,
-        organizationId: session.session.activeOrganizationId,
-      },
+    const totalAmount = items.reduce(
+      (sum, item) => sum + item.quantity * item.unitPrice,
+      0,
+    );
+    const finalAmountWithProfit = totalAmount * (1 + profitMargin / 100);
+
+    const budget = await prisma.$transaction(async (tx) => {
+      const newBudget = await tx.budget.create({
+        data: {
+          customerId,
+          vehicleId,
+          totalAmount: finalAmountWithProfit,
+          observacoes,
+          organizationId: session.session.activeOrganizationId,
+        },
+      });
+
+      for (const item of items) {
+        let productId = item.productId;
+
+        if (item.productId.startsWith("custom-")) {
+          if (!item.productName) {
+            throw new Error("Nome do produto é obrigatório para produtos customizados.");
+          }
+          const newProduct = await tx.product.create({
+            data: {
+              name: item.productName,
+              price: item.unitPrice,
+              organizationId: session.session.activeOrganizationId,
+              sku: `${item.productName.replace(/\s+/g, "-").toLowerCase()}-${Date.now()}`,
+            },
+          });
+          productId = newProduct.id;
+        }
+
+        await tx.budgetItem.create({
+          data: {
+            budgetId: newBudget.id,
+            productId: productId,
+            quantity: item.quantity,
+            unitPrice: item.unitPrice,
+          },
+        });
+      }
+
+      return newBudget;
     });
 
     revalidatePath("/dashboard/budget");
@@ -93,3 +154,4 @@ export async function createBudget(
     };
   }
 }
+

@@ -1,5 +1,4 @@
 
-import { BackgroundAnimation } from "@/utils/backgroud";
 import { BudgetList } from "./_components/budget-list";
 import { getBudgets } from "./_data-access/get-budgets";
 

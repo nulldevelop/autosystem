@@ -58,7 +58,7 @@ export async function AppSidebar({
     },
     {
       title: "Estoque",
-      url: "/dashboard/estoque",
+      url: "/dashboard/product",
       icon: Box,
     },
     {

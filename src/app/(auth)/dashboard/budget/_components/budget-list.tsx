@@ -83,6 +83,24 @@ export function BudgetList({ budgets }: BudgetListProps) {
                 <span className="font-semibold">Observações:</span>{" "}
                 {budget.observacoes || "N/A"}
               </p>
+
+              {budget.items && budget.items.length > 0 && (
+                <div className="pt-2">
+                  <h3 className="font-semibold text-sm">Itens:</h3>
+                  <ul className="list-disc pl-5 text-sm text-muted-foreground">
+                    {budget.items.map((item) => (
+                      <li key={item.id}>
+                        {item.product?.name} ({item.quantity} x{" "}
+                        {new Intl.NumberFormat("pt-BR", {
+                          style: "currency",
+                          currency: "BRL",
+                        }).format(item.unitPrice)}
+                        )
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </CardContent>
           </Card>
         ))}

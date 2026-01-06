@@ -90,6 +90,7 @@ model Organization {
   customers   Customer[]
   vehicles    Vehicle[]
   budgets     Budget[]
+  products    Product[]
 
   @@map("organization")
 }
@@ -166,15 +167,25 @@ model Vehicle {
   @@map("vehicle")
 }
 
+enum Status {
+  pending
+  aproved
+  rejected
+}
+
 model Budget {
-  id             String        @id @default(uuid())
-  customerId     String
-  observacoes    String?
-  customer       Customer      @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  vehicleId      String
-  vehicle        Vehicle       @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  id         String   @id @default(uuid())
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  vehicleId  String
+  vehicle    Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+  // Relação com a tabela intermediária
+  items BudgetItem[]
+
   totalAmount    Float
   status         Status        @default(pending)
+  observacoes    String?
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
   organization   Organization? @relation(fields: [organizationId], references: [id])
@@ -183,8 +194,32 @@ model Budget {
   @@map("budget")
 }
 
-enum Status {
-  pending
-  aproved
-  rejected
+model Product {
+  id    String @id @default(uuid())
+  name  String
+  price Float
+  sku   String @unique
+
+  // Relação com a tabela intermediária
+  budgets BudgetItem[]
+
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@map("product")
+}
+
+model BudgetItem {
+  id        String @id @default(uuid())
+  budgetId  String
+  productId String
+  quantity  Int    @default(1)
+  unitPrice Float 
+
+  budget  Budget  @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+
+  @@map("budget_item")
 }
