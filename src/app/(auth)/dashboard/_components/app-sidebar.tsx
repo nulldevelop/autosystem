@@ -53,7 +53,7 @@ const allGestaoItems = [
   },
   {
     title: "Clientes",
-    url: "/dashboard/clientes",
+    url: "/dashboard/customer",
     icon: Users,
   },
   {

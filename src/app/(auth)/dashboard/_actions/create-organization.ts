@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
@@ -90,6 +91,7 @@ export async function createOrganization(
       };
     }
 
+    revalidatePath("/dashboard");
     return {
       success: true,
       message: "Oficina criada com sucesso!",

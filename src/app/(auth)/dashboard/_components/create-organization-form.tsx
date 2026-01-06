@@ -140,7 +140,6 @@ export function CreateOrganizationForm({
 
       toast.success(result.message);
       form.reset();
-      router.push("/dashboard"); 
       router.refresh(); 
       onOpenChange(false);
     } catch (error) {

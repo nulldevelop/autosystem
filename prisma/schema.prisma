@@ -75,22 +75,22 @@ model Verification {
 }
 
 model Organization {
-  id          String       @id
-  name        String
-  slug        String
-  logo        String?
-  createdAt   DateTime
-  metadata    String?
+  id        String   @id @default(uuid())
+  name      String
+  slug      String   @unique
+  logo      String?
+  phone     String
+  address   String
+  cnpj      String
+  metadata  String?
+  createdAt DateTime @default(now())
+
   members     Member[]
   invitations Invitation[]
-  phone       String
-  address     String
-  cnpj        String
+  customers   Customer[]
   vehicles    Vehicle[]
   budgets     Budget[]
-  customers   Customer[]
 
-  @@unique([slug])
   @@map("organization")
 }
 
@@ -126,52 +126,64 @@ model Invitation {
 }
 
 model Customer {
-  id             String       @id @default(uuid())
+  id             String        @id @default(uuid())
   name           String
-  email          String       @unique
-  cpf            String       @unique
+  email          String        @unique
+  document       String        @unique
+  documentType   DocumentType
   phone          String?
   address        String?
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
   budgets        Budget[]
   veicles        Vehicle[]
-  organizationId String
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  organizationId String?
 
   @@map("customer")
 }
 
+enum DocumentType {
+  CPF
+  CNPJ
+}
+
 model Vehicle {
-  id             String       @id @default(uuid())
+  id             String        @id @default(uuid())
   marca          String
   model          String
   year           Int
-  licensePlate   String       @unique
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  licensePlate   String        @unique
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
   budgets        Budget[]
-  customer       Customer?    @relation(fields: [customerId], references: [id])
+  customer       Customer?     @relation(fields: [customerId], references: [id])
   customerId     String?
-  organizationId String
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  organizationId String?
 
   @@map("vehicle")
 }
 
 model Budget {
-  id             String       @id @default(uuid())
+  id             String        @id @default(uuid())
   customerId     String
   observacoes    String?
-  customer       Customer     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customer       Customer      @relation(fields: [customerId], references: [id], onDelete: Cascade)
   vehicleId      String
-  vehicle        Vehicle      @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  vehicle        Vehicle       @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
   totalAmount    Float
-  status         String       @default("pending")
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  organizationId String
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  status         Status        @default(pending)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  organizationId String?
 
   @@map("budget")
+}
+
+enum Status {
+  pending
+  aproved
+  rejected
 }

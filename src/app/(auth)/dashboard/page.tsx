@@ -9,11 +9,11 @@ import { CreateOrganizationForm } from "./_components/create-organization-form";
 const BackgroundAnimation = () => (
   <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
     <div
-      className="absolute inset-0 opacity-[0.1]"
+      className="absolute inset-0 opacity-[0.2]" // Increased opacity slightly for visibility on light background
       style={{
-        backgroundImage: `linear-gradient(#22c55e 1px, transparent 1px), linear-gradient(90deg, #22c55e 1px, transparent 1px)`,
+        backgroundImage: `linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px)`, // Light gray grid
         backgroundSize: "60px 60px",
-        maskImage: "radial-gradient(ellipse at center, black, transparent 80%)",
+        maskImage: "radial-gradient(ellipse at center, white, transparent 80%)", // Mask with white for light background
       }}
     />
 
@@ -21,23 +21,23 @@ const BackgroundAnimation = () => (
     <motion.div
       animate={{
         scale: [1, 1.2, 1],
-        opacity: [0.2, 0.4, 0.2],
+        opacity: [0.1, 0.2, 0.1], // Reduced opacity
         x: [0, 50, 0],
       }}
       transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-      className="absolute -top-20 -left-20 w-150 h-150 bg-green-500/20 blur-[120px] rounded-full"
+      className="absolute -top-20 -left-20 w-150 h-150 bg-green-500/10 blur-[100px] rounded-full" // Reduced blur and opacity
     />
     <motion.div
       animate={{
         scale: [1, 1.3, 1],
-        opacity: [0.1, 0.3, 0.1],
+        opacity: [0.05, 0.15, 0.05], // Reduced opacity
         x: [0, -50, 0],
       }}
       transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-      className="absolute bottom-0 right-0 w-175 h-175 bg-orange-500/10 blur-[140px] rounded-full"
+      className="absolute bottom-0 right-0 w-175 h-175 bg-orange-500/5 blur-[120px] rounded-full" // Reduced blur and opacity
     />
   </div>
-);
+); // CLOSING PARENTHESIS ADDED
 
 export default function DashboardPage() {
   const { data: session } = useSession();
@@ -50,10 +50,10 @@ export default function DashboardPage() {
   }, [session]);
 
   return (
-    <div className="relative min-h-screen bg-black text-white selection:bg-orange-500 selection:text-white overflow-x-hidden">
+    <div className="relative min-h-screen bg-gray-50 text-gray-900 selection:bg-green-500 selection:text-white overflow-x-hidden">
       <BackgroundAnimation />
       <div className="relative z-10 flex justify-between items-center p-6 max-w-7xl mx-auto border-b border-white/10 backdrop-blur-md">
-        <div className="text-2xl font-black tracking-tighter italic">
+        <div className="text-2xl font-black tracking-tighter italic text-gray-900">
           AUTO<span className="text-green-500">SYSTEM</span>
         </div>
         <Button
@@ -73,10 +73,10 @@ export default function DashboardPage() {
             transition={{ duration: 0.8 }}
             className="max-w-4xl"
           >
-            <h1 className="text-6xl md:text-8xl font-black mb-8 leading-[0.9] tracking-tighter">
+            <h1 className="text-6xl md:text-8xl font-black mb-8 leading-[0.9] tracking-tighter text-gray-900">
               SEU PAINEL <span className="text-green-500">DE CONTROLE</span>
             </h1>
-            <p className="text-xl text-gray-400 mb-10 max-w-xl leading-relaxed">
+            <p className="text-xl text-gray-700 mb-10 max-w-xl leading-relaxed">
               Bem-vindo ao AutoSystem. Gerencie sua oficina com eficiência.
             </p>
           </motion.div>
