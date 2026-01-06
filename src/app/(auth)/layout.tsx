@@ -34,7 +34,7 @@ export default async function AuthLayout({
             <header className="flex h-16 shrink-0 items-center justify-between gap-2 border-b border-white/30 px-6 sticky top-0 bg-black/50 backdrop-blur-md z-30">
               <div className="flex items-center gap-2">
                 <SidebarTrigger className="-ml-1 text-gray-400 hover:text-green-500" />
-                <div className="h-4 w-px bg-white/90 mx-2" />
+                <div className="h-4 w-px bg-black/90 mx-2" />
                 <span className="text-xs font-medium text-gray-500 uppercase tracking-widest">
                   Gestão Automotiva
                 </span>

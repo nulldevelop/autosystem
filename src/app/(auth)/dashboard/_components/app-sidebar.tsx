@@ -4,15 +4,21 @@ import {
   Bell,
   Box,
   Car,
+  ChevronUp,
   ClipboardList,
   DollarSign,
-  FileBarChart,
   LayoutDashboard,
   Settings,
+  User2,
   Users,
   Wrench,
 } from "lucide-react";
-
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Sidebar,
   SidebarContent,
@@ -147,23 +153,41 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroup>
         ))}
       </SidebarContent>
-
-      <SidebarFooter className="p-4 border-t border-white/5 bg-zinc-950/30">
-        <div className="flex items-center gap-3 px-2 py-2 mb-2">
-          <div className="size-9 rounded-full bg-linear-to-tr from-zinc-800 to-zinc-700 border border-white/10 flex items-center justify-center text-[10px] font-bold text-zinc-400">
-            AS
-          </div>
-          <div className="flex flex-col">
-            <span className="text-xs font-bold text-white leading-none">
-              Admin Oficina
-            </span>
-            <span className="text-[10px] text-zinc-500 font-medium mt-1">
-              Plano Pro
-            </span>
-          </div>
-        </div>
-        <LogoutButton />
+      <SidebarFooter className="py-5 border-t border-white/5 bg-zinc-950/30 ">
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <SidebarMenuButton className="py-6">
+                  <div className="flex items-center gap-3 px-2 py-6 mb-2">
+                    <div className="size-8 rounded-full bg-linear-to-tr from-zinc-800 to-zinc-700 border border-white/10 flex items-center justify-center text-[10px] font-bold text-zinc-400">
+                      AS
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-xs font-bold text-white leading-none">
+                        Admin Oficina
+                      </span>
+                      <span className="text-[10px] text-zinc-500 font-medium mt-1">
+                        Plano Pro
+                      </span>
+                    </div>
+                  </div>
+                  <ChevronUp className="ml-auto" />
+                </SidebarMenuButton>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                side="top"
+                className="w-[--radix-popper-anchor-width]"
+              >
+                <DropdownMenuItem>
+                  <LogoutButton />
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarFooter>
+
       <SidebarRail />
     </Sidebar>
   );
