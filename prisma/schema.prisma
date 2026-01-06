@@ -91,6 +91,7 @@ model Organization {
   vehicles    Vehicle[]
   budgets     Budget[]
   products    Product[]
+  serviceOrders ServiceOrder[]
 
   @@map("organization")
 }
@@ -140,6 +141,7 @@ model Customer {
   veicles        Vehicle[]
   organization   Organization? @relation(fields: [organizationId], references: [id])
   organizationId String?
+  serviceOrders  ServiceOrder[]
 
   @@map("customer")
 }
@@ -162,6 +164,7 @@ model Vehicle {
   customerId     String?
   organization   Organization? @relation(fields: [organizationId], references: [id])
   organizationId String?
+  serviceOrders  ServiceOrder[]
 
   @@unique([licensePlate, organizationId])
   @@map("vehicle")
@@ -180,7 +183,6 @@ model Budget {
   vehicleId  String
   vehicle    Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
 
-  // Relação com a tabela intermediária
   items BudgetItem[]
 
   totalAmount    Float
@@ -190,6 +192,7 @@ model Budget {
   updatedAt      DateTime      @updatedAt
   organization   Organization? @relation(fields: [organizationId], references: [id])
   organizationId String?
+  serviceOrder   ServiceOrder?
 
   @@map("budget")
 }
@@ -200,8 +203,8 @@ model Product {
   price Float
   sku   String @unique
 
-  // Relação com a tabela intermediária
-  budgets BudgetItem[]
+  budgets         BudgetItem[]
+  serviceOrders ServiceOrderItem[]
 
   organizationId String?
   organization   Organization? @relation(fields: [organizationId], references: [id])
@@ -222,4 +225,45 @@ model BudgetItem {
   product Product @relation(fields: [productId], references: [id])
 
   @@map("budget_item")
+}
+
+enum ServiceOrderStatus {
+  open
+  in_progress
+  completed
+  canceled
+}
+
+model ServiceOrder {
+  id         String   @id @default(uuid())
+  budgetId   String   @unique
+  budget     Budget   @relation(fields: [budgetId], references: [id])
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  vehicleId  String
+  vehicle    Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+  items ServiceOrderItem[]
+
+  totalAmount    Float
+  status         ServiceOrderStatus @default(open)
+  observacoes    String?
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  organization   Organization?      @relation(fields: [organizationId], references: [id])
+  organizationId String?
+
+  @@map("service_order")
+}
+
+model ServiceOrderItem {
+  id             String       @id @default(uuid())
+  serviceOrderId String
+  productId      String
+  quantity       Int          @default(1)
+  unitPrice      Float
+  serviceOrder   ServiceOrder @relation(fields: [serviceOrderId], references: [id], onDelete: Cascade)
+  product        Product      @relation(fields: [productId], references: [id])
+
+  @@map("service_order_item")
 }

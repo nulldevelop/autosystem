@@ -13,6 +13,8 @@ import {
 import type { Status } from "@/generated/prisma/client";
 import type { BudgetWithRelations } from "@/types/budget";
 import { CreateBudgetForm } from "./create-budget-form";
+import { PDFDownloadButton } from "./PDFDownloadButton";
+import { PDFServiceOrderDownloadButton } from "./PDFServiceOrderDownloadButton";
 
 const STATUS_LABEL: Record<Status, string> = {
   pending: "Pendente",
@@ -101,6 +103,11 @@ export function BudgetList({ budgets }: BudgetListProps) {
                   </ul>
                 </div>
               )}
+
+              <div className="mt-4 flex gap-2">
+                <PDFDownloadButton budgetId={budget.id} />
+                <PDFServiceOrderDownloadButton budgetId={budget.id} />
+              </div>
             </CardContent>
           </Card>
         ))}
