@@ -43,6 +43,10 @@ export function CustomerList({ customers }: CustomerListProps) {
             </CardHeader>
             <CardContent className="space-y-2">
               <p className="text-sm text-muted-foreground">
+                <span className="font-semibold">Endereço:</span>{" "}
+                {customer.address || "N/A"}
+              </p>
+              <p className="text-sm text-muted-foreground">
                 <span className="font-semibold">Telefone:</span>{" "}
                 {customer.phone || "N/A"}
               </p>

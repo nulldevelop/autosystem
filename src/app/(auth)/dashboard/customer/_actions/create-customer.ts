@@ -19,6 +19,7 @@ const createCustomerSchema = z.object({
     message: "O CPF/CNPJ deve ter pelo menos 11 caracteres.",
   }),
   documentType: z.enum(["CPF", "CNPJ"]),
+  address: z.string().optional(),
 });
 
 interface CreateCustomerInput {
@@ -27,6 +28,7 @@ interface CreateCustomerInput {
   phone: string;
   document: string;
   documentType: "CPF" | "CNPJ";
+  address?: string;
 }
 
 interface CreateCustomerResponse {
@@ -65,7 +67,7 @@ export async function createCustomer(
       };
     }
 
-    const { name, email, phone, document, documentType } =
+    const { name, email, phone, document, documentType, address } =
       validationResult.data;
 
     const existingCustomer = await prisma.customer.findFirst({
@@ -90,6 +92,7 @@ export async function createCustomer(
         document,
         documentType,
         organizationId: session.session.activeOrganizationId,
+        address,
       },
     });
 
@@ -99,12 +102,14 @@ export async function createCustomer(
       message: "Cliente criado com sucesso!",
       customerId: customer.id,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Erro ao criar cliente:", error);
+
+    const errorMessage = error instanceof Error ? error.message : "Ocorreu um erro ao criar o cliente.";
 
     return {
       success: false,
-      message: error?.message || "Ocorreu um erro ao criar o cliente.",
+      message: errorMessage,
     };
   }
 }

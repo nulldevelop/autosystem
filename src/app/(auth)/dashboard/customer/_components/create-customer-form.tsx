@@ -31,7 +31,7 @@ const formSchema = z.object({
   name: z.string().min(2, {
     message: "O nome do cliente deve ter pelo menos 2 caracteres.",
   }),
-  email: z.string().email({
+  email: z.email({
     message: "Por favor, insira um email válido.",
   }),
   phone: z.string().min(11, {
@@ -40,6 +40,7 @@ const formSchema = z.object({
   document: z.string().min(11, {
     message: "O CPF/CNPJ deve ter pelo menos 11 caracteres.",
   }),
+  address: z.string().optional(),
 });
 
 export function CreateCustomerForm({
@@ -59,6 +60,7 @@ export function CreateCustomerForm({
       email: "",
       phone: "",
       document: "",
+      address: "",
     },
   });
 
@@ -76,6 +78,7 @@ export function CreateCustomerForm({
         phone: values.phone,
         document: rawDocument,
         documentType: documentType,
+        address: values.address,
       });
       if (!result.success) {
         toast.error(result.message);
@@ -144,6 +147,24 @@ export function CreateCustomerForm({
                     <Input
                       type="email"
                       placeholder="Ex: joao.silva@email.com"
+                      disabled={isLoading}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="address"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Endereço</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Ex: Rua das Flores, 123"
                       disabled={isLoading}
                       {...field}
                     />
