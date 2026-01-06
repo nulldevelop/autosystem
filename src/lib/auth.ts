@@ -116,28 +116,7 @@ export const auth = betterAuth({
         afterAddMember: async ({ user, organization }) => {
           console.log(`Membro ${user.email} adicionado à ${organization.name}`);
         },
-      },
-      schema: {
-        organization: {
-          additionalFields: {
-            phone: {
-              type: "string",
-              required: false,
-              input: true,
-            },
-            address: {
-              type: "string",
-              required: false,
-              input: true,
-            },
-            cnpj: {
-              type: "string",
-              required: false,
-              input: true,
-            },
-          },
-        },
-      },
+      }
     }),
   ],
 
