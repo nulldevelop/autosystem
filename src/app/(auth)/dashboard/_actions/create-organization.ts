@@ -17,12 +17,25 @@ const createOrganizationSchema = z.object({
       message: "O slug deve conter apenas letras minúsculas, números e hífens.",
     }),
   logo: z.string().url().optional().or(z.literal("")),
+  address: z.string().min(2, {
+    message: "O endereço deve ter pelo menos 2 caracteres.",
+  }),
+  phone: z.string().min(11, {
+    message: "O telefone deve ter pelo menos 11 caracteres.",
+  }),
+
+  cnpj: z.string().min(14, {
+    message: "O CNPJ deve ter pelo menos 14 caracteres.",
+  }),
 });
 
 interface CreateOrganizationInput {
   name: string;
   slug: string;
   logo?: string;
+  address: string;
+  phone: string;
+  cnpj: string;
 }
 
 interface CreateOrganizationResponse {
@@ -52,7 +65,7 @@ export async function createOrganization(
       };
     }
 
-    const { name, slug, logo } = validationResult.data;
+    const { name, slug, logo, address, phone, cnpj } = validationResult.data;
 
     const headersList = await headers();
 
@@ -61,8 +74,11 @@ export async function createOrganization(
       body: {
         name,
         slug,
+        address,
+        phone,
+        cnpj,
         logo: logo || undefined,
-        keepCurrentActiveOrganization: true, 
+        keepCurrentActiveOrganization: true,
       },
       headers: headersList,
     });

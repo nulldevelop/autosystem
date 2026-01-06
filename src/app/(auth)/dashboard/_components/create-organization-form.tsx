@@ -17,17 +17,18 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { extractCnpj, formatCnpj } from "@/utils/formatCNPJ";
 import {
   checkOrganizationSlug,
   createOrganization,
 } from "../_actions/create-organization";
+import { extractPhoneNumber, formatPhone } from "@/utils/formatPhone";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -42,6 +43,16 @@ const formSchema = z.object({
       message: "O slug deve conter apenas letras minúsculas, números e hífens.",
     }),
   logo: z.string().url().optional().or(z.literal("")),
+  address: z.string().min(2, {
+    message: "O endereço deve ter pelo menos 2 caracteres.",
+  }),
+  phone: z.string().min(11, {
+    message: "O telefone deve ter pelo menos 11 caracteres.",
+  }),
+
+  cnpj: z.string().min(14, {
+    message: "O CNPJ deve ter pelo menos 14 caracteres.",
+  }),
 });
 
 export function CreateOrganizationForm({
@@ -61,6 +72,9 @@ export function CreateOrganizationForm({
       name: "",
       slug: "",
       logo: "",
+      address: "",
+      phone: "",
+      cnpj: "",
     },
   });
 
@@ -107,12 +121,16 @@ export function CreateOrganizationForm({
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-
+    const rawcnpj = extractCnpj(values.cnpj);
+    const rawNumber = extractPhoneNumber(values.phone);
     try {
       const result = await createOrganization({
         name: values.name,
         slug: values.slug,
         logo: values.logo || undefined,
+        address: values.address,
+        phone: rawNumber,
+        cnpj: rawcnpj,
       });
 
       if (!result.success) {
@@ -122,8 +140,8 @@ export function CreateOrganizationForm({
 
       toast.success(result.message);
       form.reset();
-      router.push("/dashboard"); // Redireciona para o dashboard
-      router.refresh(); // Atualiza os dados do servidor
+      router.push("/dashboard"); 
+      router.refresh(); 
       onOpenChange(false);
     } catch (error) {
       console.error("Erro ao criar oficina:", error);
@@ -135,7 +153,7 @@ export function CreateOrganizationForm({
 
   return (
     <Dialog open={open}>
-      <DialogContent 
+      <DialogContent
         className="sm:max-w-2xl"
         onEscapeKeyDown={(e) => e.preventDefault()}
         onPointerDownOutside={(e) => e.preventDefault()}
@@ -178,7 +196,12 @@ export function CreateOrganizationForm({
               name="slug"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Slug (URL da Oficina)</FormLabel>
+                  <FormLabel>
+                    Slug{" "}
+                    <p className="text-xs">
+                      (Este será o identificador único da sua oficina)
+                    </p>
+                  </FormLabel>
                   <FormControl>
                     <Input
                       placeholder="auto-eletrica-do-ze"
@@ -190,11 +213,6 @@ export function CreateOrganizationForm({
                       }}
                     />
                   </FormControl>
-                  <FormDescription>
-                    {isCheckingSlug
-                      ? "Verificando disponibilidade..."
-                      : "Este será o identificador único da sua oficina"}
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -205,7 +223,7 @@ export function CreateOrganizationForm({
               name="logo"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Logo (Opcional)</FormLabel>
+                  <FormLabel>Logo (URL da imagem)</FormLabel>
                   <FormControl>
                     <Input
                       type="url"
@@ -214,9 +232,67 @@ export function CreateOrganizationForm({
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    URL da imagem do logo da sua oficina
-                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="address"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Endereço</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Ex: Rua das Flores, 123"
+                      disabled={isLoading}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Telefone</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Ex: (11) 91234-5678"
+                      disabled={isLoading}
+                      {...field}
+                      onChange={(e) => {
+                        const formattedValue = formatPhone(e.target.value);
+                        field.onChange(formattedValue);
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="cnpj"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>CNPJ</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Ex: 12.345.678/0001-90"
+                      disabled={isLoading}
+                      {...field}
+                      onChange={(e) => {
+                        field.onChange(formatCnpj(e.target.value));
+                      }}
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}

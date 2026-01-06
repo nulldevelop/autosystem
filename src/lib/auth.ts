@@ -2,6 +2,7 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { organization } from "better-auth/plugins";
 import { prisma } from "@/lib/prisma"; // Ajuste conforme seu projeto
+import { getActiveOrganization } from "./getActiveOrganization";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -74,7 +75,6 @@ export const auth = betterAuth({
 
       // Hooks de organização (opcional)
       organizationHooks: {
-        // Antes de criar a organização
         beforeCreateOrganization: async ({ organization, user }) => {
           console.log(
             `Usuário ${user.email} criando organização ${organization.name}`,
@@ -113,7 +113,6 @@ export const auth = betterAuth({
           };
         },
 
-        // Depois de adicionar um membro
         afterAddMember: async ({ user, organization }) => {
           console.log(`Membro ${user.email} adicionado à ${organization.name}`);
         },
@@ -146,6 +145,25 @@ export const auth = betterAuth({
   session: {
     expiresIn: 60 * 60 * 24 * 7, // 7 dias
     updateAge: 60 * 60 * 24, // 1 dia
+  },
+
+  databaseHooks: {
+    session: {
+      create: {
+        before: async (session) => {
+          const organization = await getActiveOrganization(session.userId);
+          if (organization) {
+            return {
+              data: {
+                ...session,
+                activeOrganizationId: organization.id,
+              },
+            };
+          }
+          return { data: session };
+        },
+      },
+    },
   },
 
   // URL base da aplicação
