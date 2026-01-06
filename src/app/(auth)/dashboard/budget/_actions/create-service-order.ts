@@ -70,6 +70,11 @@ export async function createServiceOrder(
     }
 
     const serviceOrder = await prisma.$transaction(async (tx) => {
+      await tx.budget.update({
+        where: { id: budgetId },
+        data: { status: "aproved" },
+      });
+
       const newServiceOrder = await tx.serviceOrder.create({
         data: {
           budgetId,

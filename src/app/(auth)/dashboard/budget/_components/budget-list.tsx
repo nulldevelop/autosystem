@@ -54,7 +54,7 @@ export function BudgetList({ budgets }: BudgetListProps) {
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {budgets.map((budget) => (
-          <Card key={budget.id}>
+          <Card key={budget.id} className="flex flex-col justify-between">
             <CardHeader>
               <CardTitle>Orçamento #{budget.id.substring(0, 6)}</CardTitle>
               <CardDescription className="flex items-center gap-2">
@@ -65,7 +65,7 @@ export function BudgetList({ budgets }: BudgetListProps) {
               </CardDescription>
             </CardHeader>
 
-            <CardContent className="space-y-2">
+            <CardContent className="space-y-2 grow">
               <p className="text-sm text-muted-foreground">
                 <span className="font-semibold">Valor Total:</span>{" "}
                 {new Intl.NumberFormat("pt-BR", {
@@ -103,12 +103,11 @@ export function BudgetList({ budgets }: BudgetListProps) {
                   </ul>
                 </div>
               )}
-
-              <div className="mt-4 flex gap-2">
-                <PDFDownloadButton budgetId={budget.id} />
-                <PDFServiceOrderDownloadButton budgetId={budget.id} />
-              </div>
             </CardContent>
+            <div className="mt-4 flex gap-2 p-4 pt-0">
+              <PDFDownloadButton budgetId={budget.id} />
+              <PDFServiceOrderDownloadButton budgetId={budget.id} />
+            </div>
           </Card>
         ))}
       </div>

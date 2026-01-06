@@ -1,13 +1,27 @@
 "use client";
 
 import { PDFDownloadLink } from "@react-pdf/renderer";
+import { FileText } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { createServiceOrder } from "../_actions/create-service-order";
+import {
+  type BudgetDetails,
+  getBudgetDetails,
+} from "../_data-access/get-budget-details";
 import { ServiceOrderPDF } from "./ServiceOrderPDF";
-import { getBudgetDetails, type BudgetDetails } from "../_data-access/get-budget-details"; // Updated import path
-import { createServiceOrder } from "../_actions/create-service-order"; // Updated import path
-import { FileText } from "lucide-react";
 
 interface PDFServiceOrderDownloadButtonProps {
   budgetId: string;
@@ -45,7 +59,7 @@ export function PDFServiceOrderDownloadButton({
       } else {
         toast.error(result.message);
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error("Ocorreu um erro ao criar a Ordem de Serviço.");
     } finally {
       setIsCreating(false);
@@ -58,9 +72,28 @@ export function PDFServiceOrderDownloadButton({
 
   if (!serviceOrderId) {
     return (
-      <Button onClick={handleCreateServiceOrder} disabled={isCreating}>
-        {isCreating ? "Criando O.S...." : "Gerar O.S."}
-      </Button>
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button disabled={isCreating}>
+            {isCreating ? "Criando O.S...." : "Gerar O.S."}
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar Ordem de Serviço</AlertDialogTitle>
+            <AlertDialogDescription>
+              Ao confirmar, o orçamento será automaticamente aprovado e uma nova
+              Ordem de Serviço será criada. Esta ação não pode ser revertida.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleCreateServiceOrder}>
+              Confirmar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     );
   }
 

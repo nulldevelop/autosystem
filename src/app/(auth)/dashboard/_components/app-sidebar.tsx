@@ -29,11 +29,12 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-
-import { LogoutButton } from "./logout-button";
 import { getBudgetsCount } from "../_data-access/get-budgets-count";
 import { getCustomersCount } from "../_data-access/get-customers-count";
 import { getVehiclesCount } from "../_data-access/get-vehicles-count";
+import { getProductsCount } from "../product/_data-access/get-products-count";
+import { getServiceOrdersCount } from "../service/_data-access/get-service-orders-count";
+import { LogoutButton } from "./logout-button";
 
 export async function AppSidebar({
   ...props
@@ -41,6 +42,8 @@ export async function AppSidebar({
   const customersCount = await getCustomersCount();
   const vehiclesCount = await getVehiclesCount();
   const budgetsCount = await getBudgetsCount();
+  const productsCount = await getProductsCount();
+  const serviceOrdersCount = await getServiceOrdersCount();
   // Módulos focados no AutoSystem
   const allGestaoItems = [
     {
@@ -48,7 +51,13 @@ export async function AppSidebar({
       url: "/dashboard/budget",
       icon: ClipboardList,
       color: "text-orange-500",
-      badge: budgetsCount,
+      badge: budgetsCount > 0 ? budgetsCount : undefined,
+    },
+    {
+      title: "Ordens de Serviço",
+      url: "/dashboard/service",
+      icon: Wrench,
+      badge: serviceOrdersCount > 0 ? serviceOrdersCount : undefined,
     },
     {
       title: "Financeiro",
@@ -60,23 +69,19 @@ export async function AppSidebar({
       title: "Estoque",
       url: "/dashboard/product",
       icon: Box,
-    },
-    {
-      title: "Serviços/O.S",
-      url: "/dashboard/servicos",
-      icon: Wrench,
+      badge: productsCount > 0 ? productsCount : undefined,
     },
     {
       title: "Clientes",
       url: "/dashboard/customer",
       icon: Users,
-      badge: customersCount,
+      badge: customersCount > 0 ? customersCount : undefined,
     },
     {
       title: "Veículos",
       url: "/dashboard/vehicle",
       icon: Car,
-      badge: vehiclesCount,
+      badge: vehiclesCount > 0 ? vehiclesCount : undefined,
     },
   ];
 

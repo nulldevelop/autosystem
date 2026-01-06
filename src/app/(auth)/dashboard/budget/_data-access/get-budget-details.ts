@@ -16,6 +16,7 @@ export async function getBudgetDetails(budgetId: string) {
           product: true,
         },
       },
+      serviceOrder: true,
     },
   });
 
