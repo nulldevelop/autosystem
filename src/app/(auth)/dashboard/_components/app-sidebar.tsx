@@ -38,7 +38,7 @@ import { LogoutButton } from "./logout-button";
 const allGestaoItems = [
   {
     title: "Orçamentos",
-    url: "/dashboard/orcamentos",
+    url: "/dashboard/budget",
     icon: ClipboardList,
     color: "text-orange-500",
   },
