@@ -4,7 +4,8 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { getSession } from "@/lib/getSession";
 import { prisma } from "@/lib/prisma";
-import { getBudgetDetails } from "../_data-access/get-budget-details"; // Updated import path
+import { getBudgetDetails } from "../_data-access/get-budget-details";
+import { canPermission } from "@/utils/permissions/canPermission";
 
 const createServiceOrderSchema = z.object({
   budgetId: z.string().uuid({
@@ -57,6 +58,27 @@ export async function createServiceOrder(
         success: true,
         message: "Ordem de Serviço já existe.",
         serviceOrderId: existingServiceOrder.id,
+      };
+    }
+
+    // Verificar permissões antes de criar a ordem de serviço
+    const permission = await canPermission({ type: "service" });
+
+    if (!permission.hasPermission) {
+      if (permission.expired) {
+        return {
+          success: false,
+          message: "Sua assinatura expirou. Por favor, renove sua assinatura para continuar criando ordens de serviço.",
+        };
+      }
+
+      const planName = permission.plan?.maxServices
+        ? `Você atingiu o limite de ${permission.plan.maxServices} ordens de serviço do plano ${permission.planId}.`
+        : "Você não tem permissão para criar mais ordens de serviço.";
+
+      return {
+        success: false,
+        message: `${planName} Faça upgrade do seu plano para continuar.`,
       };
     }
 

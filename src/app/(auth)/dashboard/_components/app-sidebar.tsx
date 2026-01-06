@@ -105,6 +105,7 @@ export async function AppSidebar({
       items: [
         { title: "Notificações", url: "/dashboard/notificacoes", icon: Bell },
         { title: "Oficina/Ajustes", url: "/dashboard/config", icon: Settings },
+        { title: "Assinatura", url: "/dashboard/plans", icon: DollarSign },
       ],
     },
   ];

@@ -18,8 +18,9 @@ model User {
   sessions      Session[]
   accounts      Account[]
 
-  members     Member[]
-  invitations Invitation[]
+  members      Member[]
+  invitations  Invitation[]
+  subscription Subscription?
 
   @@map("user")
 }
@@ -85,12 +86,12 @@ model Organization {
   metadata  String?
   createdAt DateTime @default(now())
 
-  members     Member[]
-  invitations Invitation[]
-  customers   Customer[]
-  vehicles    Vehicle[]
-  budgets     Budget[]
-  products    Product[]
+  members       Member[]
+  invitations   Invitation[]
+  customers     Customer[]
+  vehicles      Vehicle[]
+  budgets       Budget[]
+  products      Product[]
   serviceOrders ServiceOrder[]
 
   @@map("organization")
@@ -128,18 +129,18 @@ model Invitation {
 }
 
 model Customer {
-  id             String        @id @default(uuid())
+  id             String         @id @default(uuid())
   name           String
-  email          String        @unique
-  document       String        @unique
+  email          String         @unique
+  document       String         @unique
   documentType   DocumentType
   phone          String?
   address        String?
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
   budgets        Budget[]
   veicles        Vehicle[]
-  organization   Organization? @relation(fields: [organizationId], references: [id])
+  organization   Organization?  @relation(fields: [organizationId], references: [id])
   organizationId String?
   serviceOrders  ServiceOrder[]
 
@@ -152,17 +153,17 @@ enum DocumentType {
 }
 
 model Vehicle {
-  id             String        @id @default(uuid())
+  id             String         @id @default(uuid())
   marca          String
   model          String
   year           Int
   licensePlate   String
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
   budgets        Budget[]
-  customer       Customer?     @relation(fields: [customerId], references: [id])
+  customer       Customer?      @relation(fields: [customerId], references: [id])
   customerId     String?
-  organization   Organization? @relation(fields: [organizationId], references: [id])
+  organization   Organization?  @relation(fields: [organizationId], references: [id])
   organizationId String?
   serviceOrders  ServiceOrder[]
 
@@ -203,7 +204,7 @@ model Product {
   price Float
   sku   String @unique
 
-  budgets         BudgetItem[]
+  budgets       BudgetItem[]
   serviceOrders ServiceOrderItem[]
 
   organizationId String?
@@ -219,7 +220,7 @@ model BudgetItem {
   budgetId  String
   productId String
   quantity  Int    @default(1)
-  unitPrice Float 
+  unitPrice Float
 
   budget  Budget  @relation(fields: [budgetId], references: [id], onDelete: Cascade)
   product Product @relation(fields: [productId], references: [id])
@@ -266,4 +267,28 @@ model ServiceOrderItem {
   product        Product      @relation(fields: [productId], references: [id])
 
   @@map("service_order_item")
+}
+
+enum Plan {
+  BASIC
+  PLUS
+  PROFESSIONAL
+}
+
+model Subscription {
+  id                        String    @id @default(uuid())
+  userId                    String    @unique
+  user                      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  plan                      Plan      @default(BASIC)
+  status                    String?
+
+  stripeCustomerId          String?   @unique @map("stripe_customer_id")
+  stripeSubscriptionId      String?   @unique @map("stripe_subscription_id")
+  stripePriceId             String?   @map("stripe_price_id")
+  stripeCurrentPeriodEnd    DateTime? @map("stripe_current_period_end")
+  trialEndsAt               DateTime? @map("trial_ends_at")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

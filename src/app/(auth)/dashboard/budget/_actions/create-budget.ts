@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { getSession } from "@/lib/getSession";
 import { prisma } from "@/lib/prisma";
+import { canPermission } from "@/utils/permissions/canPermission";
 
 const createBudgetSchema = z.object({
   customerId: z.string().uuid({
@@ -80,6 +81,27 @@ export async function createBudget(
       return {
         success: false,
         message: firstError,
+      };
+    }
+
+    // Verificar permissões antes de criar o orçamento
+    const permission = await canPermission({ type: "budget" });
+
+    if (!permission.hasPermission) {
+      if (permission.expired) {
+        return {
+          success: false,
+          message: "Sua assinatura expirou. Por favor, renove sua assinatura para continuar criando orçamentos.",
+        };
+      }
+
+      const planName = permission.plan?.maxBudgets
+        ? `Você atingiu o limite de ${permission.plan.maxBudgets} orçamentos do plano ${permission.planId}.`
+        : "Você não tem permissão para criar mais orçamentos.";
+
+      return {
+        success: false,
+        message: `${planName} Faça upgrade do seu plano para continuar.`,
       };
     }
 
