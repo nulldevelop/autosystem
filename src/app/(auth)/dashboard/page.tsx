@@ -1,7 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useSession } from "@/lib/auth-client";
+import { CreateOrganizationForm } from "./_components/create-organization-form";
 
 const BackgroundAnimation = () => (
   <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
@@ -24,8 +27,6 @@ const BackgroundAnimation = () => (
       transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
       className="absolute -top-20 -left-20 w-150 h-150 bg-green-500/20 blur-[120px] rounded-full"
     />
-
-    {/* Esfera de Luz Laranja (Baixo Direita) */}
     <motion.div
       animate={{
         scale: [1, 1.3, 1],
@@ -39,20 +40,29 @@ const BackgroundAnimation = () => (
 );
 
 export default function DashboardPage() {
+  const { data: session } = useSession();
+  const [isCreateOrgModalOpen, setCreateOrgModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (session?.session?.activeOrganizationId === null) {
+      setCreateOrgModalOpen(true);
+    }
+  }, [session]);
+
   return (
     <div className="relative min-h-screen bg-black text-white selection:bg-orange-500 selection:text-white overflow-x-hidden">
       <BackgroundAnimation />
-        <div className="relative z-10 flex justify-between items-center p-6 max-w-7xl mx-auto border-b border-white/10 backdrop-blur-md">
-            <div className="text-2xl font-black tracking-tighter italic">
-                AUTO<span className="text-green-500">SYSTEM</span>
-            </div>
-            <Button
-              variant="outline"
-              className="hidden md:block border-green-500 text-green-500 hover:bg-green-500 hover:text-black"
-            >
-              Sair
-            </Button>
+      <div className="relative z-10 flex justify-between items-center p-6 max-w-7xl mx-auto border-b border-white/10 backdrop-blur-md">
+        <div className="text-2xl font-black tracking-tighter italic">
+          AUTO<span className="text-green-500">SYSTEM</span>
         </div>
+        <Button
+          variant="outline"
+          className="hidden md:block border-green-500 text-green-500 hover:bg-green-500 hover:text-black"
+        >
+          Sair
+        </Button>
+      </div>
 
       {/* --- HERO SECTION --- */}
       <section className="relative z-10 pt-24 pb-32">
@@ -72,6 +82,11 @@ export default function DashboardPage() {
           </motion.div>
         </div>
       </section>
+
+      <CreateOrganizationForm
+        open={isCreateOrgModalOpen}
+        onOpenChange={setCreateOrgModalOpen}
+      />
     </div>
   );
 }

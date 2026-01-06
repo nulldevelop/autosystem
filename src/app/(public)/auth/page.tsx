@@ -8,7 +8,7 @@ import { LoginForm } from "../_components/loginForm";
 import { SignUpForm } from "../_components/signUpForm";
 
 export default function SignUpPage() {
-  const [isLogin, setIsLogin] = useState(false);
+  const [isLogin, setIsLogin] = useState(true);
 
   const handleToggleForm = () => {
     setIsLogin(!isLogin);
