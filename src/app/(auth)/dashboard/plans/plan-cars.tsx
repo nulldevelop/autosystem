@@ -1,16 +1,16 @@
 "use client";
 
+import { Check } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardHeader,
-  CardTitle,
   CardContent,
   CardFooter,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 import { subscriptionPlans } from "@/utils/plans/subscription-plans";
-import { Check } from "lucide-react";
 import type { PlanSlug } from "@/utils/plans/types";
 import { createCheckout } from "./_actions/create-checkout";
 
