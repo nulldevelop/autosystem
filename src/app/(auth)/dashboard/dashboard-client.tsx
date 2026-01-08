@@ -1,6 +1,8 @@
 "use client";
 import { motion } from "framer-motion";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { useSession } from "@/lib/auth-client";
 import { CreateOrganizationForm } from "./_components/create-organization-form";
 
@@ -11,12 +13,20 @@ export default function DashboardClient({
 }) {
   const { data: session } = useSession();
   const [isCreateOrgModalOpen, setCreateOrgModalOpen] = useState(false);
+  const searchParams = useSearchParams();
+  const error = searchParams.get("error");
 
   useEffect(() => {
     if (session?.session?.activeOrganizationId === null) {
       setCreateOrgModalOpen(true);
     }
   }, [session]);
+
+  useEffect(() => {
+    if (error === "unauthorized") {
+      toast.error("Você não tem permissão para acessar esta página.");
+    }
+  }, [error]);
 
   return (
     <>
