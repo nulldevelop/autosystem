@@ -1,10 +1,15 @@
 "use server";
 
+import {
+  TRIAL_BUDGET_LIMIT,
+  TRIAL_SERVICES_LIMIT,
+} from "@/utils/permissions/trial-limits";
+
+import type { Subscription } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { checkSubscriptionExpired } from "@/utils/permissions/checkSubscriptionExpired";
 import type { ResultPermissionProp } from "./canPermission";
 import { getPlan, PLANS_LIMITS } from "./get-plans";
-import type { Subscription } from "@/generated/prisma/client";
 
 type BetterAuthSession = {
   user: {
@@ -28,8 +33,6 @@ export async function canCreateBudget(
   try {
     // Buscar organização ativa do usuário
     const activeOrgId = session.session?.activeOrganizationId;
-
-    // Se não houver organização ativa, buscar a primeira organização do usuário
     let organizationId = activeOrgId;
 
     if (!organizationId) {
@@ -60,17 +63,27 @@ export async function canCreateBudget(
 
       return {
         hasPermission:
-          planLimits.maxBudgets === null ||
-          budgetCount < planLimits.maxBudgets,
+          planLimits.maxBudgets === null || budgetCount < planLimits.maxBudgets,
         planId: subscription.plan,
         expired: false,
         plan: PLANS_LIMITS[subscription.plan],
       };
     }
 
-    const checkUserLimit = await checkSubscriptionExpired(session);
+    const trialStatus = await checkSubscriptionExpired(session);
 
-    return checkUserLimit;
+    if (!trialStatus.hasPermission) {
+      return trialStatus;
+    }
+
+    return {
+      ...trialStatus,
+      hasPermission: budgetCount < TRIAL_BUDGET_LIMIT,
+      plan: {
+        maxBudgets: TRIAL_BUDGET_LIMIT,
+        maxServices: TRIAL_SERVICES_LIMIT,
+      },
+    };
   } catch (error) {
     console.error("Error in canCreateBudget:", error);
     return {
@@ -81,4 +94,3 @@ export async function canCreateBudget(
     };
   }
 }
-

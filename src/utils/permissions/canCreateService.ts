@@ -1,10 +1,14 @@
 "use server";
 
+import type { Subscription } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import {
+  TRIAL_BUDGET_LIMIT,
+  TRIAL_SERVICES_LIMIT,
+} from "@/utils/permissions/trial-limits";
 import { checkSubscriptionExpired } from "@/utils/permissions/checkSubscriptionExpired";
 import type { ResultPermissionProp } from "./canPermission";
 import { getPlan, PLANS_LIMITS } from "./get-plans";
-import type { Subscription } from "@/generated/prisma/client";
 
 type BetterAuthSession = {
   user: {
@@ -71,9 +75,20 @@ export async function canCreateService(
       };
     }
 
-    const checkUserLimit = await checkSubscriptionExpired(session);
+    const trialStatus = await checkSubscriptionExpired(session);
 
-    return checkUserLimit;
+    if (!trialStatus.hasPermission) {
+      return trialStatus;
+    }
+
+    return {
+      ...trialStatus,
+      hasPermission: serviceOrderCount < TRIAL_SERVICES_LIMIT,
+      plan: {
+        maxBudgets: TRIAL_BUDGET_LIMIT,
+        maxServices: TRIAL_SERVICES_LIMIT,
+      },
+    };
   } catch (error) {
     console.error("Error in canCreateService:", error);
     return {

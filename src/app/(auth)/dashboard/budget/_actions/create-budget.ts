@@ -7,10 +7,10 @@ import { prisma } from "@/lib/prisma";
 import { canPermission } from "@/utils/permissions/canPermission";
 
 const createBudgetSchema = z.object({
-  customerId: z.string().uuid({
+  customerId: z.uuid({
     message: "ID do cliente inválido.",
   }),
-  vehicleId: z.string().uuid({
+  vehicleId: z.uuid({
     message: "ID do veículo inválido.",
   }),
   observacoes: z.string().optional(),
