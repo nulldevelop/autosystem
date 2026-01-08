@@ -9,7 +9,7 @@ import {
   Text,
   View,
 } from "@react-pdf/renderer";
-import type { BudgetDetails } from "../../_data-access/get-budget-details"; // Updated import path
+import type { BudgetDetails } from "../_data-access/get-budget-details";
 
 // Register fonts
 Font.register({
