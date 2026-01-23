@@ -2,12 +2,9 @@
 
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { useSession } from "@/lib/auth-client";
-import { CreateOrganizationForm } from "./_components/create-organization-form";
 import { BackgroundAnimation } from "@/utils/backgroud";
-
-
+import { CreateOrganizationForm } from "./_components/create-organization-form";
 
 export default function DashboardPage() {
   const { data: session } = useSession();

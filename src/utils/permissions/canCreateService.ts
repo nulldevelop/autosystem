@@ -1,10 +1,10 @@
 "use server";
 
+import type { Subscription } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { checkSubscriptionExpired } from "@/utils/permissions/checkSubscriptionExpired";
 import type { ResultPermissionProp } from "./canPermission";
 import { getPlan, PLANS_LIMITS } from "./get-plans";
-import type { Subscription } from "@/generated/prisma/client";
 
 type BetterAuthSession = {
   user: {

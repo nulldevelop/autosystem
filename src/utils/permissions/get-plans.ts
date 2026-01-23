@@ -1,4 +1,4 @@
-"use server";
+
 
 import type { Plan } from "@/generated/prisma/client";
 

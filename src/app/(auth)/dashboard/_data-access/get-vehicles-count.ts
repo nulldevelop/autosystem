@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma";
 export async function getVehiclesCount() {
   const session = await getSession();
 
-  if (!session?.user || !session.session.activeOrganizationId) {
+  if (!session?.user) {
     throw new Error("Usuário não autenticado ou organização não selecionada.");
   }
 
