@@ -9,7 +9,7 @@ import {
   Text,
   View,
 } from "@react-pdf/renderer";
-import type { BudgetDetails } from "../../_data-access/get-budget-details"; // Updated import path
+import type { BudgetDetails } from "../_data-access/get-budget-details";
 
 // Register fonts
 Font.register({
@@ -166,10 +166,7 @@ export function BudgetPDF({ budget }: BudgetPDFProps) {
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
           {budget.organization?.logo ? (
-            <Image
-              style={styles.logo}
-              src={budget.organization.logo}
-            />
+            <Image style={styles.logo} src={budget.organization.logo} />
           ) : (
             <Text style={styles.headerTitle}>{budget.organization?.name}</Text>
           )}
@@ -216,7 +213,8 @@ export function BudgetPDF({ budget }: BudgetPDFProps) {
             {budget.vehicle.marca} {budget.vehicle.model}
           </Text>
           <Text>
-            <Text style={{ fontWeight: "bold" }}>Ano:</Text> {budget.vehicle.year}
+            <Text style={{ fontWeight: "bold" }}>Ano:</Text>{" "}
+            {budget.vehicle.year}
           </Text>
           <Text>
             <Text style={{ fontWeight: "bold" }}>Placa:</Text>{" "}
@@ -282,7 +280,10 @@ export function BudgetPDF({ budget }: BudgetPDFProps) {
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Observações</Text>
-          <Text>{budget.observacoes || "Nenhuma observação adicionada a este orçamento."}</Text>
+          <Text>
+            {budget.observacoes ||
+              "Nenhuma observação adicionada a este orçamento."}
+          </Text>
         </View>
 
         <View style={styles.footer}>

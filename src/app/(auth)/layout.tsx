@@ -45,7 +45,7 @@ export default async function AuthLayout({
             <main className="flex-1 p-6 relative">
               <div className="absolute top-0 left-1/4 w-1/2 h-1/2 bg-green-500/10 blur-[140px] pointer-events-none rounded-full" />
               <div className="relative z-10">{children}</div>
-              <Toaster richColors />
+              <Toaster richColors duration={2000} position="top-right" />
             </main>
           </SidebarInset>
         </SidebarProvider>

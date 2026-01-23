@@ -1,3 +1,5 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: dev */
+import { addDays, isAfter } from "date-fns";
 import {
   Bell,
   Box,
@@ -29,23 +31,72 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import type { Plan } from "@/generated/prisma/client";
+import { getSession } from "@/lib/getSession";
+import { planRoutes, trialRoutes } from "@/utils/permissions/plan-features";
+import { TRIAL_DAYS } from "@/utils/permissions/trial-limits";
 import { getBudgetsCount } from "../_data-access/get-budgets-count";
 import { getCustomersCount } from "../_data-access/get-customers-count";
+import { getSubscription } from "../_data-access/get-subscriptio";
 import { getVehiclesCount } from "../_data-access/get-vehicles-count";
 import { getProductsCount } from "../product/_data-access/get-products-count";
 import { getServiceOrdersCount } from "../service/_data-access/get-service-orders-count";
 import { LogoutButton } from "./logout-button";
 
+type MenuItem = {
+  title: string;
+  url: string;
+  icon: any;
+  color?: string;
+  badge?: number;
+};
+
 export async function AppSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
-  const customersCount = await getCustomersCount();
-  const vehiclesCount = await getVehiclesCount();
-  const budgetsCount = await getBudgetsCount();
-  const productsCount = await getProductsCount();
-  const serviceOrdersCount = await getServiceOrdersCount();
-  // Módulos focados no AutoSystem
-  const allGestaoItems = [
+  const session = await getSession();
+
+  let userPlan: Plan | "TRIAL" | "EXPIRED" = "EXPIRED";
+  let allowedRoutes: string[] = [];
+
+  // Iniciamos as buscas em paralelo para performance máxima
+  const [
+    subscription,
+    customersCount,
+    vehiclesCount,
+    budgetsCount,
+    productsCount,
+    serviceOrdersCount,
+  ] = await Promise.all([
+    session?.user?.id ? getSubscription(session.user.id) : null,
+    getCustomersCount(),
+    getVehiclesCount(),
+    getBudgetsCount(),
+    getProductsCount(),
+    getServiceOrdersCount(),
+  ]);
+
+  // Lógica de Permissões e Plano
+  if (session) {
+    if (subscription && subscription.status === "active") {
+      userPlan = subscription.plan;
+      allowedRoutes = planRoutes[userPlan] || [];
+    } else {
+      const trialEndDate = addDays(
+        new Date(session.user.createdAt),
+        TRIAL_DAYS,
+      );
+      if (isAfter(new Date(), trialEndDate)) {
+        userPlan = "EXPIRED";
+        allowedRoutes = [];
+      } else {
+        userPlan = "TRIAL";
+        allowedRoutes = trialRoutes;
+      }
+    }
+  }
+
+  const allGestaoItems: MenuItem[] = [
     {
       title: "Orçamentos",
       url: "/dashboard/budget",
@@ -83,7 +134,7 @@ export async function AppSidebar({
       icon: Car,
       badge: vehiclesCount > 0 ? vehiclesCount : undefined,
     },
-  ];
+  ].filter((item) => allowedRoutes.includes(item.url));
 
   const menuGroups = [
     {
@@ -98,7 +149,7 @@ export async function AppSidebar({
     },
     {
       title: "Operacional",
-      items: allGestaoItems, // Exibindo todos por padrão
+      items: allGestaoItems,
     },
     {
       title: "Configurações",
@@ -167,6 +218,7 @@ export async function AppSidebar({
           </SidebarGroup>
         ))}
       </SidebarContent>
+
       <SidebarFooter className="py-5 border-t border-white/5 bg-zinc-950/30 ">
         <SidebarMenu>
           <SidebarMenuItem>
@@ -175,14 +227,15 @@ export async function AppSidebar({
                 <SidebarMenuButton className="py-6">
                   <div className="flex items-center gap-3 px-2 py-6 mb-2">
                     <div className="size-8 rounded-full bg-linear-to-tr from-zinc-800 to-zinc-700 border border-white/10 flex items-center justify-center text-[10px] font-bold text-zinc-400">
-                      AS
+                      {session?.user.name?.substring(0, 2).toUpperCase() ||
+                        "AD"}
                     </div>
-                    <div className="flex flex-col">
+                    <div className="flex flex-col text-left">
                       <span className="text-xs font-bold text-white leading-none">
-                        Admin Oficina
+                        {session?.user.name || "Admin"}
                       </span>
                       <span className="text-[10px] text-zinc-500 font-medium mt-1">
-                        Plano Pro
+                        Plano {userPlan}
                       </span>
                     </div>
                   </div>
@@ -191,9 +244,9 @@ export async function AppSidebar({
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 side="top"
-                className="w-[--radix-popper-anchor-width]"
+                className="w-[--radix-popper-anchor-width] bg-zinc-900 border-zinc-800 text-white"
               >
-                <DropdownMenuItem>
+                <DropdownMenuItem className="focus:bg-zinc-800 focus:text-white cursor-pointer">
                   <LogoutButton />
                 </DropdownMenuItem>
               </DropdownMenuContent>

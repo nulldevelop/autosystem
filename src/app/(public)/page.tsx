@@ -9,8 +9,10 @@ import {
   DollarSign,
   Package,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { subscriptionPlans } from "@/utils/plans/subscription-plans";
 
 // --- COMPONENTE DE ANIMAÇÃO DE FUNDO ---
 const BackgroundAnimation = () => (
@@ -50,6 +52,9 @@ const BackgroundAnimation = () => (
 );
 
 export default function LandingPage() {
+  const [billingInterval, setBillingInterval] = useState<"monthly" | "yearly">(
+    "monthly",
+  );
   const fadeIn = {
     initial: { opacity: 0, y: 30 },
     whileInView: { opacity: 1, y: 0 },
@@ -182,123 +187,169 @@ export default function LandingPage() {
                 CABEM NO SEU BOLSO
               </span>
             </h2>
-            <p className="text-gray-400 mb-20">
+            <p className="text-gray-400 mb-10">
               Escolha o plano ideal para a fase atual da sua oficina.
             </p>
           </motion.div>
+          {/* Toggle de intervalo de cobrança */}
+          <div className="flex items-center justify-center gap-4 mb-12">
+            <button
+              type="button"
+              className={`text-sm font-medium transition-colors ${
+                billingInterval === "monthly"
+                  ? "text-white"
+                  : "text-gray-500 hover:text-gray-300"
+              }`}
+              onClick={() => setBillingInterval("monthly")}
+            >
+              Mensal
+            </button>
+            <button
+              type="button"
+              className="relative inline-flex h-6 w-11 items-center rounded-full bg-white/10 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-black"
+              onClick={() =>
+                setBillingInterval(
+                  billingInterval === "monthly" ? "yearly" : "monthly",
+                )
+              }
+              aria-label="Alternar intervalo de cobrança"
+            >
+              <span
+                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                  billingInterval === "yearly"
+                    ? "translate-x-6"
+                    : "translate-x-1"
+                }`}
+              />
+            </button>
+            <button
+              type="button"
+              className={`text-sm font-medium transition-colors ${
+                billingInterval === "yearly"
+                  ? "text-white"
+                  : "text-gray-500 hover:text-gray-300"
+              }`}
+              onClick={() => setBillingInterval("yearly")}
+            >
+              Anual
+            </button>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-            {/* Plano Start */}
-            <motion.div
-              {...fadeIn}
-              transition={{ delay: 0.2 }}
-              className="p-8 rounded-3xl bg-zinc-900/40 border border-white/10 flex flex-col h-full hover:bg-zinc-900/60 transition-colors"
-            >
-              <div className="mb-8">
-                <h3 className="text-xl font-bold mb-4 text-gray-300">Start</h3>
-                <div className="text-5xl font-black mb-6">
-                  R$ 97
-                  <span className="text-sm text-gray-500 font-normal">
-                    /mês
-                  </span>
-                </div>
-                <ul className="text-left space-y-4 text-gray-400">
-                  <li className="flex items-center gap-2 text-sm">
-                    <CheckCircle2 size={16} className="text-green-500" /> Até
-                    100 orçamentos/mês
-                  </li>
-                  <li className="flex items-center gap-2 text-sm">
-                    <CheckCircle2 size={16} className="text-green-500" />{" "}
-                    Financeiro Básico
-                  </li>
-                  <li className="flex items-center gap-2 text-sm">
-                    <CheckCircle2 size={16} className="text-green-500" />{" "}
-                    Suporte via Email
-                  </li>
-                </ul>
-              </div>
-              <Button
-                variant="outline"
-                className="w-full mt-auto border-white/20 hover:bg-white hover:text-black"
+            {subscriptionPlans.map((plan, i) => (
+              <motion.div
+                key={plan.slug}
+                {...fadeIn}
+                transition={{ delay: i * 0.1 }}
+                className={`p-8 rounded-3xl flex flex-col h-full transition-all ${
+                  plan.slug === "PLUS"
+                    ? "bg-green-500 text-black scale-105 relative shadow-[0_0_50px_rgba(34,197,94,0.2)]"
+                    : "bg-zinc-900/40 border border-white/10 hover:bg-zinc-900/60"
+                }`}
               >
-                Assinar Agora
-              </Button>
-            </motion.div>
-
-            {/* Plano Pro - DESTAQUE */}
-            <motion.div
-              {...fadeIn}
-              className="p-10 rounded-3xl bg-green-500 text-black scale-105 relative shadow-[0_0_50px_rgba(34,197,94,0.2)]"
-            >
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-orange-500 text-white text-[10px] font-black px-4 py-1 rounded-full uppercase tracking-tighter">
-                Mais Vendido
-              </div>
-              <div className="mb-8 text-center">
-                <h3 className="text-xl font-bold mb-4 uppercase tracking-tighter">
-                  Pro Automotivo
-                </h3>
-                <div className="text-6xl font-black mb-6">
-                  R$ 187
-                  <span className="text-sm opacity-70 font-normal">/mês</span>
+                {(billingInterval === "yearly" ||
+                  billingInterval === "monthly") && (
+                  <div className="absolute top-4 right-4 bg-orange-500 text-white text-xs font-black px-2 py-1 rounded-full uppercase -rotate-12">
+                    20% OFF
+                  </div>
+                )}
+                {plan.slug === "PLUS" && (
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-orange-500 text-white text-[10px] font-black px-4 py-1 rounded-full uppercase tracking-tighter">
+                    Mais Vendido
+                  </div>
+                )}
+                <div className="mb-8 text-center">
+                  <h3
+                    className={`text-xl font-bold mb-4 ${
+                      plan.slug === "PLUS"
+                        ? "uppercase tracking-tighter"
+                        : "text-gray-300"
+                    }`}
+                  >
+                    {plan.name}
+                  </h3>
+                  {(billingInterval === "yearly" ||
+                    billingInterval === "monthly") && (
+                    <span className="text-sm text-gray-500 line-through">
+                      R${" "}
+                      {billingInterval === "yearly"
+                        ? (plan.price.yearly * 1.25)
+                            .toFixed(2)
+                            .replace(".", ",")
+                        : (plan.price.monthly * 1.25)
+                            .toFixed(2)
+                            .replace(".", ",")}
+                    </span>
+                  )}
+                  <div
+                    className={`font-black mb-2 ${
+                      plan.slug === "PLUS" ? "text-6xl" : "text-5xl"
+                    }`}
+                  >
+                    R${" "}
+                    {billingInterval === "yearly"
+                      ? (plan.price.yearly / 12).toFixed(2).replace(".", ",")
+                      : plan.price.monthly.toFixed(2).replace(".", ",")}
+                    <span
+                      className={`text-sm font-normal ${
+                        plan.slug === "PLUS" ? "opacity-70" : "text-gray-500"
+                      }`}
+                    >
+                      /mês
+                    </span>
+                  </div>
+                  {billingInterval === "yearly" && (
+                    <p className="text-xs text-white font-bold mb-2">
+                      Total de R${" "}
+                      {plan.price.yearly.toFixed(2).replace(".", ",")} cobrado
+                      anualmente
+                    </p>
+                  )}
+                  {billingInterval === "yearly" &&
+                    plan.price.monthly * 12 - plan.price.yearly > 0 && (
+                      <p className="text-xs text-black font-bold mb-6">
+                        Economize{" "}
+                        {(plan.price.monthly * 12 - plan.price.yearly)
+                          .toFixed(2)
+                          .replace(".", ",")}{" "}
+                        por ano
+                      </p>
+                    )}
+                  <ul
+                    className={`text-left space-y-4 ${
+                      plan.slug === "PLUS" ? "font-bold" : "text-gray-400"
+                    }`}
+                  >
+                    {plan.features.map((feature) => (
+                      <li
+                        key={feature}
+                        className="flex items-center gap-2 text-sm"
+                      >
+                        <CheckCircle2
+                          size={plan.slug === "PLUS" ? 18 : 16}
+                          className={
+                            plan.slug !== "PLUS" ? "text-green-500" : ""
+                          }
+                        />{" "}
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <ul className="text-left space-y-4 font-bold">
-                  <li className="flex items-center gap-2 text-sm">
-                    <CheckCircle2 size={18} /> Orçamentos Ilimitados
-                  </li>
-                  <li className="flex items-center gap-2 text-sm">
-                    <CheckCircle2 size={18} /> Controle de Estoque Full
-                  </li>
-                  <li className="flex items-center gap-2 text-sm">
-                    <CheckCircle2 size={18} /> Gestão de Equipe e Comissões
-                  </li>
-                  <li className="flex items-center gap-2 text-sm">
-                    <CheckCircle2 size={18} /> Integração WhatsApp
-                  </li>
-                </ul>
-              </div>
-              <Button className="w-full bg-black text-white hover:bg-zinc-800 py-6 text-lg">
-                Começar Teste Grátis
-              </Button>
-            </motion.div>
-
-            {/* Plano Premium */}
-            <motion.div
-              {...fadeIn}
-              transition={{ delay: 0.3 }}
-              className="p-8 rounded-3xl bg-zinc-900/40 border border-white/10 flex flex-col h-full hover:bg-zinc-900/60 transition-colors"
-            >
-              <div className="mb-8">
-                <h3 className="text-xl font-bold mb-4 text-gray-300">
-                  Premium
-                </h3>
-                <div className="text-5xl font-black mb-6">
-                  R$ 297
-                  <span className="text-sm text-gray-500 font-normal">
-                    /mês
-                  </span>
-                </div>
-                <ul className="text-left space-y-4 text-gray-400">
-                  <li className="flex items-center gap-2 text-sm">
-                    <CheckCircle2 size={16} className="text-green-500" /> Tudo
-                    do Plano Pro
-                  </li>
-                  <li className="flex items-center gap-2 text-sm">
-                    <CheckCircle2 size={16} className="text-green-500" />{" "}
-                    Emissão de Notas (NF-e/NFS-e)
-                  </li>
-                  <li className="flex items-center gap-2 text-sm">
-                    <CheckCircle2 size={16} className="text-green-500" />{" "}
-                    Suporte VIP 24h
-                  </li>
-                </ul>
-              </div>
-              <Button
-                variant="outline"
-                className="w-full mt-auto border-white/20 hover:bg-white hover:text-black"
-              >
-                Falar com Consultor
-              </Button>
-            </motion.div>
+                <Button
+                  className={`w-full mt-auto ${
+                    plan.slug === "PLUS"
+                      ? "bg-black text-white hover:bg-zinc-800 py-6 text-lg"
+                      : "border-white/20 hover:bg-white hover:text-black"
+                  }`}
+                  variant={plan.slug === "PLUS" ? "default" : "outline"}
+                >
+                  {plan.slug === "PROFESSIONAL"
+                    ? "Falar com Consultor"
+                    : "Assinar Agora"}
+                </Button>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
@@ -323,7 +374,8 @@ export default function LandingPage() {
           </a>
         </div>
         <p className="text-zinc-700 text-[10px] uppercase tracking-widest">
-          &copy; 2026 AutoSystem Software. Todos os direitos reservados.
+          &copy; 2026 NullPHR Software Development. Todos os direitos
+          reservados.
         </p>
       </footer>
     </div>

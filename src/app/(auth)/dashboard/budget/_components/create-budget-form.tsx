@@ -298,7 +298,9 @@ export function CreateBudgetForm({
               {showCustomProductForm ? (
                 <div className="flex flex-wrap items-end gap-2">
                   <div className="flex-1">
-                    <FormLabel className="mb-1">Nome do Produto Customizado</FormLabel>
+                    <FormLabel className="mb-1">
+                      Nome do Produto Customizado
+                    </FormLabel>
                     <Input
                       placeholder="Nome do Produto Customizado"
                       value={customProductName}
@@ -330,7 +332,10 @@ export function CreateBudgetForm({
                         className="w-24"
                       />
                     </div>
-                    <Button type="button" onClick={() => handleAddProduct(true)}>
+                    <Button
+                      type="button"
+                      onClick={() => handleAddProduct(true)}
+                    >
                       Adicionar
                     </Button>
                     <Button
