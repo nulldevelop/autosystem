@@ -32,13 +32,6 @@ O projeto conta com uma arquitetura multi-tenant, permitindo que diferentes ofic
 
 ## 📷 Demonstração / Screenshots
 
-> [!TIP]
-> Adicione aqui prints das telas principais (Dashboard, Orçamentos, Listagem de Veículos) para atrair mais usuários.
-
-| Dashboard | Orçamentos |
-| :---: | :---: |
-| ![Placeholder Dashboard](https://via.placeholder.com/400x250?text=Dashboard) | ![Placeholder Orçamentos](https://via.placeholder.com/400x250?text=Orçamentos) |
-
 ## ⚙️ Como rodar o projeto localmente
 
 ### Pré-requisitos
@@ -133,4 +126,3 @@ prisma/              # Esquema do banco de dados e migrações
 ## 📄 Licença
 
 Copyright © 2026 AutoSystem. Todos os direitos reservados.
-
