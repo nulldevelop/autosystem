@@ -144,6 +144,7 @@ model Customer {
   organizationId String?
   serviceOrders  ServiceOrder[]
 
+  @@index([organizationId])
   @@map("customer")
 }
 
@@ -195,6 +196,7 @@ model Budget {
   organizationId String?
   serviceOrder   ServiceOrder?
 
+  @@index([organizationId])
   @@map("budget")
 }
 
@@ -212,6 +214,7 @@ model Product {
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
 
+  @@index([organizationId])
   @@map("product")
 }
 
@@ -254,6 +257,7 @@ model ServiceOrder {
   organization   Organization?      @relation(fields: [organizationId], references: [id])
   organizationId String?
 
+  @@index([organizationId])
   @@map("service_order")
 }
 

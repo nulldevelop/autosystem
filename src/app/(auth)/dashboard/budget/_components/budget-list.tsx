@@ -105,8 +105,8 @@ export function BudgetList({ budgets }: BudgetListProps) {
               )}
             </CardContent>
             <div className="mt-4 flex gap-2 p-4 pt-0">
-              <PDFDownloadButton budgetId={budget.id} />
-              <PDFServiceOrderDownloadButton budgetId={budget.id} />
+              <PDFDownloadButton budget={budget} />
+              <PDFServiceOrderDownloadButton budget={budget} />
             </div>
           </Card>
         ))}

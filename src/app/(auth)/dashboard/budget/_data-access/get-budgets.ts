@@ -20,6 +20,8 @@ export async function getBudgets() {
     include: {
       vehicle: true,
       customer: true,
+      organization: true,
+      serviceOrder: true,
       items: {
         include: {
           product: true,

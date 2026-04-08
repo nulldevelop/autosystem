@@ -1,8 +1,8 @@
 "use client";
 
 import { PDFDownloadLink } from "@react-pdf/renderer";
-import { FileText } from "lucide-react";
-import { useEffect, useState } from "react";
+import { FileText, Loader2 } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -16,43 +16,27 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import type { BudgetWithRelations } from "@/types/budget";
 import { createServiceOrder } from "../_actions/create-service-order";
-import {
-  type BudgetDetails,
-  getBudgetDetails,
-} from "../_data-access/get-budget-details";
 import { ServiceOrderPDF } from "./ServiceOrderPDF";
 
 interface PDFServiceOrderDownloadButtonProps {
-  budgetId: string;
+  budget: BudgetWithRelations;
 }
 
 export function PDFServiceOrderDownloadButton({
-  budgetId,
+  budget: initialBudget,
 }: PDFServiceOrderDownloadButtonProps) {
-  const [budget, setBudget] = useState<BudgetDetails | null>(null);
   const [isCreating, setIsCreating] = useState(false);
-  const [serviceOrderId, setServiceOrderId] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchBudget() {
-      setIsLoading(true);
-      const budgetDetails = await getBudgetDetails(budgetId);
-      setBudget(budgetDetails);
-      setServiceOrderId(budgetDetails?.serviceOrder?.id || null);
-      setIsLoading(false);
-    }
-
-    if (budgetId) {
-      fetchBudget();
-    }
-  }, [budgetId]);
+  const [serviceOrderId, setServiceOrderId] = useState<string | null>(
+    initialBudget.serviceOrder?.id || null,
+  );
+  const [shouldRender, setShouldRender] = useState(false);
 
   const handleCreateServiceOrder = async () => {
     setIsCreating(true);
     try {
-      const result = await createServiceOrder({ budgetId });
+      const result = await createServiceOrder({ budgetId: initialBudget.id });
       if (result.success && result.serviceOrderId) {
         setServiceOrderId(result.serviceOrderId);
         toast.success(result.message);
@@ -66,16 +50,19 @@ export function PDFServiceOrderDownloadButton({
     }
   };
 
-  if (isLoading || !budget) {
-    return <Button disabled>Carregando O.S....</Button>;
-  }
-
   if (!serviceOrderId) {
     return (
       <AlertDialog>
         <AlertDialogTrigger asChild>
-          <Button disabled={isCreating}>
-            {isCreating ? "Criando O.S...." : "Gerar O.S."}
+          <Button variant="outline" size="sm" disabled={isCreating}>
+            {isCreating ? (
+              <>
+                Criando...
+                <Loader2 className="w-4 h-4 ml-2 animate-spin" />
+              </>
+            ) : (
+              "Gerar O.S."
+            )}
           </Button>
         </AlertDialogTrigger>
         <AlertDialogContent>
@@ -97,15 +84,33 @@ export function PDFServiceOrderDownloadButton({
     );
   }
 
+  if (!shouldRender) {
+    return (
+      <Button variant="outline" size="sm" onClick={() => setShouldRender(true)}>
+        Baixar O.S.
+        <FileText className="w-4 h-4 ml-2" />
+      </Button>
+    );
+  }
+
   return (
     <PDFDownloadLink
-      document={<ServiceOrderPDF budget={budget} />}
-      fileName={`ordem-de-servico-${budget.id.substring(0, 6)}.pdf`}
+      document={<ServiceOrderPDF budget={initialBudget as any} />}
+      fileName={`ordem-de-servico-${initialBudget.id.substring(0, 6)}.pdf`}
     >
       {({ loading }) => (
-        <Button disabled={loading}>
-          {loading ? "Gerando PDF..." : "Baixar O.S."}
-          <FileText className="w-4 h-4 ml-2" />
+        <Button variant="outline" size="sm" disabled={loading}>
+          {loading ? (
+            <>
+              Gerando...
+              <Loader2 className="w-4 h-4 ml-2 animate-spin" />
+            </>
+          ) : (
+            <>
+              Download O.S.
+              <FileText className="w-4 h-4 ml-2" />
+            </>
+          )}
         </Button>
       )}
     </PDFDownloadLink>

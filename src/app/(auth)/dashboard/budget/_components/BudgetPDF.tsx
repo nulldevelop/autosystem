@@ -9,7 +9,7 @@ import {
   Text,
   View,
 } from "@react-pdf/renderer";
-import type { BudgetDetails } from "../_data-access/get-budget-details";
+import type { BudgetWithRelations } from "@/types/budget";
 
 // Register fonts
 Font.register({
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
 });
 
 interface BudgetPDFProps {
-  budget: BudgetDetails;
+  budget: BudgetWithRelations;
 }
 
 export function BudgetPDF({ budget }: BudgetPDFProps) {

@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -84,14 +84,36 @@ export function CreateBudgetForm({
   });
 
   const selectedBudgetItems = form.watch("items");
+  const selectedCustomerId = form.watch("customerId");
+  const profitMargin = form.watch("profitMargin");
 
-  const totalCalculatedAmount = selectedBudgetItems.reduce(
-    (acc, item) => acc + item.quantity * item.unitPrice,
-    0,
-  );
+  const totalCalculatedAmount = useMemo(() => {
+    return selectedBudgetItems.reduce(
+      (acc, item) => acc + item.quantity * item.unitPrice,
+      0,
+    );
+  }, [selectedBudgetItems]);
 
-  const finalAmountWithProfit =
-    totalCalculatedAmount * (1 + form.watch("profitMargin") / 100);
+  const finalAmountWithProfit = useMemo(() => {
+    return totalCalculatedAmount * (1 + profitMargin / 100);
+  }, [totalCalculatedAmount, profitMargin]);
+
+  const filteredVehicles = useMemo(() => {
+    return vehicles.filter((vehicle) => vehicle.customerId === selectedCustomerId);
+  }, [vehicles, selectedCustomerId]);
+
+  const memoizedProductOptions = useMemo(() => {
+    return products.map((product) => (
+      <SelectItem key={product.id} value={product.id}>
+        {product.name} (
+        {new Intl.NumberFormat("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        }).format(product.price)}
+        )
+      </SelectItem>
+    ));
+  }, [products]);
 
   useEffect(() => {
     if (open) {
@@ -274,16 +296,11 @@ export function CreateBudgetForm({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent position="popper">
-                        {vehicles
-                          .filter(
-                            (vehicle) =>
-                              vehicle.customerId === form.watch("customerId"),
-                          )
-                          .map((vehicle) => (
-                            <SelectItem key={vehicle.id} value={vehicle.id}>
-                              {vehicle.model} - {vehicle.licensePlate}
-                            </SelectItem>
-                          ))}
+                        {filteredVehicles.map((vehicle) => (
+                          <SelectItem key={vehicle.id} value={vehicle.id}>
+                            {vehicle.model} - {vehicle.licensePlate}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -362,16 +379,7 @@ export function CreateBudgetForm({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent position="popper">
-                        {products.map((product) => (
-                          <SelectItem key={product.id} value={product.id}>
-                            {product.name} (
-                            {new Intl.NumberFormat("pt-BR", {
-                              style: "currency",
-                              currency: "BRL",
-                            }).format(product.price)}
-                            )
-                          </SelectItem>
-                        ))}
+                        {memoizedProductOptions}
                       </SelectContent>
                     </Select>
                   </div>
