@@ -13,6 +13,18 @@ export async function getProductsCount() {
   const count = await prisma.product.count({
     where: {
       organizationId: session.session.activeOrganizationId,
+      NOT: [
+        {
+          sku: {
+            startsWith: "CUSTOM-",
+          },
+        },
+        {
+          sku: {
+            startsWith: "GENERIC-CUSTOM-",
+          },
+        },
+      ],
     },
   });
 

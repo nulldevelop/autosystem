@@ -108,22 +108,6 @@ export async function createBudget(
     }
 
     const budget = await prisma.$transaction(async (tx) => {
-      // 1. Garantir que existe o produto genérico para itens customizados
-      let genericProduct = await tx.product.findUnique({
-        where: { sku: `GENERIC-CUSTOM-${session.session.activeOrganizationId}` }
-      });
-
-      if (!genericProduct) {
-        genericProduct = await tx.product.create({
-          data: {
-            name: "Item Customizado/Serviço",
-            sku: `GENERIC-CUSTOM-${session.session.activeOrganizationId}`,
-            price: 0,
-            organizationId: session.session.activeOrganizationId,
-          }
-        });
-      }
-
       const newBudget = await tx.budget.create({
         data: {
           customerId,
@@ -136,11 +120,24 @@ export async function createBudget(
 
       for (const item of items) {
         const isCustom = item.productId.startsWith("custom-");
-        
+        let productId = item.productId;
+
+        if (isCustom) {
+          const customProduct = await tx.product.create({
+            data: {
+              name: item.productName || "Item Customizado",
+              sku: `CUSTOM-${Date.now()}-${Math.random().toString(36).substring(7)}`,
+              price: item.unitPrice,
+              organizationId: session.session.activeOrganizationId,
+            },
+          });
+          productId = customProduct.id;
+        }
+
         await tx.budgetItem.create({
           data: {
             budgetId: newBudget.id,
-            productId: isCustom ? genericProduct.id : item.productId,
+            productId: productId,
             quantity: item.quantity,
             unitPrice: item.unitPrice,
           },
@@ -149,7 +146,6 @@ export async function createBudget(
 
       return newBudget;
     });
-
     revalidatePath("/dashboard/budget");
     return {
       success: true,

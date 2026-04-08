@@ -13,6 +13,18 @@ export async function getProducts() {
   const products = await prisma.product.findMany({
     where: {
       organizationId: session.session.activeOrganizationId,
+      NOT: [
+        {
+          sku: {
+            startsWith: "CUSTOM-",
+          },
+        },
+        {
+          sku: {
+            startsWith: "GENERIC-CUSTOM-",
+          },
+        },
+      ],
     },
     orderBy: {
       name: "asc",
