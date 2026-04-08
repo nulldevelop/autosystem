@@ -280,18 +280,18 @@ enum Plan {
 }
 
 model Subscription {
-  id     String @id @default(uuid())
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                        String    @id @default(uuid())
+  userId                    String    @unique
+  user                      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  plan   Plan    @default(BASIC)
-  status String?
+  plan                      Plan      @default(BASIC)
+  status                    String?
 
-  stripeCustomerId       String?   @unique @map("stripe_customer_id")
-  stripeSubscriptionId   String?   @unique @map("stripe_subscription_id")
-  stripePriceId          String?   @map("stripe_price_id")
-  stripeCurrentPeriodEnd DateTime? @map("stripe_current_period_end")
-  trialEndsAt            DateTime? @map("trial_ends_at")
+  stripeCustomerId          String?   @unique @map("stripe_customer_id")
+  stripeSubscriptionId      String?   @unique @map("stripe_subscription_id")
+  stripePriceId             String?   @map("stripe_price_id")
+  stripeCurrentPeriodEnd    DateTime? @map("stripe_current_period_end")
+  trialEndsAt               DateTime? @map("trial_ends_at")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

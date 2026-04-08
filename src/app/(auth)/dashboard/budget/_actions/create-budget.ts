@@ -71,42 +71,23 @@ export async function createBudget(
 
     if (!validationResult.success) {
       const errors = validationResult.error.flatten().fieldErrors;
-      const firstError =
-        errors.customerId?.[0] ||
-        errors.vehicleId?.[0] ||
-        errors.profitMargin?.[0] ||
-        errors.items?.[0] ||
-        "Dados inválidos";
-
       return {
         success: false,
-        message: firstError,
+        message: "Dados inválidos",
       };
     }
 
-    // Verificar permissões antes de criar o orçamento
     const permission = await canPermission({ type: "budget" });
 
     if (!permission.hasPermission) {
-      if (permission.expired) {
-        return {
-          success: false,
-          message: "Sua assinatura expirou. Por favor, renove sua assinatura para continuar criando orçamentos.",
-        };
-      }
-
-      const planName = permission.plan?.maxBudgets
-        ? `Você atingiu o limite de ${permission.plan.maxBudgets} orçamentos do plano ${permission.planId}.`
-        : "Você não tem permissão para criar mais orçamentos.";
-
       return {
         success: false,
-        message: `${planName} Faça upgrade do seu plano para continuar.`,
+        message: "Você atingiu o limite de orçamentos do seu plano.",
       };
     }
 
-    const { customerId, vehicleId, observacoes, profitMargin, items } =
-      validationResult.data;
+    const { customerId, vehicleId, profitMargin, items } = validationResult.data;
+    let { observacoes } = validationResult.data;
 
     const totalAmount = items.reduce(
       (sum, item) => sum + item.quantity * item.unitPrice,
@@ -114,7 +95,35 @@ export async function createBudget(
     );
     const finalAmountWithProfit = totalAmount * (1 + profitMargin / 100);
 
+    // Identificar itens customizados para adicionar nas observações
+    const customItemsText = items
+      .filter(item => item.productId.startsWith("custom-"))
+      .map(item => `${item.productName} (${item.quantity}x ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(item.unitPrice)})`)
+      .join(", ");
+
+    if (customItemsText) {
+      observacoes = observacoes 
+        ? `${observacoes}\n\nItens Adicionais: ${customItemsText}`
+        : `Itens Adicionais: ${customItemsText}`;
+    }
+
     const budget = await prisma.$transaction(async (tx) => {
+      // 1. Garantir que existe o produto genérico para itens customizados
+      let genericProduct = await tx.product.findUnique({
+        where: { sku: `GENERIC-CUSTOM-${session.session.activeOrganizationId}` }
+      });
+
+      if (!genericProduct) {
+        genericProduct = await tx.product.create({
+          data: {
+            name: "Item Customizado/Serviço",
+            sku: `GENERIC-CUSTOM-${session.session.activeOrganizationId}`,
+            price: 0,
+            organizationId: session.session.activeOrganizationId,
+          }
+        });
+      }
+
       const newBudget = await tx.budget.create({
         data: {
           customerId,
@@ -126,27 +135,12 @@ export async function createBudget(
       });
 
       for (const item of items) {
-        let productId = item.productId;
-
-        if (item.productId.startsWith("custom-")) {
-          if (!item.productName) {
-            throw new Error("Nome do produto é obrigatório para produtos customizados.");
-          }
-          const newProduct = await tx.product.create({
-            data: {
-              name: item.productName,
-              price: item.unitPrice,
-              organizationId: session.session.activeOrganizationId,
-              sku: `${item.productName.replace(/\s+/g, "-").toLowerCase()}-${Date.now()}`,
-            },
-          });
-          productId = newProduct.id;
-        }
-
+        const isCustom = item.productId.startsWith("custom-");
+        
         await tx.budgetItem.create({
           data: {
             budgetId: newBudget.id,
-            productId: productId,
+            productId: isCustom ? genericProduct.id : item.productId,
             quantity: item.quantity,
             unitPrice: item.unitPrice,
           },
@@ -164,16 +158,9 @@ export async function createBudget(
     };
   } catch (error: unknown) {
     console.error("Erro ao criar orçamento:", error);
-
-    const errorMessage =
-      error instanceof Error
-        ? error.message
-        : "Ocorreu um erro ao criar o orçamento.";
-
     return {
       success: false,
-      message: errorMessage,
+      message: "Erro ao criar orçamento.",
     };
   }
 }
-

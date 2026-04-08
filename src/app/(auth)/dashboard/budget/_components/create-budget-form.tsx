@@ -29,6 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import type { Customer, Product, Vehicle } from "@/generated/prisma/client";
 import { getCustomers } from "../../customer/_data-access/get-customers";
@@ -148,6 +149,8 @@ export function CreateBudgetForm({
         [
           ...selectedBudgetItems,
           {
+            // Usamos um prefixo 'custom-' para identificar que não é um produto do banco
+            // O backend deve tratar isso para não tentar buscar este ID na tabela de produtos
             productId: `custom-${Date.now()}`,
             productName: customProductName,
             quantity: selectedProductQuantity,
@@ -239,7 +242,7 @@ export function CreateBudgetForm({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-4xl w-[70vw]">
+      <DialogContent className="sm:max-w-4xl w-[70vw] max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>Adicionar Novo Orçamento</DialogTitle>
           <DialogDescription>
@@ -247,272 +250,274 @@ export function CreateBudgetForm({
           </DialogDescription>
         </DialogHeader>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="customerId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="mb-1">Cliente</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      disabled={isLoading}
-                    >
-                      <FormControl>
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Selecione um cliente" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent position="popper">
-                        {customers.map((customer) => (
-                          <SelectItem key={customer.id} value={customer.id}>
-                            {customer.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="vehicleId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="mb-1">Veículo</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      disabled={isLoading}
-                    >
-                      <FormControl>
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Selecione um veículo" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent position="popper">
-                        {filteredVehicles.map((vehicle) => (
-                          <SelectItem key={vehicle.id} value={vehicle.id}>
-                            {vehicle.model} - {vehicle.licensePlate}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="space-y-4 rounded-md border p-4">
-              <h3 className="text-lg font-medium">Itens do Orçamento</h3>
-
-              {showCustomProductForm ? (
-                <div className="flex flex-wrap items-end gap-2">
-                  <div className="flex-1">
-                    <FormLabel className="mb-1">
-                      Nome do Produto Customizado
-                    </FormLabel>
-                    <Input
-                      placeholder="Nome do Produto Customizado"
-                      value={customProductName}
-                      onChange={(e) => setCustomProductName(e.target.value)}
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <FormLabel className="mb-1">Preço do Produto</FormLabel>
-                    <Input
-                      type="number"
-                      placeholder="Preço do Produto"
-                      value={customProductPrice}
-                      onChange={(e) =>
-                        setCustomProductPrice(e.target.valueAsNumber)
-                      }
-                    />
-                  </div>
-                  <div className="flex items-end gap-2">
-                    <div>
-                      <FormLabel className="mb-1">Quantidade</FormLabel>
-                      <Input
-                        type="number"
-                        min="1"
-                        placeholder="Quantidade"
-                        value={selectedProductQuantity}
-                        onChange={(e) =>
-                          setSelectedProductQuantity(e.target.valueAsNumber)
-                        }
-                        className="w-24"
-                      />
-                    </div>
-                    <Button
-                      type="button"
-                      onClick={() => handleAddProduct(true)}
-                    >
-                      Adicionar
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setShowCustomProductForm(false)}
-                    >
-                      Cancelar
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <div className="flex items-end gap-2">
-                  <div className="flex-1">
-                    <FormLabel className="mb-1">Produto</FormLabel>
-                    <Select
-                      onValueChange={setSelectedProduct}
-                      value={selectedProduct}
-                      disabled={isLoading}
-                    >
-                      <FormControl>
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Selecione um produto" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent position="popper">
-                        {memoizedProductOptions}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="flex items-end gap-2">
-                    <div>
-                      <FormLabel className="mb-1">Quantidade</FormLabel>
-                      <Input
-                        type="number"
-                        min="1"
-                        value={selectedProductQuantity}
-                        onChange={(e) =>
-                          setSelectedProductQuantity(e.target.valueAsNumber)
-                        }
+        <ScrollArea className="flex-1 pr-4">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 pb-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="customerId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="mb-1">Cliente</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
                         disabled={isLoading}
-                        className="w-24"
+                      >
+                        <FormControl>
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Selecione um cliente" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent position="popper">
+                          {customers.map((customer) => (
+                            <SelectItem key={customer.id} value={customer.id}>
+                              {customer.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="vehicleId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="mb-1">Veículo</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        disabled={isLoading}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Selecione um veículo" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent position="popper">
+                          {filteredVehicles.map((vehicle) => (
+                            <SelectItem key={vehicle.id} value={vehicle.id}>
+                              {vehicle.model} - {vehicle.licensePlate}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="space-y-4 rounded-md border p-4">
+                <h3 className="text-lg font-medium">Itens do Orçamento</h3>
+
+                {showCustomProductForm ? (
+                  <div className="flex flex-wrap items-end gap-2">
+                    <div className="flex-1">
+                      <FormLabel className="mb-1">
+                        Nome do Produto Customizado
+                      </FormLabel>
+                      <Input
+                        placeholder="Nome do Produto Customizado"
+                        value={customProductName}
+                        onChange={(e) => setCustomProductName(e.target.value)}
                       />
                     </div>
-                    <Button
-                      type="button"
-                      onClick={() => handleAddProduct()}
-                      disabled={isLoading || !selectedProduct}
-                    >
-                      Adicionar
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setShowCustomProductForm(true)}
-                    >
-                      Produto Customizado
-                    </Button>
-                  </div>
-                </div>
-              )}
-
-              {selectedBudgetItems.length > 0 && (
-                <ul className="space-y-2">
-                  {selectedBudgetItems.map((item) => {
-                    const product = products.find(
-                      (p) => p.id === item.productId,
-                    );
-                    return (
-                      <li
-                        key={item.productId}
-                        className="flex items-center justify-between rounded-md bg-muted p-2"
+                    <div className="flex-1">
+                      <FormLabel className="mb-1">Preço do Produto</FormLabel>
+                      <Input
+                        type="number"
+                        placeholder="Preço do Produto"
+                        value={customProductPrice}
+                        onChange={(e) =>
+                          setCustomProductPrice(e.target.valueAsNumber)
+                        }
+                      />
+                    </div>
+                    <div className="flex items-end gap-2">
+                      <div>
+                        <FormLabel className="mb-1">Quantidade</FormLabel>
+                        <Input
+                          type="number"
+                          min="1"
+                          placeholder="Quantidade"
+                          value={selectedProductQuantity}
+                          onChange={(e) =>
+                            setSelectedProductQuantity(e.target.valueAsNumber)
+                          }
+                          className="w-24"
+                        />
+                      </div>
+                      <Button
+                        type="button"
+                        onClick={() => handleAddProduct(true)}
                       >
-                        <span>
-                          {product?.name || item.productName} x {item.quantity}{" "}
-                          (
-                          {new Intl.NumberFormat("pt-BR", {
-                            style: "currency",
-                            currency: "BRL",
-                          }).format(item.quantity * item.unitPrice)}
-                          )
-                        </span>
-                        <Button
-                          type="button"
-                          variant="destructive"
-                          size="sm"
-                          onClick={() => handleRemoveProduct(item.productId)}
+                        Adicionar
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setShowCustomProductForm(false)}
+                      >
+                        Cancelar
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-end gap-2">
+                    <div className="flex-1">
+                      <FormLabel className="mb-1">Produto</FormLabel>
+                      <Select
+                        onValueChange={setSelectedProduct}
+                        value={selectedProduct}
+                        disabled={isLoading}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Selecione um produto" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent position="popper">
+                          {memoizedProductOptions}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="flex items-end gap-2">
+                      <div>
+                        <FormLabel className="mb-1">Quantidade</FormLabel>
+                        <Input
+                          type="number"
+                          min="1"
+                          value={selectedProductQuantity}
+                          onChange={(e) =>
+                            setSelectedProductQuantity(e.target.valueAsNumber)
+                          }
                           disabled={isLoading}
+                          className="w-24"
+                        />
+                      </div>
+                      <Button
+                        type="button"
+                        onClick={() => handleAddProduct()}
+                        disabled={isLoading || !selectedProduct}
+                      >
+                        Adicionar
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setShowCustomProductForm(true)}
+                      >
+                        Produto Customizado
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {selectedBudgetItems.length > 0 && (
+                  <ul className="space-y-2">
+                    {selectedBudgetItems.map((item) => {
+                      const product = products.find(
+                        (p) => p.id === item.productId,
+                      );
+                      return (
+                        <li
+                          key={item.productId}
+                          className="flex items-center justify-between rounded-md bg-muted p-2"
                         >
-                          Remover
-                        </Button>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
+                          <span className="text-sm">
+                            {product?.name || item.productName} x {item.quantity}{" "}
+                            (
+                            {new Intl.NumberFormat("pt-BR", {
+                              style: "currency",
+                              currency: "BRL",
+                            }).format(item.quantity * item.unitPrice)}
+                            )
+                          </span>
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => handleRemoveProduct(item.productId)}
+                            disabled={isLoading}
+                          >
+                            Remover
+                          </Button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+                <FormField
+                  control={form.control}
+                  name="items"
+                  render={() => (
+                    <FormItem>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
               <FormField
                 control={form.control}
-                name="items"
-                render={() => (
+                name="profitMargin"
+                render={({ field }) => (
                   <FormItem>
+                    <FormLabel className="mb-1">Margem de Lucro (%)</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        placeholder="Ex: 10"
+                        disabled={isLoading}
+                        {...field}
+                        onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                      />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-            </div>
 
-            <FormField
-              control={form.control}
-              name="profitMargin"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="mb-1">Margem de Lucro (%)</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      placeholder="Ex: 10"
-                      disabled={isLoading}
-                      {...field}
-                      onChange={(e) => field.onChange(e.target.valueAsNumber)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <div className="text-right text-lg font-bold">
+                Valor Total:{" "}
+                {new Intl.NumberFormat("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                }).format(finalAmountWithProfit)}
+              </div>
 
-            <div className="text-right text-lg font-bold">
-              Valor Total:{" "}
-              {new Intl.NumberFormat("pt-BR", {
-                style: "currency",
-                currency: "BRL",
-              }).format(finalAmountWithProfit)}
-            </div>
+              <FormField
+                control={form.control}
+                name="observacoes"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="mb-1">Observações</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Detalhes sobre o orçamento..."
+                        disabled={isLoading}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="observacoes"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="mb-1">Observações</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Detalhes sobre o orçamento..."
-                      disabled={isLoading}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <Button type="submit" disabled={isLoading} className="w-full">
-              {isLoading ? "Criando..." : "Criar Orçamento"}
-            </Button>
-          </form>
-        </Form>
+              <Button type="submit" disabled={isLoading} className="w-full">
+                {isLoading ? "Criando..." : "Criar Orçamento"}
+              </Button>
+            </form>
+          </Form>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

@@ -175,5 +175,5 @@ export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
 
   // Secret para assinar tokens
-  secret: process.env.BETTER_AUTH_SECRET as string,
+  secret: process.env.BETTER_AUTH_SECRET || "dummy_secret_for_build_purposes_only",
 });
