@@ -1,3 +1,4 @@
+import React from "react";
 import { addDays, isAfter } from "date-fns";
 import {
   Car,
@@ -121,37 +122,41 @@ export async function DashboardStats() {
   if (visibleStats.length === 0) return null;
 
   return (
-    <section className="max-w-7xl mx-auto px-6 mb-5 mt-0">
+    <section className="mb-8">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {visibleStats.map((stat) => (
           <Card
             key={stat.title}
-            className="bg-gray-900/50 border-gray-800 text-white"
+            className="relative overflow-hidden group border-white/5 hover:border-primary/20 transition-all duration-500"
           >
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">
+            <div className="absolute top-0 right-0 p-4 text-white/5 group-hover:text-primary/10 transition-colors duration-500">
+              {stat.icon && React.cloneElement(stat.icon as React.ReactElement<{ className?: string }>, { className: "size-16" })}
+            </div>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 group-hover:text-primary transition-colors">
                 {stat.title}
               </CardTitle>
-              {stat.icon}
             </CardHeader>
             <CardContent>
-              <div className="text-4xl font-bold">{stat.count}</div>
-              <div className="flex justify-between items-center mt-4 gap-2">
-                <Link href={stat.action.href} passHref>
-                  <Button className="size-sm hover:bg-green-500/60">
+              <div className="text-5xl font-black italic tracking-tighter text-white mb-6 group-hover:translate-x-2 transition-transform duration-500">
+                {stat.count.toString().padStart(2, '0')}
+              </div>
+              <div className="flex items-center gap-2 relative z-10">
+                <Link href={stat.action.href} className="flex-1">
+                  <Button variant="tech" className="w-full justify-start h-8 px-3">
                     {stat.action.label}
                   </Button>
                 </Link>
                 {stat.quickAction && (
-                  <Link href={stat.quickAction.href} passHref>
-                    <Button className="flex size-sm items-center gap-2 hover:bg-green-500/40">
-                      <PlusCircle className="h-4 w-4" />
-                      {stat.quickAction.label}
+                  <Link href={stat.quickAction.href}>
+                    <Button variant="default" size="icon-sm" className="rounded-lg size-8 glow-primary">
+                      <PlusCircle className="size-4" />
                     </Button>
                   </Link>
                 )}
               </div>
             </CardContent>
+            <div className="absolute bottom-0 left-0 h-[2px] w-0 bg-primary group-hover:w-full transition-all duration-700" />
           </Card>
         ))}
       </div>

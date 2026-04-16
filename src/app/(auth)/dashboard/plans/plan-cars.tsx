@@ -82,12 +82,17 @@ export function PlanCards() {
         {subscriptionPlans.map((plan, index) => (
           <Card
             key={plan.slug}
-            className={`flex flex-col bg-black/50 border ${
+            className={`flex flex-col bg-black/50 border relative ${
               index === 1
                 ? "border-green-500/50 shadow-[0_0_20px_rgba(34,197,94,0.2)] scale-105"
                 : "border-white/10"
             } transition-all duration-200 hover:border-white/20`}
           >
+            {billingInterval === "yearly" && (
+              <div className="absolute top-4 right-4 bg-orange-500 text-white text-[10px] font-black px-2 py-1 rounded-full uppercase -rotate-12 z-10">
+                20% OFF
+              </div>
+            )}
             {index === 1 && (
               <div className="bg-green-500 text-black text-center text-xs font-black py-2 uppercase tracking-wider">
                 Melhor Escolha

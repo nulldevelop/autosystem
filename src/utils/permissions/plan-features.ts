@@ -7,6 +7,7 @@ export const planRoutes: Record<Plan, string[]> = {
     "/dashboard/service",
     "/dashboard/customer",
     "/dashboard/vehicle",
+    "/dashboard/relatorios",
   ],
   PLUS: [
     "/dashboard/budget",
@@ -14,6 +15,7 @@ export const planRoutes: Record<Plan, string[]> = {
     "/dashboard/customer",
     "/dashboard/vehicle",
     "/dashboard/product", // Unlocks Stock module
+    "/dashboard/relatorios",
   ],
   PROFESSIONAL: [
     "/dashboard/budget",
@@ -22,6 +24,7 @@ export const planRoutes: Record<Plan, string[]> = {
     "/dashboard/vehicle",
     "/dashboard/product", // Unlocks Stock module
     "/dashboard/financeiro", // Unlocks Financial module
+    "/dashboard/relatorios",
   ],
 };
 
@@ -32,4 +35,6 @@ export const trialRoutes: string[] = [
   "/dashboard/customer",
   "/dashboard/vehicle",
   "/dashboard/product",
+  "/dashboard/financeiro",
+  "/dashboard/relatorios",
 ];

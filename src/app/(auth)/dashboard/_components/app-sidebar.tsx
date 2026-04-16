@@ -1,4 +1,4 @@
-/** biome-ignore-all lint/suspicious/noExplicitAny: dev */
+import { Logo } from "@/components/ui/logo";
 import { addDays, isAfter } from "date-fns";
 import {
   Bell,
@@ -11,6 +11,11 @@ import {
   Settings,
   Users,
   Wrench,
+  Send,
+  TrendingUp,
+  Package,
+  BarChart3,
+  CreditCard,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -59,7 +64,6 @@ export async function AppSidebar({
   let userPlan: Plan | "TRIAL" | "EXPIRED" = "EXPIRED";
   let allowedRoutes: string[] = [];
 
-  // Iniciamos as buscas em paralelo para performance máxima
   const [
     subscription,
     customersCount,
@@ -76,7 +80,6 @@ export async function AppSidebar({
     getServiceOrdersCount(),
   ]);
 
-  // Lógica de Permissões e Plano
   if (session) {
     if (subscription && subscription.status === "active") {
       userPlan = subscription.plan;
@@ -100,8 +103,8 @@ export async function AppSidebar({
     {
       title: "Orçamentos",
       url: "/dashboard/budget",
-      icon: ClipboardList,
-      color: "text-orange-500",
+      icon: Send,
+      color: "text-primary",
       badge: budgetsCount > 0 ? budgetsCount : undefined,
     },
     {
@@ -113,13 +116,13 @@ export async function AppSidebar({
     {
       title: "Financeiro",
       url: "/dashboard/financeiro",
-      icon: DollarSign,
-      color: "text-green-500",
+      icon: TrendingUp,
+      color: "text-primary",
     },
     {
       title: "Estoque",
       url: "/dashboard/product",
-      icon: Box,
+      icon: Package,
       badge: productsCount > 0 ? productsCount : undefined,
     },
     {
@@ -138,12 +141,17 @@ export async function AppSidebar({
 
   const menuGroups = [
     {
-      title: "Geral",
+      title: "Overview",
       items: [
         {
           title: "Dashboard",
           url: "/dashboard",
           icon: LayoutDashboard,
+        },
+        {
+          title: "Relatórios",
+          url: "/dashboard/relatorios",
+          icon: BarChart3,
         },
       ],
     },
@@ -155,57 +163,58 @@ export async function AppSidebar({
       title: "Configurações",
       items: [
         { title: "Notificações", url: "/dashboard/notificacoes", icon: Bell },
-        { title: "Oficina/Ajustes", url: "/dashboard/config", icon: Settings },
-        { title: "Assinatura", url: "/dashboard/plans", icon: DollarSign },
+        { title: "Oficina / Ajustes", url: "/dashboard/config", icon: Settings },
+        { title: "Assinatura", url: "/dashboard/plans", icon: CreditCard },
       ],
     },
   ];
 
   return (
-    <Sidebar className="bg-black border-r border-white/10" {...props}>
-      <SidebarHeader className="p-4">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="flex aspect-square size-10 items-center justify-center rounded-lg bg-green-500 text-black shadow-[0_0_15px_rgba(34,197,94,0.3)]">
-            <Wrench className="size-6" />
-          </div>
-          <div className="grid flex-1 text-left text-sm leading-tight">
-            <span className="truncate font-black tracking-tighter italic text-white text-lg">
-              AUTO<span className="text-green-500">SYSTEM</span>
+    <Sidebar className="bg-[#0a0a0a] border-r border-white/5" {...props}>
+      <SidebarHeader className="p-6">
+        <div className="flex items-center gap-3">
+          <Logo />
+          <div className="grid flex-1 text-left">
+            <span className="text-xl font-black italic tracking-tighter text-white">
+              AUTO<span className="text-primary">SYSTEM</span>
             </span>
-            <span className="truncate text-gray-500 text-[10px] uppercase tracking-wider font-bold">
-              Oficina Mecânica
-            </span>
+            <div className="flex items-center gap-2">
+              <div className="h-1 w-1 rounded-full bg-primary" />
+              <span className="text-[10px] text-white/40 uppercase tracking-widest font-black">
+                Performance UI
+              </span>
+            </div>
           </div>
         </div>
       </SidebarHeader>
 
-      <SidebarContent className="px-2">
+      <SidebarContent className="px-3 gap-2">
         {menuGroups.map((group) => (
-          <SidebarGroup key={group.title}>
-            <SidebarGroupLabel className="text-zinc-600 text-[10px] uppercase tracking-[0.15em] px-4 py-2 font-black">
+          <SidebarGroup key={group.title} className="p-0">
+            <SidebarGroupLabel className="text-white/20 text-[10px] uppercase tracking-[0.2em] px-4 py-4 font-black">
               {group.title}
             </SidebarGroupLabel>
             <SidebarGroupContent>
-              <SidebarMenu>
+              <SidebarMenu className="gap-1">
                 {group.items.map((item) => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton
                       asChild
                       tooltip={item.title}
-                      className="transition-all duration-200 group py-5"
+                      className="transition-all duration-300 group py-6 rounded-xl hover:bg-white/[0.03] active:scale-95"
                     >
-                      <a href={item.url} className="flex items-center gap-3">
+                      <a href={item.url} className="flex items-center gap-4 px-4">
                         <item.icon
-                          className={`size-5 transition-colors ${
+                          className={`size-5 transition-all duration-300 ${
                             item.color ||
-                            "text-zinc-500 hover:text-green-500 group-data-active:text-green-500"
+                            "text-white/40 group-hover:text-primary group-data-active:text-primary group-hover:scale-110 group-hover:drop-shadow-[0_0_8px_rgba(34,197,94,0.5)]"
                           }`}
                         />
-                        <span className="font-semibold tracking-tight ">
+                        <span className="font-bold tracking-tight text-sm text-white/60 group-hover:text-white transition-colors">
                           {item.title}
                         </span>
                         {item.badge && item.badge > 0 && (
-                          <span className="font-roboto-mono ml-auto flex items-center rounded bg-green-500 px-1.5 py-0.5 text-[14px] font-bold text-white">
+                          <span className="ml-auto flex items-center justify-center rounded-full bg-primary/10 border border-primary/20 px-2 py-0.5 text-[10px] font-black text-primary glow-primary">
                             {item.badge}
                           </span>
                         )}
@@ -219,34 +228,38 @@ export async function AppSidebar({
         ))}
       </SidebarContent>
 
-      <SidebarFooter className="py-5 border-t border-white/5 bg-zinc-950/30 ">
+      <SidebarFooter className="p-4 border-t border-white/5 bg-black/40 backdrop-blur-md">
         <SidebarMenu>
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <SidebarMenuButton className="py-6">
-                  <div className="flex items-center gap-3 px-2 py-6 mb-2">
-                    <div className="size-8 rounded-full bg-linear-to-tr from-zinc-800 to-zinc-700 border border-white/10 flex items-center justify-center text-[10px] font-bold text-zinc-400">
+                <SidebarMenuButton className="py-8 px-4 rounded-2xl hover:bg-white/5 transition-all">
+                  <div className="flex items-center gap-3 w-full">
+                    <div className="size-10 rounded-xl bg-gradient-to-br from-zinc-800 to-black border border-white/10 flex items-center justify-center text-xs font-black text-white glow-secondary shadow-orange-500/10">
                       {session?.user.name?.substring(0, 2).toUpperCase() ||
                         "AD"}
                     </div>
-                    <div className="flex flex-col text-left">
-                      <span className="text-xs font-bold text-white leading-none">
+                    <div className="flex flex-col text-left overflow-hidden">
+                      <span className="text-sm font-black text-white truncate">
                         {session?.user.name || "Admin"}
                       </span>
-                      <span className="text-[10px] text-zinc-500 font-medium mt-1">
-                        Plano {userPlan}
-                      </span>
+                      <div className="flex items-center gap-1.5 mt-0.5">
+                        <div className="h-1 w-1 rounded-full bg-secondary" />
+                        <span className="text-[10px] text-white/40 font-bold uppercase tracking-wider">
+                          {userPlan} Plan
+                        </span>
+                      </div>
                     </div>
+                    <ChevronUp className="ml-auto text-white/20" />
                   </div>
-                  <ChevronUp className="ml-auto" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 side="top"
-                className="w-[--radix-popper-anchor-width] bg-zinc-900 border-zinc-800 text-white"
+                align="center"
+                className="w-56 bg-[#111] border-white/10 text-white rounded-2xl p-2 shadow-2xl backdrop-blur-xl"
               >
-                <DropdownMenuItem className="focus:bg-zinc-800 focus:text-white cursor-pointer">
+                <DropdownMenuItem className="rounded-xl focus:bg-primary/10 focus:text-primary cursor-pointer p-3 font-bold transition-all">
                   <LogoutButton />
                 </DropdownMenuItem>
               </DropdownMenuContent>

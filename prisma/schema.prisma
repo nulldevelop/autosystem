@@ -4,7 +4,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
 }
 
 model User {
@@ -81,9 +81,9 @@ model Organization {
   slug      String   @unique
   logo      String?
   phone     String
-  address   String
+  address   String   @db.Text
   cnpj      String
-  metadata  String?
+  metadata  String?  @db.Text
   createdAt DateTime @default(now())
 
   members       Member[]
@@ -135,7 +135,7 @@ model Customer {
   document       String         @unique
   documentType   DocumentType
   phone          String?
-  address        String?
+  address        String?        @db.Text
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
   budgets        Budget[]
@@ -189,7 +189,7 @@ model Budget {
 
   totalAmount    Float
   status         Status        @default(pending)
-  observacoes    String?
+  observacoes    String?       @db.Text
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
   organization   Organization? @relation(fields: [organizationId], references: [id])
@@ -251,7 +251,7 @@ model ServiceOrder {
 
   totalAmount    Float
   status         ServiceOrderStatus @default(open)
-  observacoes    String?
+  observacoes    String?            @db.Text
   createdAt      DateTime           @default(now())
   updatedAt      DateTime           @updatedAt
   organization   Organization?      @relation(fields: [organizationId], references: [id])
