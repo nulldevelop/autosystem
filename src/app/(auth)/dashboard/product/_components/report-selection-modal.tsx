@@ -7,7 +7,6 @@ import {
   FileText,
   Loader2,
   Package,
-  Table as TableIcon,
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -34,7 +33,7 @@ export function ReportSelectionModal({
   products,
   organization,
 }: ReportSelectionModalProps) {
-  const [isGenerating, setIsGenerating] = useState(false);
+  const [_isGenerating, _setIsGenerating] = useState(false);
 
   const reportTypes = [
     {
@@ -108,7 +107,7 @@ export function ReportSelectionModal({
                       title={report.title}
                     />
                   }
-                  fileName={`${report.id}-${new Date().getTime()}.pdf`}
+                  fileName={`${report.id}-${Date.now()}.pdf`}
                   className="flex items-center justify-center"
                 >
                   {({ loading }) => (

@@ -12,7 +12,6 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
 
 interface CurrentPlanInfoProps {
   subscription: any;
@@ -21,7 +20,7 @@ interface CurrentPlanInfoProps {
 export function CurrentPlanInfo({ subscription }: CurrentPlanInfoProps) {
   if (!subscription) return null;
 
-  const isTrial =
+  const _isTrial =
     subscription.status === "trialing" || !subscription.stripeSubscriptionId;
   const nextPayment = subscription.stripeCurrentPeriodEnd
     ? new Date(subscription.stripeCurrentPeriodEnd)

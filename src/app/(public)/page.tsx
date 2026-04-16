@@ -98,7 +98,7 @@ export default function LandingPage() {
         </div>
 
         <Link href="/auth">
-          <Button variant="tech" size="sm" className="hidden md:flex">
+          <Button variant="ghost" size="sm" className="hidden md:flex">
             Acessar Sistema
           </Button>
         </Link>

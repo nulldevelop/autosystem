@@ -4,26 +4,17 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import {
   AlertCircle,
-  ArrowUpRight,
-  Calendar,
   Car,
   Check,
   CheckCircle2,
-  ChevronDown,
   Clock,
-  Download,
-  ExternalLink,
   FileText,
-  Hash,
   Link2,
   Loader2,
-  MessageSquare,
-  MoreVertical,
   Plus,
   Search,
   Send,
   Trash2,
-  User,
 } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState, useTransition } from "react";
@@ -42,14 +33,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type { Status } from "@/generated/prisma/client";
@@ -59,7 +42,6 @@ import { deleteBudget } from "../_actions/delete-budget";
 import { BudgetStats } from "./budget-stats";
 import { CreateBudgetForm } from "./create-budget-form";
 import { PDFDownloadButton } from "./PDFDownloadButton";
-import { PDFServiceOrderDownloadButton } from "./PDFServiceOrderDownloadButton";
 
 const STATUS_CONFIG: Record<
   Status,
@@ -89,13 +71,13 @@ interface BudgetListProps {
 export function BudgetList({ budgets }: BudgetListProps) {
   const [isCreateBudgetModalOpen, setCreateBudgetModalOpen] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
-  const [copiedOSId, setCopiedOSId] = useState<string | null>(null);
+  const [_copiedOSId, setCopiedOSId] = useState<string | null>(null);
   const [sendingId, setSendingId] = useState<string | null>(null);
-  const [sendingOSId, setSendingOSId] = useState<string | null>(null);
+  const [_sendingOSId, setSendingOSId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<Status | "all">("all");
-  const [isPending, startTransition] = useTransition();
+  const [_isPending, _startTransition] = useTransition();
 
   const filteredBudgets = useMemo(() => {
     return budgets.filter((budget) => {
@@ -122,7 +104,7 @@ export function BudgetList({ budgets }: BudgetListProps) {
     setTimeout(() => setCopiedId(null), 2000);
   };
 
-  const copyOSLink = (id: string) => {
+  const _copyOSLink = (id: string) => {
     const link = `${window.location.origin}/dashboard/service/${id}`;
     navigator.clipboard.writeText(link);
     setCopiedOSId(id);
@@ -191,7 +173,7 @@ ${window.location.origin}/budget/sign/${budget.id}`;
     toast.success("WhatsApp aberto com o Orçamento completo!");
   };
 
-  const handleSendOSWhatsApp = async (budget: BudgetWithRelations) => {
+  const _handleSendOSWhatsApp = async (budget: BudgetWithRelations) => {
     if (!budget.serviceOrder) return;
     setSendingOSId(budget.id);
     const message = `Olá ${budget.customer.name}, sua Ordem de Serviço #${budget.serviceOrder.id.substring(0, 8)} está disponível. Acesse: ${window.location.origin}/dashboard/service/${budget.serviceOrder.id}`;
@@ -210,7 +192,7 @@ ${window.location.origin}/budget/sign/${budget.id}`;
       } else {
         toast.error(result.message);
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error("Erro ao tentar excluir orçamento.");
     } finally {
       setIsDeleting(null);
@@ -288,7 +270,7 @@ ${window.location.origin}/budget/sign/${budget.id}`;
             filteredBudgets.map((budget) => {
               const status = STATUS_CONFIG[budget.status];
               const StatusIcon = status.icon;
-              const isSending = sendingId === budget.id;
+              const _isSending = sendingId === budget.id;
               const isDeletingCurrent = isDeleting === budget.id;
 
               return (

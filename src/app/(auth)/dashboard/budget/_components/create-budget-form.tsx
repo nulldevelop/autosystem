@@ -5,7 +5,6 @@ import {
   ArrowLeft,
   ArrowRight,
   Camera,
-  Car,
   CheckCircle2,
   ClipboardCheck,
   Image as ImageIcon,
@@ -33,11 +32,9 @@ import {
   ComboboxTrigger,
 } from "@/components/kibo-ui/combobox";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -311,7 +308,7 @@ export function CreateBudgetForm({
       toast.success("Orçamento criado!");
       onOpenChange(false);
       router.refresh();
-    } catch (e) {
+    } catch (_e) {
       toast.error("Erro ao salvar");
     } finally {
       setIsLoading(false);
@@ -449,9 +446,9 @@ export function CreateBudgetForm({
                             type="veículo"
                           >
                             <FormControl>
-                              <ComboboxTrigger 
-                                className="bg-white/5 border-white/5 h-12 text-white" 
-                                disabled={!customerId} 
+                              <ComboboxTrigger
+                                className="bg-white/5 border-white/5 h-12 text-white"
+                                disabled={!customerId}
                               />
                             </FormControl>
                             <ComboboxContent className="bg-zinc-900 border-white/10">

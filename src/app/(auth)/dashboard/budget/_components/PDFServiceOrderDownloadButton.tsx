@@ -115,6 +115,7 @@ export function PDFServiceOrderDownloadButton({
 
   return (
     <PDFDownloadLink
+      // biome-ignore lint/suspicious/noExplicitAny: type mismatch for ServiceOrderPDF budget
       document={<ServiceOrderPDF budget={initialBudget as any} />}
       fileName={`ordem-de-servico-${initialBudget.id.substring(0, 6)}.pdf`}
       style={{ width: "100%" }}

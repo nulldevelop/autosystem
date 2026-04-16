@@ -1,6 +1,6 @@
 "use client";
 
-import { ImageIcon, Loader2, Upload, X } from "lucide-react";
+import { Loader2, Upload, X } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useState } from "react";
 import { cn } from "@/lib/utils";
@@ -69,14 +69,14 @@ export function LogoDropzone({
     if (disabled || uploading) return;
 
     const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith("image/")) {
+    if (file?.type.startsWith("image/")) {
       onUpload(file);
     }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file && file.type.startsWith("image/")) {
+    if (file?.type.startsWith("image/")) {
       onUpload(file);
     }
   };

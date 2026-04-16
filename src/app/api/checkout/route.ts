@@ -6,7 +6,6 @@ import type { Plan } from "@/generated/prisma/client";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { subscriptionPlans } from "@/utils/plans/subscription-plans";
-import type { PlanSlug } from "@/utils/plans/types";
 import { stripe } from "@/utils/stripe";
 
 export async function POST(request: Request) {

@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+// biome-ignore lint/suspicious/noExplicitAny: Session type is dynamic from auth
 export function HeaderUserMenu({ session }: { session: any }) {
   if (!session) return null;
 

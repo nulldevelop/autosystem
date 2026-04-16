@@ -1,7 +1,6 @@
 import { addDays, isAfter } from "date-fns";
 import {
   BarChart3,
-  Bell,
   Car,
   CreditCard,
   LayoutDashboard,
@@ -12,7 +11,6 @@ import {
   Users,
   Wrench,
 } from "lucide-react";
-import Link from "next/link";
 import { Logo } from "@/components/ui/logo";
 import {
   Sidebar,
@@ -43,7 +41,8 @@ type MenuItem = {
   badge?: number;
 };
 
-const iconMap: Record<string, any> = {
+// biome-ignore lint/suspicious/noExplicitAny: Icon component mapping
+const _iconMap: Record<string, any> = {
   LayoutDashboard,
   BarChart3,
   Send,

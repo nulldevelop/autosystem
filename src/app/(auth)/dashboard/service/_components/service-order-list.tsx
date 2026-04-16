@@ -190,7 +190,7 @@ function ServiceOrderCardMobile({
 
           <Link href={`/dashboard/service/${os.id}`} className="shrink-0">
             <Button
-              variant="tech"
+              variant="ghost"
               className="size-8 p-0 glow-primary-hover rounded-md"
             >
               <ArrowRight className="size-4 text-primary" />
@@ -677,7 +677,7 @@ ${window.location.origin}/service/sign/${os.id}`;
                                   className="shrink-0"
                                 >
                                   <Button
-                                    variant="tech"
+                                    variant="ghost"
                                     className="size-8 sm:size-9 p-0 flex-shrink-0 glow-primary-hover rounded-md"
                                   >
                                     <ArrowRight className="size-4 text-primary" />

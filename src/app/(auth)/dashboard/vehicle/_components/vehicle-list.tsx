@@ -37,7 +37,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import type { Customer, Vehicle } from "@/generated/prisma/client";
-import { cn } from "@/lib/utils";
 import { deleteVehicle } from "../_actions/delete-vehicle";
 import { CreateVehicleForm } from "./create-vehicle-form";
 import { VehicleStats } from "./vehicle-stats";
@@ -77,7 +76,7 @@ export function VehicleList({ vehicles, customers }: VehicleListProps) {
       } else {
         toast.error(result.message);
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error("Erro ao tentar remover veículo.");
     } finally {
       setIsDeleting(null);

@@ -2745,7 +2745,7 @@ export declare function Param<$Type, $Value extends string>(
   name: $Value,
 ): Param<$Type, $Value>;
 
-export declare type Param<out $Type, $Value extends string> = {
+export declare type Param<out _$Type, $Value extends string> = {
   readonly name: $Value;
 };
 
@@ -2759,7 +2759,7 @@ export declare type Path<O, P, Default = never> = O extends unknown
     : O
   : never;
 
-export declare type Payload<T, F extends Operation = never> = T extends {
+export declare type Payload<T, _F extends Operation = never> = T extends {
   [K: symbol]: {
     types: {
       payload: any;

@@ -77,6 +77,15 @@ const PAYMENT_METHODS = [
   { label: "Transferência", value: "TRANSFER" },
 ];
 
+type FormValues = {
+  description: string;
+  amount: number;
+  type: TransactionType;
+  category: TransactionCategory;
+  status: TransactionStatus;
+  paymentMethod: string;
+};
+
 export function TransactionFormModal({
   open,
   onOpenChange,
@@ -84,8 +93,9 @@ export function TransactionFormModal({
 }: TransactionFormModalProps) {
   const [isPending, setIsPending] = useState(false);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<FormValues>({
+    // biome-ignore lint/suspicious/noExplicitAny: Tipagem explícita para evitar falha no build por mismatch do zodResolver
+    resolver: zodResolver(formSchema) as any,
     defaultValues: {
       description: "",
       amount: 0,
@@ -111,7 +121,7 @@ export function TransactionFormModal({
       } else {
         toast.error(res.message);
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error("Erro ao salvar transação.");
     } finally {
       setIsPending(false);

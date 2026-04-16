@@ -135,7 +135,7 @@ export function ConfigForm({ organization }: ConfigFormProps) {
       } else {
         toast.error(result.message);
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error("Erro ao atualizar dados.");
     } finally {
       setIsLoading(false);
@@ -163,7 +163,7 @@ export function ConfigForm({ organization }: ConfigFormProps) {
         setLogo(data.url);
         toast.success("Logo atualizado com sucesso!");
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error("Erro ao fazer upload do logo.");
     } finally {
       setIsUploading(false);

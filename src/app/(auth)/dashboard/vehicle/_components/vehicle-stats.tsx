@@ -1,6 +1,6 @@
 "use client";
 
-import { Calendar, Car, Fuel, History, TrendingUp } from "lucide-react";
+import { Calendar, Car, History, TrendingUp } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import type { Vehicle } from "@/generated/prisma/client";
 import { cn } from "@/lib/utils";

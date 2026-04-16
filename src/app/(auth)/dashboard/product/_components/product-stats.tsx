@@ -1,4 +1,4 @@
-import { AlertTriangle, DollarSign, Package, TrendingUp } from "lucide-react";
+import { AlertTriangle, DollarSign, Package } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
 interface ProductStatsProps {

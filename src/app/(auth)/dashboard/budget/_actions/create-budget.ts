@@ -26,6 +26,7 @@ const createBudgetSchema = z.object({
     .min(1),
 });
 
+// biome-ignore lint/suspicious/noExplicitAny: generic input payload
 export async function createBudget(input: any) {
   try {
     const session = await getSession();
@@ -131,6 +132,7 @@ export async function createBudget(input: any) {
       message: "Orçamento criado e estoque atualizado!",
       budgetId: budget.id,
     };
+    // biome-ignore lint/suspicious/noExplicitAny: error is dynamic
   } catch (error: any) {
     console.error("Erro ao criar orçamento e baixar estoque:", error);
     return {

@@ -95,7 +95,7 @@ export function BudgetDetailsClient({ budget }: BudgetDetailsClientProps) {
       } else {
         toast.error(data.error || "Falha no upload.");
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error("Erro ao realizar upload.");
     } finally {
       setIsUploading(false);
@@ -140,9 +140,11 @@ export function BudgetDetailsClient({ budget }: BudgetDetailsClientProps) {
         <div className="flex items-center gap-2 shrink-0">
           <div className="flex items-center gap-2 bg-white/[0.02] p-1 rounded-lg border border-white/5">
             <div className="w-[120px]">
+              {/* biome-ignore lint/suspicious/noExplicitAny: type mismatch for pdf props */}
               <PDFDownloadButton budget={budget as any} />
             </div>
             <div className="w-[120px]">
+              {/* biome-ignore lint/suspicious/noExplicitAny: type mismatch for pdf props */}
               <PDFServiceOrderDownloadButton budget={budget as any} />
             </div>
             <Button className="bg-primary text-black hover:bg-primary/90 gap-2 font-black uppercase italic h-9 px-5 text-xs rounded-md shadow-lg shadow-primary/10">
@@ -222,6 +224,7 @@ export function BudgetDetailsClient({ budget }: BudgetDetailsClientProps) {
                   <ImageIcon className="size-3 text-primary" /> Galeria
                 </CardTitle>
                 <button
+                  type="button"
                   className="size-5 bg-primary/10 text-primary hover:bg-primary/20 rounded flex items-center justify-center transition-colors disabled:opacity-50"
                   onClick={handleUploadClick}
                   disabled={isUploading}
@@ -236,8 +239,10 @@ export function BudgetDetailsClient({ budget }: BudgetDetailsClientProps) {
               <CardContent className="p-3">
                 <div className="grid grid-cols-4 gap-1.5">
                   {budget.photos?.length > 0 ? (
+                    // biome-ignore lint/suspicious/noExplicitAny: photo type is dynamic
                     budget.photos.map((photo: any, idx: number) => (
                       <div
+                        // biome-ignore lint/suspicious/noArrayIndexKey: photos are unique enough for index here
                         key={idx}
                         className="aspect-square relative rounded-md overflow-hidden border border-white/5 group cursor-pointer"
                       >
@@ -253,15 +258,16 @@ export function BudgetDetailsClient({ budget }: BudgetDetailsClientProps) {
                       </div>
                     ))
                   ) : (
-                    <div
-                      className="col-span-4 py-6 text-center border border-dashed border-white/10 rounded-md hover:border-primary/50 cursor-pointer transition-colors"
+                    <button
+                      type="button"
+                      className="col-span-4 py-6 text-center border border-dashed border-white/10 rounded-md hover:border-primary/50 cursor-pointer transition-colors w-full"
                       onClick={handleUploadClick}
                     >
                       <ImageIcon className="size-4 text-white/5 mx-auto mb-1" />
                       <p className="text-[8px] font-black text-white/20 uppercase">
                         {isUploading ? "Enviando..." : "Anexar Fotos"}
                       </p>
-                    </div>
+                    </button>
                   )}
                 </div>
               </CardContent>

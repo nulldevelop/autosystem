@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     gap: 40,
   },
   summaryItem: {
-    alignItems: "right",
+    alignItems: "flex-end",
   },
   summaryLabel: {
     fontSize: 9,

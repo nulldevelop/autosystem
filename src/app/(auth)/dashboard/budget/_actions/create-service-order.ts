@@ -87,7 +87,9 @@ export async function createServiceOrder(
           budgetId,
           customerId: budget.customerId,
           vehicleId: budget.vehicleId,
+          // biome-ignore lint/suspicious/noExplicitAny: budget relation type is partial
           itemsAmount: (budget as any).itemsAmount || 0,
+          // biome-ignore lint/suspicious/noExplicitAny: budget relation type is partial
           laborValue: (budget as any).laborValue || 0,
           totalAmount: budget.totalAmount,
           observacoes: budget.observacoes,

@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  CheckCircle2,
-  Clock,
-  DollarSign,
-  FileText,
-  TrendingUp,
-  XCircle,
-} from "lucide-react";
+import { CheckCircle2, Clock, FileText, TrendingUp } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import type { BudgetWithRelations } from "@/types/budget";

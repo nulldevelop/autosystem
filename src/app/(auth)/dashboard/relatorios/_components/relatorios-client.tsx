@@ -4,13 +4,11 @@ import { PDFDownloadLink } from "@react-pdf/renderer";
 import { endOfMonth, format, parseISO, startOfMonth } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import {
-  Calendar,
   DollarSign,
   Download,
   LineChart,
   Target,
   TrendingUp,
-  Users,
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";

@@ -98,6 +98,7 @@ export async function createOrganization(
       message: "Oficina criada com sucesso!",
       organizationId: data.id,
     };
+    // biome-ignore lint/suspicious/noExplicitAny: error is dynamic
   } catch (error: any) {
     console.error("Erro ao criar organização:", error);
 

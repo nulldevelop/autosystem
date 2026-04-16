@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  ChevronRight,
   Loader2,
   Mail,
   MapPin,
@@ -38,7 +37,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import type { Customer } from "@/generated/prisma/client";
-import { cn } from "@/lib/utils";
 import { deleteCustomer } from "../_actions/delete-customer";
 import { CreateCustomerForm } from "./create-customer-form";
 import { CustomerStats } from "./customer-stats";
@@ -60,7 +58,7 @@ export function CustomerList({ customers }: CustomerListProps) {
         customer.name.toLowerCase().includes(search) ||
         customer.email.toLowerCase().includes(search) ||
         customer.document.toLowerCase().includes(search) ||
-        (customer.phone && customer.phone.includes(search))
+        customer.phone?.includes(search)
       );
     });
   }, [customers, searchTerm]);
@@ -74,7 +72,7 @@ export function CustomerList({ customers }: CustomerListProps) {
       } else {
         toast.error(result.message);
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error("Erro ao tentar remover cliente.");
     } finally {
       setIsDeleting(null);

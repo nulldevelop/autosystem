@@ -1,16 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Check,
-  ChevronLeft,
-  ChevronRight,
-  Clock,
-  Loader2,
-  MapPin,
-  ShieldCheck,
-  Zap,
-} from "lucide-react";
+import { Check, Clock, ShieldCheck, Zap } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -39,7 +30,6 @@ import { extractCnpj, formatCnpj } from "@/utils/formatCNPJ";
 import { extractPhoneNumber, formatPhone } from "@/utils/formatPhone";
 import { subscriptionPlans } from "@/utils/plans/subscription-plans";
 import {
-  checkOrganizationSlug,
   createOrganization,
   updateOrganizationLogo,
 } from "../_actions/create-organization";
@@ -81,8 +71,8 @@ export function CreateOrganizationForm({
   const router = useRouter();
   const [step, setStep] = useState<Step>(1);
   const [isLoading, setIsLoading] = useState(false);
-  const [isCheckingSlug, setIsCheckingSlug] = useState(false);
-  const [isFetchingCep, setIsFetchingCep] = useState(false);
+  const [_isCheckingSlug, _setIsCheckingSlug] = useState(false);
+  const [_isFetchingCep, setIsFetchingCep] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

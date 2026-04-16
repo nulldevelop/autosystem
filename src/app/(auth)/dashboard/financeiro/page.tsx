@@ -1,13 +1,20 @@
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getActiveOrganization } from "@/lib/getActiveOrganization";
+import { getSession } from "@/lib/getSession";
 import { FinanceiroClient } from "./_components/financeiro-client";
 import { getFinancialData } from "./_data-access/get-transactions";
 
 export default async function FinanceiroPage() {
+  const session = await getSession();
+  
+  if (!session?.user?.id) {
+    return <div>Você precisa estar logado para acessar os dados financeiros.</div>;
+  }
+
   const [data, organization] = await Promise.all([
     getFinancialData(),
-    getActiveOrganization(),
+    getActiveOrganization(session.user.id),
   ]);
 
   if (!data) {

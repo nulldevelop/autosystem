@@ -8,7 +8,7 @@ export async function signServiceOrder(
   signatureData: string,
 ) {
   try {
-    const serviceOrder = await prisma.serviceOrder.update({
+    const _serviceOrder = await prisma.serviceOrder.update({
       where: { id: serviceOrderId },
       data: {
         signature: signatureData,

@@ -5,7 +5,7 @@ import { useRef, useState } from "react";
 import SignatureCanvas from "react-signature-canvas";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { signBudget } from "../_actions/sign-budget";
 
 export function SignatureForm({ budgetId }: { budgetId: string }) {
@@ -36,7 +36,7 @@ export function SignatureForm({ budgetId }: { budgetId: string }) {
       } else {
         toast.error("Erro ao salvar assinatura.");
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error("Erro inesperado.");
     } finally {
       setIsSubmitting(false);

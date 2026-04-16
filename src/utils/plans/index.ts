@@ -1,4 +1,3 @@
-import { Plan } from "@/generated/prisma/client";
 import type { PlanSlug } from "./types";
 
 // Re-export types for server-side use

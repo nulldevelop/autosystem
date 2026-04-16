@@ -1,6 +1,6 @@
 "use client";
 
-import { MapPin, TrendingUp, UserCheck, UserPlus, Users } from "lucide-react";
+import { TrendingUp, UserCheck, UserPlus, Users } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import type { Customer } from "@/generated/prisma/client";
 import { cn } from "@/lib/utils";

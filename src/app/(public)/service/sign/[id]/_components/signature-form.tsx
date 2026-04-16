@@ -36,7 +36,7 @@ export function SignatureForm({ serviceOrderId }: { serviceOrderId: string }) {
       } else {
         toast.error(result.message || "Erro ao salvar assinatura.");
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error("Erro inesperado.");
     } finally {
       setIsSubmitting(false);

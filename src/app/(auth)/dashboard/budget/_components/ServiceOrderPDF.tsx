@@ -9,7 +9,6 @@ import {
   View,
 } from "@react-pdf/renderer";
 import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import { PDFFooter } from "@/components/pdf/PDFFooter";
 import { PDFHeader } from "@/components/pdf/PDFHeader";
 import type { BudgetWithRelations } from "@/types/budget";
@@ -394,7 +393,9 @@ export function ServiceOrderPDF({ budget }: ServiceOrderPDFProps) {
               </View>
             ) : (
               <View style={{ height: 40, justifyContent: "center" }}>
-                <Text style={{ fontSize: 7, color: "#CBD5E1", fontStyle: "italic" }}>
+                <Text
+                  style={{ fontSize: 7, color: "#CBD5E1", fontStyle: "italic" }}
+                >
                   Aguardando Assinatura Digital
                 </Text>
               </View>

@@ -1,8 +1,6 @@
 "use client";
 
 import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import { PDFFooter } from "@/components/pdf/PDFFooter";
 import { PDFHeader } from "@/components/pdf/PDFHeader";
 

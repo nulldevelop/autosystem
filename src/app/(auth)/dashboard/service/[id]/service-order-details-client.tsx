@@ -1,8 +1,6 @@
 "use client";
 
 import { PDFDownloadLink } from "@react-pdf/renderer";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import {
   AlertCircle,
   ArrowLeft,
