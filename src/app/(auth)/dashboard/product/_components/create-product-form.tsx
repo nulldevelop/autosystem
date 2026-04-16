@@ -21,13 +21,41 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { createProduct } from "../_actions/create-product";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const formSchema = z.object({
   name: z.string().min(1, "O nome do produto é obrigatório."),
-  price: z.number().positive("O preço deve ser um número positivo."),
+  price: z.number().nonnegative("O preço deve ser um número positivo."),
+  costPrice: z.number().nonnegative("O preço de custo deve ser um número positivo."),
   sku: z.string().min(1, "O SKU é obrigatório."),
+  category: z.string().min(1, "A categoria é obrigatória."),
+  unit: z.string().min(1, "A unidade é obrigatória."),
+  stockQuantity: z.number().int().nonnegative("A quantidade deve ser positiva."),
+  minStock: z.number().int().nonnegative("O estoque mínimo deve ser positivo."),
 });
+
+const CATEGORIES = [
+  "Óleos e Fluidos",
+  "Filtros",
+  "Suspensão",
+  "Freios",
+  "Pneus",
+  "Iluminação",
+  "Baterias",
+  "Motor",
+  "Acessórios",
+  "Geral",
+];
+
+const UNITS = ["UN", "LT", "KG", "PAR", "KIT", "MT"];
 
 export function CreateProductForm({
   open,
@@ -44,7 +72,12 @@ export function CreateProductForm({
     defaultValues: {
       name: "",
       price: 0,
+      costPrice: 0,
       sku: "",
+      category: "Geral",
+      unit: "UN",
+      stockQuantity: 0,
+      minStock: 0,
     },
   });
 
@@ -70,69 +103,188 @@ export function CreateProductForm({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-2xl bg-zinc-950 border-white/5">
         <DialogHeader>
-          <DialogTitle>Adicionar Novo Produto</DialogTitle>
-          <DialogDescription>
-            Preencha os campos abaixo para adicionar um novo produto.
+          <DialogTitle className="text-2xl font-black italic uppercase tracking-tighter text-white">
+            Cadastrar <span className="text-primary">Novo Item</span>
+          </DialogTitle>
+          <DialogDescription className="text-white/40 font-bold uppercase tracking-widest text-[10px]">
+            Insira os detalhes técnicos e financeiros do produto
           </DialogDescription>
         </DialogHeader>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nome do Produto</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Ex: Óleo de Motor" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+        <ScrollArea className="max-h-[80vh] pr-4">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 py-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">Nome do Produto</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Ex: Óleo de Motor 5W30" className="bg-white/5 border-white/10" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <FormField
-              control={form.control}
-              name="price"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Preço</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      step="0.01"
-                      placeholder="Ex: 50.00"
-                      {...field}
-                      onChange={(e) => field.onChange(e.target.valueAsNumber)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                <FormField
+                  control={form.control}
+                  name="sku"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">SKU / Código</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Ex: PRD-001" className="bg-white/5 border-white/10" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <FormField
-              control={form.control}
-              name="sku"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>SKU (Código de Barras)</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Ex: 123456789" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                <FormField
+                  control={form.control}
+                  name="category"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">Categoria</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="bg-white/5 border-white/10">
+                            <SelectValue placeholder="Selecione uma categoria" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent className="bg-zinc-900 border-white/10">
+                          {CATEGORIES.map((cat) => (
+                            <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <Button type="submit" disabled={isLoading} className="w-full">
-              {isLoading ? "Criando..." : "Criar Produto"}
-            </Button>
-          </form>
-        </Form>
+                <FormField
+                  control={form.control}
+                  name="unit"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">Unidade</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="bg-white/5 border-white/10">
+                            <SelectValue placeholder="Unidade" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent className="bg-zinc-900 border-white/10">
+                          {UNITS.map((unit) => (
+                            <SelectItem key={unit} value={unit}>{unit}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="costPrice"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">Preço de Custo (R$)</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          step="0.01"
+                          placeholder="0.00"
+                          className="bg-white/5 border-white/10 text-emerald-500 font-bold"
+                          {...field}
+                          onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="price"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">Preço de Venda (R$)</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          step="0.01"
+                          placeholder="0.00"
+                          className="bg-white/5 border-white/10 text-primary font-bold"
+                          {...field}
+                          onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="stockQuantity"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">Estoque Inicial</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          placeholder="0"
+                          className="bg-white/5 border-white/10"
+                          {...field}
+                          onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="minStock"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">Estoque Mínimo (Alerta)</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          placeholder="0"
+                          className="bg-white/5 border-white/10"
+                          {...field}
+                          onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="flex gap-3 pt-4">
+                <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="flex-1">
+                  Cancelar
+                </Button>
+                <Button type="submit" disabled={isLoading} className="flex-1 glow-primary">
+                  {isLoading ? "Processando..." : "Cadastrar Produto"}
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

@@ -1,6 +1,7 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider        = "prisma-client"
+  output          = "../src/generated/prisma"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
@@ -201,10 +202,17 @@ model Budget {
 }
 
 model Product {
-  id    String @id @default(uuid())
-  name  String
-  price Float
-  sku   String @unique
+  id            String   @id @default(uuid())
+  name          String
+  sku           String   @unique
+  category      String?  @default("Geral")
+  unit          String   @default("UN")
+  
+  // Financeiro e Estoque
+  price         Float    // Preço de Venda
+  costPrice     Float    @default(0) // Preço de Custo
+  stockQuantity Int      @default(0)
+  minStock      Int      @default(0)
 
   budgets       BudgetItem[]
   serviceOrders ServiceOrderItem[]

@@ -7,14 +7,24 @@ import { prisma } from "@/lib/prisma";
 
 const createProductSchema = z.object({
   name: z.string().min(1, "O nome do produto é obrigatório."),
-  price: z.number().positive("O preço deve ser um número positivo."),
+  price: z.number().nonnegative("O preço deve ser um número positivo."),
+  costPrice: z.number().nonnegative("O preço de custo deve ser um número positivo."),
   sku: z.string().min(1, "O SKU é obrigatório."),
+  category: z.string().optional(),
+  unit: z.string().default("UN"),
+  stockQuantity: z.number().int().default(0),
+  minStock: z.number().int().default(0),
 });
 
 interface CreateProductInput {
   name: string;
   price: number;
+  costPrice: number;
   sku: string;
+  category?: string;
+  unit?: string;
+  stockQuantity?: number;
+  minStock?: number;
 }
 
 interface CreateProductResponse {
@@ -39,26 +49,17 @@ export async function createProduct(
     const validationResult = createProductSchema.safeParse(input);
 
     if (!validationResult.success) {
-      const errors = validationResult.error.flatten().fieldErrors;
-      const firstError =
-        errors.name?.[0] ||
-        errors.price?.[0] ||
-        errors.sku?.[0] ||
-        "Dados inválidos";
-
       return {
         success: false,
-        message: firstError,
+        message: "Dados inválidos. Verifique os campos.",
       };
     }
 
-    const { name, price, sku } = validationResult.data;
+    const data = validationResult.data;
 
     const product = await prisma.product.create({
       data: {
-        name,
-        price,
-        sku,
+        ...data,
         organizationId: session.session.activeOrganizationId,
       },
     });

@@ -17,8 +17,11 @@ export default function DashboardClient({
   const error = searchParams.get("error");
 
   useEffect(() => {
-    if (session?.session?.activeOrganizationId === null) {
+    // Só abre o modal se não houver organização ativa e não estivermos carregando a sessão
+    if (session && !session.session?.activeOrganizationId) {
       setCreateOrgModalOpen(true);
+    } else if (session?.session?.activeOrganizationId) {
+      setCreateOrgModalOpen(false);
     }
   }, [session]);
 
@@ -32,7 +35,7 @@ export default function DashboardClient({
     <>
       {/* --- HERO SECTION --- */}
       <section className="relative z-10 pt-5 pb-5">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}

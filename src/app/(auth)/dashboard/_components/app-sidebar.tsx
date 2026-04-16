@@ -1,32 +1,22 @@
-import { Logo } from "@/components/ui/logo";
 import { addDays, isAfter } from "date-fns";
 import {
+  BarChart3,
   Bell,
-  Box,
   Car,
-  ChevronUp,
-  ClipboardList,
-  DollarSign,
+  CreditCard,
   LayoutDashboard,
+  Package,
+  Send,
   Settings,
+  TrendingUp,
   Users,
   Wrench,
-  Send,
-  TrendingUp,
-  Package,
-  BarChart3,
-  CreditCard,
 } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import Link from "next/link";
+import { Logo } from "@/components/ui/logo";
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -36,7 +26,6 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import type { Plan } from "@/generated/prisma/client";
 import { getSession } from "@/lib/getSession";
 import { planRoutes, trialRoutes } from "@/utils/permissions/plan-features";
 import { TRIAL_DAYS } from "@/utils/permissions/trial-limits";
@@ -46,7 +35,6 @@ import { getSubscription } from "../_data-access/get-subscriptio";
 import { getVehiclesCount } from "../_data-access/get-vehicles-count";
 import { getProductsCount } from "../product/_data-access/get-products-count";
 import { getServiceOrdersCount } from "../service/_data-access/get-service-orders-count";
-import { LogoutButton } from "./logout-button";
 
 type MenuItem = {
   title: string;
@@ -61,7 +49,6 @@ export async function AppSidebar({
 }: React.ComponentProps<typeof Sidebar>) {
   const session = await getSession();
 
-  let userPlan: Plan | "TRIAL" | "EXPIRED" = "EXPIRED";
   let allowedRoutes: string[] = [];
 
   const [
@@ -82,18 +69,13 @@ export async function AppSidebar({
 
   if (session) {
     if (subscription && subscription.status === "active") {
-      userPlan = subscription.plan;
-      allowedRoutes = planRoutes[userPlan] || [];
+      allowedRoutes = planRoutes[subscription.plan] || [];
     } else {
       const trialEndDate = addDays(
         new Date(session.user.createdAt),
         TRIAL_DAYS,
       );
-      if (isAfter(new Date(), trialEndDate)) {
-        userPlan = "EXPIRED";
-        allowedRoutes = [];
-      } else {
-        userPlan = "TRIAL";
+      if (!isAfter(new Date(), trialEndDate)) {
         allowedRoutes = trialRoutes;
       }
     }
@@ -163,7 +145,11 @@ export async function AppSidebar({
       title: "Configurações",
       items: [
         { title: "Notificações", url: "/dashboard/notificacoes", icon: Bell },
-        { title: "Oficina / Ajustes", url: "/dashboard/config", icon: Settings },
+        {
+          title: "Oficina / Ajustes",
+          url: "/dashboard/config",
+          icon: Settings,
+        },
         { title: "Assinatura", url: "/dashboard/plans", icon: CreditCard },
       ],
     },
@@ -203,7 +189,10 @@ export async function AppSidebar({
                       tooltip={item.title}
                       className="transition-all duration-300 group py-6 rounded-xl hover:bg-white/[0.03] active:scale-95"
                     >
-                      <a href={item.url} className="flex items-center gap-4 px-4">
+                      <Link
+                        href={item.url}
+                        className="flex items-center gap-4 px-4"
+                      >
                         <item.icon
                           className={`size-5 transition-all duration-300 ${
                             item.color ||
@@ -218,7 +207,7 @@ export async function AppSidebar({
                             {item.badge}
                           </span>
                         )}
-                      </a>
+                      </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}
@@ -227,46 +216,6 @@ export async function AppSidebar({
           </SidebarGroup>
         ))}
       </SidebarContent>
-
-      <SidebarFooter className="p-4 border-t border-white/5 bg-black/40 backdrop-blur-md">
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuButton className="py-8 px-4 rounded-2xl hover:bg-white/5 transition-all">
-                  <div className="flex items-center gap-3 w-full">
-                    <div className="size-10 rounded-xl bg-gradient-to-br from-zinc-800 to-black border border-white/10 flex items-center justify-center text-xs font-black text-white glow-secondary shadow-orange-500/10">
-                      {session?.user.name?.substring(0, 2).toUpperCase() ||
-                        "AD"}
-                    </div>
-                    <div className="flex flex-col text-left overflow-hidden">
-                      <span className="text-sm font-black text-white truncate">
-                        {session?.user.name || "Admin"}
-                      </span>
-                      <div className="flex items-center gap-1.5 mt-0.5">
-                        <div className="h-1 w-1 rounded-full bg-secondary" />
-                        <span className="text-[10px] text-white/40 font-bold uppercase tracking-wider">
-                          {userPlan} Plan
-                        </span>
-                      </div>
-                    </div>
-                    <ChevronUp className="ml-auto text-white/20" />
-                  </div>
-                </SidebarMenuButton>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                side="top"
-                align="center"
-                className="w-56 bg-[#111] border-white/10 text-white rounded-2xl p-2 shadow-2xl backdrop-blur-xl"
-              >
-                <DropdownMenuItem className="rounded-xl focus:bg-primary/10 focus:text-primary cursor-pointer p-3 font-bold transition-all">
-                  <LogoutButton />
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarFooter>
 
       <SidebarRail />
     </Sidebar>

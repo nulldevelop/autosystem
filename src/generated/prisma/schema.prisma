@@ -1,0 +1,299 @@
+generator client {
+  provider        = "prisma-client-js"
+  output          = "../src/generated/prisma"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  name          String?
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+
+  members      Member[]
+  invitations  Invitation[]
+  subscription Subscription?
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  activeOrganizationId String?
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+model Organization {
+  id        String   @id @default(uuid())
+  name      String
+  slug      String   @unique
+  logo      String?
+  phone     String
+  address   String   @db.Text
+  cnpj      String
+  metadata  String?  @db.Text
+  createdAt DateTime @default(now())
+
+  members       Member[]
+  invitations   Invitation[]
+  customers     Customer[]
+  vehicles      Vehicle[]
+  budgets       Budget[]
+  products      Product[]
+  serviceOrders ServiceOrder[]
+
+  @@map("organization")
+}
+
+model Member {
+  id             String       @id
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role           String       @default("member")
+  createdAt      DateTime
+
+  @@index([organizationId])
+  @@index([userId])
+  @@map("member")
+}
+
+model Invitation {
+  id             String       @id
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  email          String
+  role           String?
+  status         String       @default("pending")
+  expiresAt      DateTime
+  createdAt      DateTime     @default(now())
+  inviterId      String
+  user           User         @relation(fields: [inviterId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([email])
+  @@map("invitation")
+}
+
+model Customer {
+  id             String         @id @default(uuid())
+  name           String
+  email          String         @unique
+  document       String         @unique
+  documentType   DocumentType
+  phone          String?
+  address        String?        @db.Text
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  budgets        Budget[]
+  veicles        Vehicle[]
+  organization   Organization?  @relation(fields: [organizationId], references: [id])
+  organizationId String?
+  serviceOrders  ServiceOrder[]
+
+  @@index([organizationId])
+  @@map("customer")
+}
+
+enum DocumentType {
+  CPF
+  CNPJ
+}
+
+model Vehicle {
+  id             String         @id @default(uuid())
+  marca          String
+  model          String
+  year           Int
+  licensePlate   String
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  budgets        Budget[]
+  customer       Customer?      @relation(fields: [customerId], references: [id])
+  customerId     String?
+  organization   Organization?  @relation(fields: [organizationId], references: [id])
+  organizationId String?
+  serviceOrders  ServiceOrder[]
+
+  @@unique([licensePlate, organizationId])
+  @@map("vehicle")
+}
+
+enum Status {
+  pending
+  aproved
+  rejected
+}
+
+model Budget {
+  id         String   @id @default(uuid())
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  vehicleId  String
+  vehicle    Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+  items BudgetItem[]
+
+  totalAmount    Float
+  status         Status        @default(pending)
+  observacoes    String?       @db.Text
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  organizationId String?
+  serviceOrder   ServiceOrder?
+
+  @@index([organizationId])
+  @@map("budget")
+}
+
+model Product {
+  id    String @id @default(uuid())
+  name  String
+  price Float
+  sku   String @unique
+
+  budgets       BudgetItem[]
+  serviceOrders ServiceOrderItem[]
+
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([organizationId])
+  @@map("product")
+}
+
+model BudgetItem {
+  id        String @id @default(uuid())
+  budgetId  String
+  productId String
+  quantity  Int    @default(1)
+  unitPrice Float
+
+  budget  Budget  @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+
+  @@map("budget_item")
+}
+
+enum ServiceOrderStatus {
+  open
+  in_progress
+  completed
+  canceled
+}
+
+model ServiceOrder {
+  id         String   @id @default(uuid())
+  budgetId   String   @unique
+  budget     Budget   @relation(fields: [budgetId], references: [id])
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  vehicleId  String
+  vehicle    Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+  items ServiceOrderItem[]
+
+  totalAmount    Float
+  status         ServiceOrderStatus @default(open)
+  observacoes    String?            @db.Text
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  organization   Organization?      @relation(fields: [organizationId], references: [id])
+  organizationId String?
+
+  @@index([organizationId])
+  @@map("service_order")
+}
+
+model ServiceOrderItem {
+  id             String       @id @default(uuid())
+  serviceOrderId String
+  productId      String
+  quantity       Int          @default(1)
+  unitPrice      Float
+  serviceOrder   ServiceOrder @relation(fields: [serviceOrderId], references: [id], onDelete: Cascade)
+  product        Product      @relation(fields: [productId], references: [id])
+
+  @@map("service_order_item")
+}
+
+enum Plan {
+  BASIC
+  PLUS
+  PROFESSIONAL
+}
+
+model Subscription {
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  plan   Plan    @default(BASIC)
+  status String?
+
+  stripeCustomerId       String?   @unique @map("stripe_customer_id")
+  stripeSubscriptionId   String?   @unique @map("stripe_subscription_id")
+  stripePriceId          String?   @map("stripe_price_id")
+  stripeCurrentPeriodEnd DateTime? @map("stripe_current_period_end")
+  trialEndsAt            DateTime? @map("trial_ends_at")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

@@ -159,3 +159,25 @@ export async function checkOrganizationSlug(
     };
   }
 }
+
+export async function updateOrganizationLogo(
+  organizationId: string,
+  logoUrl: string,
+) {
+  try {
+    const headersList = await headers();
+    await auth.api.updateOrganization({
+      body: {
+        organizationId,
+        logo: logoUrl,
+      },
+      headers: headersList,
+    });
+
+    revalidatePath("/dashboard");
+    return { success: true };
+  } catch (error) {
+    console.error("Erro ao atualizar logo:", error);
+    return { success: false };
+  }
+}

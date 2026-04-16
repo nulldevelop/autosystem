@@ -2,17 +2,35 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { authClient } from "@/lib/auth-client";
 import { LoginForm } from "../_components/loginForm";
 import { SignUpForm } from "../_components/signUpForm";
 
 export default function SignUpPage() {
+  const router = useRouter();
+  const { data: session, isPending } = authClient.useSession();
   const [isLogin, setIsLogin] = useState(true);
+
+  useEffect(() => {
+    if (session && !isPending) {
+      router.push("/dashboard");
+    }
+  }, [session, isPending, router]);
 
   const handleToggleForm = () => {
     setIsLogin(!isLogin);
   };
+
+  if (isPending || session) {
+    return (
+      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#16a34a]" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white flex overflow-hidden">

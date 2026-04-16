@@ -59,7 +59,7 @@ export async function SubscriptionStatusNotice() {
 
   return (
     <Card
-      className={`relative z-10 max-w-7xl mx-auto p-4 mb-8 flex items-center space-x-4 ${cardClass}`}
+      className={`relative z-10 mx-auto p-4 mb-8 flex items-center space-x-4 ${cardClass}`}
     >
       {icon}
       <p className="text-white">{message}</p>

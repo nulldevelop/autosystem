@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight, Eye, EyeOff } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -30,6 +31,7 @@ const signUpSchema = z.object({
 });
 
 export function SignUpForm() {
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [showPassword, setShowPassword] = useState(false);
   const form = useForm<z.infer<typeof signUpSchema>>({
@@ -63,6 +65,8 @@ export function SignUpForm() {
         }
       } else {
         toast.success(result.message);
+        router.push("/dashboard");
+        router.refresh();
       }
     });
   }

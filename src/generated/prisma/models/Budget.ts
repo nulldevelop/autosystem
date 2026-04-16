@@ -270,6 +270,7 @@ export type BudgetOrderByWithRelationInput = {
   items?: Prisma.BudgetItemOrderByRelationAggregateInput
   organization?: Prisma.OrganizationOrderByWithRelationInput
   serviceOrder?: Prisma.ServiceOrderOrderByWithRelationInput
+  _relevance?: Prisma.BudgetOrderByRelevanceInput
 }
 
 export type BudgetWhereUniqueInput = Prisma.AtLeast<{
@@ -421,6 +422,12 @@ export type BudgetListRelationFilter = {
 
 export type BudgetOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type BudgetOrderByRelevanceInput = {
+  fields: Prisma.BudgetOrderByRelevanceFieldEnum | Prisma.BudgetOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type BudgetCountOrderByAggregateInput = {
@@ -1138,35 +1145,7 @@ export type BudgetSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   _count?: boolean | Prisma.BudgetCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["budget"]>
 
-export type BudgetSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  customerId?: boolean
-  vehicleId?: boolean
-  totalAmount?: boolean
-  status?: boolean
-  observacoes?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-  organizationId?: boolean
-  customer?: boolean | Prisma.CustomerDefaultArgs<ExtArgs>
-  vehicle?: boolean | Prisma.VehicleDefaultArgs<ExtArgs>
-  organization?: boolean | Prisma.Budget$organizationArgs<ExtArgs>
-}, ExtArgs["result"]["budget"]>
 
-export type BudgetSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  customerId?: boolean
-  vehicleId?: boolean
-  totalAmount?: boolean
-  status?: boolean
-  observacoes?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-  organizationId?: boolean
-  customer?: boolean | Prisma.CustomerDefaultArgs<ExtArgs>
-  vehicle?: boolean | Prisma.VehicleDefaultArgs<ExtArgs>
-  organization?: boolean | Prisma.Budget$organizationArgs<ExtArgs>
-}, ExtArgs["result"]["budget"]>
 
 export type BudgetSelectScalar = {
   id?: boolean
@@ -1188,16 +1167,6 @@ export type BudgetInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   organization?: boolean | Prisma.Budget$organizationArgs<ExtArgs>
   serviceOrder?: boolean | Prisma.Budget$serviceOrderArgs<ExtArgs>
   _count?: boolean | Prisma.BudgetCountOutputTypeDefaultArgs<ExtArgs>
-}
-export type BudgetIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  customer?: boolean | Prisma.CustomerDefaultArgs<ExtArgs>
-  vehicle?: boolean | Prisma.VehicleDefaultArgs<ExtArgs>
-  organization?: boolean | Prisma.Budget$organizationArgs<ExtArgs>
-}
-export type BudgetIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  customer?: boolean | Prisma.CustomerDefaultArgs<ExtArgs>
-  vehicle?: boolean | Prisma.VehicleDefaultArgs<ExtArgs>
-  organization?: boolean | Prisma.Budget$organizationArgs<ExtArgs>
 }
 
 export type $BudgetPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1337,30 +1306,6 @@ export interface BudgetDelegate<ExtArgs extends runtime.Types.Extensions.Interna
   createMany<T extends BudgetCreateManyArgs>(args?: Prisma.SelectSubset<T, BudgetCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Create many Budgets and returns the data saved in the database.
-   * @param {BudgetCreateManyAndReturnArgs} args - Arguments to create many Budgets.
-   * @example
-   * // Create many Budgets
-   * const budget = await prisma.budget.createManyAndReturn({
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Create many Budgets and only return the `id`
-   * const budgetWithIdOnly = await prisma.budget.createManyAndReturn({
-   *   select: { id: true },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  createManyAndReturn<T extends BudgetCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, BudgetCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BudgetPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-  /**
    * Delete a Budget.
    * @param {BudgetDeleteArgs} args - Arguments to delete one Budget.
    * @example
@@ -1423,36 +1368,6 @@ export interface BudgetDelegate<ExtArgs extends runtime.Types.Extensions.Interna
    * 
    */
   updateMany<T extends BudgetUpdateManyArgs>(args: Prisma.SelectSubset<T, BudgetUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
-
-  /**
-   * Update zero or more Budgets and returns the data updated in the database.
-   * @param {BudgetUpdateManyAndReturnArgs} args - Arguments to update many Budgets.
-   * @example
-   * // Update many Budgets
-   * const budget = await prisma.budget.updateManyAndReturn({
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Update zero or more Budgets and only return the `id`
-   * const budgetWithIdOnly = await prisma.budget.updateManyAndReturn({
-   *   select: { id: true },
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  updateManyAndReturn<T extends BudgetUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, BudgetUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BudgetPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
   /**
    * Create or update one Budget.
@@ -1894,29 +1809,6 @@ export type BudgetCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
 }
 
 /**
- * Budget createManyAndReturn
- */
-export type BudgetCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Budget
-   */
-  select?: Prisma.BudgetSelectCreateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the Budget
-   */
-  omit?: Prisma.BudgetOmit<ExtArgs> | null
-  /**
-   * The data used to create many Budgets.
-   */
-  data: Prisma.BudgetCreateManyInput | Prisma.BudgetCreateManyInput[]
-  skipDuplicates?: boolean
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.BudgetIncludeCreateManyAndReturn<ExtArgs> | null
-}
-
-/**
  * Budget update
  */
 export type BudgetUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1958,36 +1850,6 @@ export type BudgetUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Limit how many Budgets to update.
    */
   limit?: number
-}
-
-/**
- * Budget updateManyAndReturn
- */
-export type BudgetUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Budget
-   */
-  select?: Prisma.BudgetSelectUpdateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the Budget
-   */
-  omit?: Prisma.BudgetOmit<ExtArgs> | null
-  /**
-   * The data used to update Budgets.
-   */
-  data: Prisma.XOR<Prisma.BudgetUpdateManyMutationInput, Prisma.BudgetUncheckedUpdateManyInput>
-  /**
-   * Filter which Budgets to update
-   */
-  where?: Prisma.BudgetWhereInput
-  /**
-   * Limit how many Budgets to update.
-   */
-  limit?: number
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.BudgetIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**

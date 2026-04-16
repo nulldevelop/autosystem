@@ -246,6 +246,7 @@ export type SubscriptionOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
+  _relevance?: Prisma.SubscriptionOrderByRelevanceInput
 }
 
 export type SubscriptionWhereUniqueInput = Prisma.AtLeast<{
@@ -400,6 +401,12 @@ export type SubscriptionUncheckedUpdateManyInput = {
 export type SubscriptionNullableScalarRelationFilter = {
   is?: Prisma.SubscriptionWhereInput | null
   isNot?: Prisma.SubscriptionWhereInput | null
+}
+
+export type SubscriptionOrderByRelevanceInput = {
+  fields: Prisma.SubscriptionOrderByRelevanceFieldEnum | Prisma.SubscriptionOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type SubscriptionCountOrderByAggregateInput = {
@@ -565,35 +572,7 @@ export type SubscriptionSelect<ExtArgs extends runtime.Types.Extensions.Internal
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["subscription"]>
 
-export type SubscriptionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  userId?: boolean
-  plan?: boolean
-  status?: boolean
-  stripeCustomerId?: boolean
-  stripeSubscriptionId?: boolean
-  stripePriceId?: boolean
-  stripeCurrentPeriodEnd?: boolean
-  trialEndsAt?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-}, ExtArgs["result"]["subscription"]>
 
-export type SubscriptionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  userId?: boolean
-  plan?: boolean
-  status?: boolean
-  stripeCustomerId?: boolean
-  stripeSubscriptionId?: boolean
-  stripePriceId?: boolean
-  stripeCurrentPeriodEnd?: boolean
-  trialEndsAt?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-}, ExtArgs["result"]["subscription"]>
 
 export type SubscriptionSelectScalar = {
   id?: boolean
@@ -611,12 +590,6 @@ export type SubscriptionSelectScalar = {
 
 export type SubscriptionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "plan" | "status" | "stripeCustomerId" | "stripeSubscriptionId" | "stripePriceId" | "stripeCurrentPeriodEnd" | "trialEndsAt" | "createdAt" | "updatedAt", ExtArgs["result"]["subscription"]>
 export type SubscriptionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-}
-export type SubscriptionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-}
-export type SubscriptionIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 
@@ -755,30 +728,6 @@ export interface SubscriptionDelegate<ExtArgs extends runtime.Types.Extensions.I
   createMany<T extends SubscriptionCreateManyArgs>(args?: Prisma.SelectSubset<T, SubscriptionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Create many Subscriptions and returns the data saved in the database.
-   * @param {SubscriptionCreateManyAndReturnArgs} args - Arguments to create many Subscriptions.
-   * @example
-   * // Create many Subscriptions
-   * const subscription = await prisma.subscription.createManyAndReturn({
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Create many Subscriptions and only return the `id`
-   * const subscriptionWithIdOnly = await prisma.subscription.createManyAndReturn({
-   *   select: { id: true },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  createManyAndReturn<T extends SubscriptionCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, SubscriptionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SubscriptionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-  /**
    * Delete a Subscription.
    * @param {SubscriptionDeleteArgs} args - Arguments to delete one Subscription.
    * @example
@@ -841,36 +790,6 @@ export interface SubscriptionDelegate<ExtArgs extends runtime.Types.Extensions.I
    * 
    */
   updateMany<T extends SubscriptionUpdateManyArgs>(args: Prisma.SelectSubset<T, SubscriptionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
-
-  /**
-   * Update zero or more Subscriptions and returns the data updated in the database.
-   * @param {SubscriptionUpdateManyAndReturnArgs} args - Arguments to update many Subscriptions.
-   * @example
-   * // Update many Subscriptions
-   * const subscription = await prisma.subscription.updateManyAndReturn({
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Update zero or more Subscriptions and only return the `id`
-   * const subscriptionWithIdOnly = await prisma.subscription.updateManyAndReturn({
-   *   select: { id: true },
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  updateManyAndReturn<T extends SubscriptionUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, SubscriptionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SubscriptionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
   /**
    * Create or update one Subscription.
@@ -1310,29 +1229,6 @@ export type SubscriptionCreateManyArgs<ExtArgs extends runtime.Types.Extensions.
 }
 
 /**
- * Subscription createManyAndReturn
- */
-export type SubscriptionCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Subscription
-   */
-  select?: Prisma.SubscriptionSelectCreateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the Subscription
-   */
-  omit?: Prisma.SubscriptionOmit<ExtArgs> | null
-  /**
-   * The data used to create many Subscriptions.
-   */
-  data: Prisma.SubscriptionCreateManyInput | Prisma.SubscriptionCreateManyInput[]
-  skipDuplicates?: boolean
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.SubscriptionIncludeCreateManyAndReturn<ExtArgs> | null
-}
-
-/**
  * Subscription update
  */
 export type SubscriptionUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1374,36 +1270,6 @@ export type SubscriptionUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.
    * Limit how many Subscriptions to update.
    */
   limit?: number
-}
-
-/**
- * Subscription updateManyAndReturn
- */
-export type SubscriptionUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Subscription
-   */
-  select?: Prisma.SubscriptionSelectUpdateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the Subscription
-   */
-  omit?: Prisma.SubscriptionOmit<ExtArgs> | null
-  /**
-   * The data used to update Subscriptions.
-   */
-  data: Prisma.XOR<Prisma.SubscriptionUpdateManyMutationInput, Prisma.SubscriptionUncheckedUpdateManyInput>
-  /**
-   * Filter which Subscriptions to update
-   */
-  where?: Prisma.SubscriptionWhereInput
-  /**
-   * Limit how many Subscriptions to update.
-   */
-  limit?: number
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.SubscriptionIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**

@@ -232,6 +232,7 @@ export type ServiceOrderItemOrderByWithRelationInput = {
   unitPrice?: Prisma.SortOrder
   serviceOrder?: Prisma.ServiceOrderOrderByWithRelationInput
   product?: Prisma.ProductOrderByWithRelationInput
+  _relevance?: Prisma.ServiceOrderItemOrderByRelevanceInput
 }
 
 export type ServiceOrderItemWhereUniqueInput = Prisma.AtLeast<{
@@ -333,6 +334,12 @@ export type ServiceOrderItemListRelationFilter = {
 
 export type ServiceOrderItemOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type ServiceOrderItemOrderByRelevanceInput = {
+  fields: Prisma.ServiceOrderItemOrderByRelevanceFieldEnum | Prisma.ServiceOrderItemOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type ServiceOrderItemCountOrderByAggregateInput = {
@@ -612,25 +619,7 @@ export type ServiceOrderItemSelect<ExtArgs extends runtime.Types.Extensions.Inte
   product?: boolean | Prisma.ProductDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["serviceOrderItem"]>
 
-export type ServiceOrderItemSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  serviceOrderId?: boolean
-  productId?: boolean
-  quantity?: boolean
-  unitPrice?: boolean
-  serviceOrder?: boolean | Prisma.ServiceOrderDefaultArgs<ExtArgs>
-  product?: boolean | Prisma.ProductDefaultArgs<ExtArgs>
-}, ExtArgs["result"]["serviceOrderItem"]>
 
-export type ServiceOrderItemSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  serviceOrderId?: boolean
-  productId?: boolean
-  quantity?: boolean
-  unitPrice?: boolean
-  serviceOrder?: boolean | Prisma.ServiceOrderDefaultArgs<ExtArgs>
-  product?: boolean | Prisma.ProductDefaultArgs<ExtArgs>
-}, ExtArgs["result"]["serviceOrderItem"]>
 
 export type ServiceOrderItemSelectScalar = {
   id?: boolean
@@ -642,14 +631,6 @@ export type ServiceOrderItemSelectScalar = {
 
 export type ServiceOrderItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "serviceOrderId" | "productId" | "quantity" | "unitPrice", ExtArgs["result"]["serviceOrderItem"]>
 export type ServiceOrderItemInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  serviceOrder?: boolean | Prisma.ServiceOrderDefaultArgs<ExtArgs>
-  product?: boolean | Prisma.ProductDefaultArgs<ExtArgs>
-}
-export type ServiceOrderItemIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  serviceOrder?: boolean | Prisma.ServiceOrderDefaultArgs<ExtArgs>
-  product?: boolean | Prisma.ProductDefaultArgs<ExtArgs>
-}
-export type ServiceOrderItemIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   serviceOrder?: boolean | Prisma.ServiceOrderDefaultArgs<ExtArgs>
   product?: boolean | Prisma.ProductDefaultArgs<ExtArgs>
 }
@@ -784,30 +765,6 @@ export interface ServiceOrderItemDelegate<ExtArgs extends runtime.Types.Extensio
   createMany<T extends ServiceOrderItemCreateManyArgs>(args?: Prisma.SelectSubset<T, ServiceOrderItemCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Create many ServiceOrderItems and returns the data saved in the database.
-   * @param {ServiceOrderItemCreateManyAndReturnArgs} args - Arguments to create many ServiceOrderItems.
-   * @example
-   * // Create many ServiceOrderItems
-   * const serviceOrderItem = await prisma.serviceOrderItem.createManyAndReturn({
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Create many ServiceOrderItems and only return the `id`
-   * const serviceOrderItemWithIdOnly = await prisma.serviceOrderItem.createManyAndReturn({
-   *   select: { id: true },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  createManyAndReturn<T extends ServiceOrderItemCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, ServiceOrderItemCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ServiceOrderItemPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-  /**
    * Delete a ServiceOrderItem.
    * @param {ServiceOrderItemDeleteArgs} args - Arguments to delete one ServiceOrderItem.
    * @example
@@ -870,36 +827,6 @@ export interface ServiceOrderItemDelegate<ExtArgs extends runtime.Types.Extensio
    * 
    */
   updateMany<T extends ServiceOrderItemUpdateManyArgs>(args: Prisma.SelectSubset<T, ServiceOrderItemUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
-
-  /**
-   * Update zero or more ServiceOrderItems and returns the data updated in the database.
-   * @param {ServiceOrderItemUpdateManyAndReturnArgs} args - Arguments to update many ServiceOrderItems.
-   * @example
-   * // Update many ServiceOrderItems
-   * const serviceOrderItem = await prisma.serviceOrderItem.updateManyAndReturn({
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Update zero or more ServiceOrderItems and only return the `id`
-   * const serviceOrderItemWithIdOnly = await prisma.serviceOrderItem.updateManyAndReturn({
-   *   select: { id: true },
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  updateManyAndReturn<T extends ServiceOrderItemUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, ServiceOrderItemUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ServiceOrderItemPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
   /**
    * Create or update one ServiceOrderItem.
@@ -1334,29 +1261,6 @@ export type ServiceOrderItemCreateManyArgs<ExtArgs extends runtime.Types.Extensi
 }
 
 /**
- * ServiceOrderItem createManyAndReturn
- */
-export type ServiceOrderItemCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the ServiceOrderItem
-   */
-  select?: Prisma.ServiceOrderItemSelectCreateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the ServiceOrderItem
-   */
-  omit?: Prisma.ServiceOrderItemOmit<ExtArgs> | null
-  /**
-   * The data used to create many ServiceOrderItems.
-   */
-  data: Prisma.ServiceOrderItemCreateManyInput | Prisma.ServiceOrderItemCreateManyInput[]
-  skipDuplicates?: boolean
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ServiceOrderItemIncludeCreateManyAndReturn<ExtArgs> | null
-}
-
-/**
  * ServiceOrderItem update
  */
 export type ServiceOrderItemUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1398,36 +1302,6 @@ export type ServiceOrderItemUpdateManyArgs<ExtArgs extends runtime.Types.Extensi
    * Limit how many ServiceOrderItems to update.
    */
   limit?: number
-}
-
-/**
- * ServiceOrderItem updateManyAndReturn
- */
-export type ServiceOrderItemUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the ServiceOrderItem
-   */
-  select?: Prisma.ServiceOrderItemSelectUpdateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the ServiceOrderItem
-   */
-  omit?: Prisma.ServiceOrderItemOmit<ExtArgs> | null
-  /**
-   * The data used to update ServiceOrderItems.
-   */
-  data: Prisma.XOR<Prisma.ServiceOrderItemUpdateManyMutationInput, Prisma.ServiceOrderItemUncheckedUpdateManyInput>
-  /**
-   * Filter which ServiceOrderItems to update
-   */
-  where?: Prisma.ServiceOrderItemWhereInput
-  /**
-   * Limit how many ServiceOrderItems to update.
-   */
-  limit?: number
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ServiceOrderItemIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
