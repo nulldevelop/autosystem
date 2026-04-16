@@ -20,7 +20,19 @@ export async function getServiceOrders() {
     include: {
       customer: true,
       vehicle: true,
-      budget: true, // Include budget to get budgetId
+      budget: {
+        include: {
+          customer: true,
+          vehicle: true,
+          items: {
+            include: {
+              product: true,
+            }
+          },
+          organization: true,
+          serviceOrder: true
+        }
+      },
     },
   });
 

@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 
 const createOrganizationSchema = z.object({
   name: z.string().min(2, {
@@ -165,19 +166,44 @@ export async function updateOrganizationLogo(
   logoUrl: string,
 ) {
   try {
-    const headersList = await headers();
-    await auth.api.updateOrganization({
-      body: {
-        organizationId,
-        logo: logoUrl,
-      },
-      headers: headersList,
+    await prisma.organization.update({
+      where: { id: organizationId },
+      data: { logo: logoUrl },
     });
 
     revalidatePath("/dashboard");
+    revalidatePath("/dashboard/config");
     return { success: true };
   } catch (error) {
     console.error("Erro ao atualizar logo:", error);
     return { success: false };
+  }
+}
+
+export async function updateOrganizationData(
+  organizationId: string,
+  data: {
+    name: string;
+    phone: string;
+    cnpj: string;
+    address: string;
+  },
+) {
+  try {
+    await prisma.organization.update({
+      where: { id: organizationId },
+      data: {
+        name: data.name,
+        phone: data.phone,
+        cnpj: data.cnpj,
+        address: data.address,
+      },
+    });
+
+    revalidatePath("/dashboard/config");
+    return { success: true, message: "Dados atualizados com sucesso!" };
+  } catch (error) {
+    console.error("Erro ao atualizar organização:", error);
+    return { success: false, message: "Erro ao atualizar dados." };
   }
 }

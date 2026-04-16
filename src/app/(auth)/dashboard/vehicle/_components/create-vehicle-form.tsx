@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -30,8 +30,42 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxGroup,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+  ComboboxTrigger,
+} from "@/components/kibo-ui/combobox";
 import type { Customer } from "@/generated/prisma/client";
 import { createVehicle } from "../_actions/create-vehicle";
+import { Loader2 } from "lucide-react";
+
+const CAR_BRANDS = [
+  { label: "Volkswagen", value: "Volkswagen" },
+  { label: "Fiat", value: "Fiat" },
+  { label: "Chevrolet", value: "Chevrolet" },
+  { label: "Ford", value: "Ford" },
+  { label: "Toyota", value: "Toyota" },
+  { label: "Honda", value: "Honda" },
+  { label: "Hyundai", value: "Hyundai" },
+  { label: "Renault", value: "Renault" },
+  { label: "Jeep", value: "Jeep" },
+  { label: "Nissan", value: "Nissan" },
+  { label: "Mitsubishi", value: "Mitsubishi" },
+  { label: "BMW", value: "BMW" },
+  { label: "Mercedes-Benz", value: "Mercedes-Benz" },
+  { label: "Audi", value: "Audi" },
+  { label: "Volvo", value: "Volvo" },
+  { label: "Kia", value: "Kia" },
+  { label: "Peugeot", value: "Peugeot" },
+  { label: "Citroën", value: "Citroën" },
+  { label: "Chery", value: "Chery" },
+  { label: "Land Rover", value: "Land Rover" },
+];
 
 const formSchema = z.object({
   marca: z
@@ -71,6 +105,13 @@ export function CreateVehicleForm({
     },
   });
 
+  const customerOptions = useMemo(() => {
+    return customers.map((customer) => ({
+      value: customer.id,
+      label: customer.name,
+    }));
+  }, [customers]);
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     try {
@@ -93,10 +134,12 @@ export function CreateVehicleForm({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-lg bg-zinc-950 border-white/5">
         <DialogHeader>
-          <DialogTitle>Adicionar Novo Veículo</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-xl font-black italic uppercase tracking-tighter text-white">
+            Adicionar Novo <span className="text-primary">Veículo</span>
+          </DialogTitle>
+          <DialogDescription className="text-white/40 text-[10px] font-black uppercase tracking-widest">
             Preencha os campos abaixo para adicionar um novo veículo.
           </DialogDescription>
         </DialogHeader>
@@ -107,26 +150,31 @@ export function CreateVehicleForm({
               control={form.control}
               name="customerId"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Cliente</FormLabel>
-                  <Select
+                <FormItem className="flex flex-col">
+                  <FormLabel className="text-[10px] font-black uppercase text-white/40 tracking-widest mb-1">Cliente</FormLabel>
+                  <Combobox
+                    data={customerOptions}
                     onValueChange={field.onChange}
-                    defaultValue={field.value}
-                    disabled={isLoading}
+                    value={field.value}
+                    type="cliente"
                   >
                     <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione o proprietário do veículo" />
-                      </SelectTrigger>
+                      <ComboboxTrigger className="bg-white/5 border-white/5 h-12 text-white" />
                     </FormControl>
-                    <SelectContent>
-                      {customers.map((customer) => (
-                        <SelectItem key={customer.id} value={customer.id}>
-                          {customer.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    <ComboboxContent className="bg-zinc-900 border-white/10">
+                      <ComboboxInput placeholder="Pesquisar cliente..." className="text-white" />
+                      <ComboboxEmpty>Cliente não encontrado.</ComboboxEmpty>
+                      <ComboboxList>
+                        <ComboboxGroup>
+                          {customerOptions.map((option) => (
+                            <ComboboxItem key={option.value} value={option.value} className="text-white hover:bg-white/10">
+                              {option.label}
+                            </ComboboxItem>
+                          ))}
+                        </ComboboxGroup>
+                      </ComboboxList>
+                    </ComboboxContent>
+                  </Combobox>
                   <FormMessage />
                 </FormItem>
               )}
@@ -136,15 +184,31 @@ export function CreateVehicleForm({
               control={form.control}
               name="marca"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Marca</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Ex: Volkswagen"
-                      disabled={isLoading}
-                      {...field}
-                    />
-                  </FormControl>
+                <FormItem className="flex flex-col">
+                  <FormLabel className="text-[10px] font-black uppercase text-white/40 tracking-widest mb-1">Marca</FormLabel>
+                  <Combobox
+                    data={CAR_BRANDS}
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    type="marca"
+                  >
+                    <FormControl>
+                      <ComboboxTrigger className="bg-white/5 border-white/5 h-12 text-white" />
+                    </FormControl>
+                    <ComboboxContent className="bg-zinc-900 border-white/10">
+                      <ComboboxInput placeholder="Pesquisar marca..." className="text-white" />
+                      <ComboboxEmpty>Marca não encontrada.</ComboboxEmpty>
+                      <ComboboxList>
+                        <ComboboxGroup>
+                          {CAR_BRANDS.map((brand) => (
+                            <ComboboxItem key={brand.value} value={brand.value} className="text-white hover:bg-white/10">
+                              {brand.label}
+                            </ComboboxItem>
+                          ))}
+                        </ComboboxGroup>
+                      </ComboboxList>
+                    </ComboboxContent>
+                  </Combobox>
                   <FormMessage />
                 </FormItem>
               )}
@@ -155,11 +219,12 @@ export function CreateVehicleForm({
               name="model"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Modelo</FormLabel>
+                  <FormLabel className="text-[10px] font-black uppercase text-white/40 tracking-widest mb-1">Modelo</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Ex: Gol"
                       disabled={isLoading}
+                      className="bg-white/5 border-white/5 h-12 text-white"
                       {...field}
                     />
                   </FormControl>
@@ -168,46 +233,56 @@ export function CreateVehicleForm({
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="year"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Ano</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="Ex: 2023"
-                      disabled={isLoading}
-                      {...field}
-                      onChange={(e) => field.onChange(e.target.valueAsNumber)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="year"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-[10px] font-black uppercase text-white/40 tracking-widest mb-1">Ano</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        placeholder="Ex: 2023"
+                        disabled={isLoading}
+                        className="bg-white/5 border-white/5 h-12 text-white"
+                        {...field}
+                        onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="licensePlate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Placa</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Ex: ABC1234"
-                      disabled={isLoading}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="licensePlate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-[10px] font-black uppercase text-white/40 tracking-widest mb-1">Placa</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Ex: ABC1234"
+                        disabled={isLoading}
+                        className="bg-white/5 border-white/5 h-12 text-white"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
-            <Button type="submit" disabled={isLoading} className="w-full">
-              {isLoading ? "Criando..." : "Criar Veículo"}
+            <Button type="submit" disabled={isLoading} className="w-full h-12 font-black uppercase italic tracking-tighter glow-primary">
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 size-4 animate-spin" /> Criando...
+                </>
+              ) : (
+                "Criar Veículo"
+              )}
             </Button>
           </form>
         </Form>
@@ -215,3 +290,4 @@ export function CreateVehicleForm({
     </Dialog>
   );
 }
+

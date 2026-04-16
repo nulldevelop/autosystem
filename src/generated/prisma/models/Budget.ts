@@ -28,10 +28,12 @@ export type AggregateBudget = {
 
 export type BudgetAvgAggregateOutputType = {
   totalAmount: number | null
+  kilometers: number | null
 }
 
 export type BudgetSumAggregateOutputType = {
   totalAmount: number | null
+  kilometers: number | null
 }
 
 export type BudgetMinAggregateOutputType = {
@@ -41,6 +43,10 @@ export type BudgetMinAggregateOutputType = {
   totalAmount: number | null
   status: $Enums.Status | null
   observacoes: string | null
+  kilometers: number | null
+  fuelLevel: string | null
+  signature: string | null
+  signedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
   organizationId: string | null
@@ -53,6 +59,10 @@ export type BudgetMaxAggregateOutputType = {
   totalAmount: number | null
   status: $Enums.Status | null
   observacoes: string | null
+  kilometers: number | null
+  fuelLevel: string | null
+  signature: string | null
+  signedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
   organizationId: string | null
@@ -65,6 +75,11 @@ export type BudgetCountAggregateOutputType = {
   totalAmount: number
   status: number
   observacoes: number
+  kilometers: number
+  fuelLevel: number
+  checklist: number
+  signature: number
+  signedAt: number
   createdAt: number
   updatedAt: number
   organizationId: number
@@ -74,10 +89,12 @@ export type BudgetCountAggregateOutputType = {
 
 export type BudgetAvgAggregateInputType = {
   totalAmount?: true
+  kilometers?: true
 }
 
 export type BudgetSumAggregateInputType = {
   totalAmount?: true
+  kilometers?: true
 }
 
 export type BudgetMinAggregateInputType = {
@@ -87,6 +104,10 @@ export type BudgetMinAggregateInputType = {
   totalAmount?: true
   status?: true
   observacoes?: true
+  kilometers?: true
+  fuelLevel?: true
+  signature?: true
+  signedAt?: true
   createdAt?: true
   updatedAt?: true
   organizationId?: true
@@ -99,6 +120,10 @@ export type BudgetMaxAggregateInputType = {
   totalAmount?: true
   status?: true
   observacoes?: true
+  kilometers?: true
+  fuelLevel?: true
+  signature?: true
+  signedAt?: true
   createdAt?: true
   updatedAt?: true
   organizationId?: true
@@ -111,6 +136,11 @@ export type BudgetCountAggregateInputType = {
   totalAmount?: true
   status?: true
   observacoes?: true
+  kilometers?: true
+  fuelLevel?: true
+  checklist?: true
+  signature?: true
+  signedAt?: true
   createdAt?: true
   updatedAt?: true
   organizationId?: true
@@ -210,6 +240,11 @@ export type BudgetGroupByOutputType = {
   totalAmount: number
   status: $Enums.Status
   observacoes: string | null
+  kilometers: number | null
+  fuelLevel: string | null
+  checklist: runtime.JsonValue | null
+  signature: string | null
+  signedAt: Date | null
   createdAt: Date
   updatedAt: Date
   organizationId: string | null
@@ -245,12 +280,18 @@ export type BudgetWhereInput = {
   totalAmount?: Prisma.FloatFilter<"Budget"> | number
   status?: Prisma.EnumStatusFilter<"Budget"> | $Enums.Status
   observacoes?: Prisma.StringNullableFilter<"Budget"> | string | null
+  kilometers?: Prisma.IntNullableFilter<"Budget"> | number | null
+  fuelLevel?: Prisma.StringNullableFilter<"Budget"> | string | null
+  checklist?: Prisma.JsonNullableFilter<"Budget">
+  signature?: Prisma.StringNullableFilter<"Budget"> | string | null
+  signedAt?: Prisma.DateTimeNullableFilter<"Budget"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Budget"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Budget"> | Date | string
   organizationId?: Prisma.StringNullableFilter<"Budget"> | string | null
   customer?: Prisma.XOR<Prisma.CustomerScalarRelationFilter, Prisma.CustomerWhereInput>
   vehicle?: Prisma.XOR<Prisma.VehicleScalarRelationFilter, Prisma.VehicleWhereInput>
   items?: Prisma.BudgetItemListRelationFilter
+  photos?: Prisma.BudgetPhotoListRelationFilter
   organization?: Prisma.XOR<Prisma.OrganizationNullableScalarRelationFilter, Prisma.OrganizationWhereInput> | null
   serviceOrder?: Prisma.XOR<Prisma.ServiceOrderNullableScalarRelationFilter, Prisma.ServiceOrderWhereInput> | null
 }
@@ -262,12 +303,18 @@ export type BudgetOrderByWithRelationInput = {
   totalAmount?: Prisma.SortOrder
   status?: Prisma.SortOrder
   observacoes?: Prisma.SortOrderInput | Prisma.SortOrder
+  kilometers?: Prisma.SortOrderInput | Prisma.SortOrder
+  fuelLevel?: Prisma.SortOrderInput | Prisma.SortOrder
+  checklist?: Prisma.SortOrderInput | Prisma.SortOrder
+  signature?: Prisma.SortOrderInput | Prisma.SortOrder
+  signedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   organizationId?: Prisma.SortOrderInput | Prisma.SortOrder
   customer?: Prisma.CustomerOrderByWithRelationInput
   vehicle?: Prisma.VehicleOrderByWithRelationInput
   items?: Prisma.BudgetItemOrderByRelationAggregateInput
+  photos?: Prisma.BudgetPhotoOrderByRelationAggregateInput
   organization?: Prisma.OrganizationOrderByWithRelationInput
   serviceOrder?: Prisma.ServiceOrderOrderByWithRelationInput
   _relevance?: Prisma.BudgetOrderByRelevanceInput
@@ -283,12 +330,18 @@ export type BudgetWhereUniqueInput = Prisma.AtLeast<{
   totalAmount?: Prisma.FloatFilter<"Budget"> | number
   status?: Prisma.EnumStatusFilter<"Budget"> | $Enums.Status
   observacoes?: Prisma.StringNullableFilter<"Budget"> | string | null
+  kilometers?: Prisma.IntNullableFilter<"Budget"> | number | null
+  fuelLevel?: Prisma.StringNullableFilter<"Budget"> | string | null
+  checklist?: Prisma.JsonNullableFilter<"Budget">
+  signature?: Prisma.StringNullableFilter<"Budget"> | string | null
+  signedAt?: Prisma.DateTimeNullableFilter<"Budget"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Budget"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Budget"> | Date | string
   organizationId?: Prisma.StringNullableFilter<"Budget"> | string | null
   customer?: Prisma.XOR<Prisma.CustomerScalarRelationFilter, Prisma.CustomerWhereInput>
   vehicle?: Prisma.XOR<Prisma.VehicleScalarRelationFilter, Prisma.VehicleWhereInput>
   items?: Prisma.BudgetItemListRelationFilter
+  photos?: Prisma.BudgetPhotoListRelationFilter
   organization?: Prisma.XOR<Prisma.OrganizationNullableScalarRelationFilter, Prisma.OrganizationWhereInput> | null
   serviceOrder?: Prisma.XOR<Prisma.ServiceOrderNullableScalarRelationFilter, Prisma.ServiceOrderWhereInput> | null
 }, "id">
@@ -300,6 +353,11 @@ export type BudgetOrderByWithAggregationInput = {
   totalAmount?: Prisma.SortOrder
   status?: Prisma.SortOrder
   observacoes?: Prisma.SortOrderInput | Prisma.SortOrder
+  kilometers?: Prisma.SortOrderInput | Prisma.SortOrder
+  fuelLevel?: Prisma.SortOrderInput | Prisma.SortOrder
+  checklist?: Prisma.SortOrderInput | Prisma.SortOrder
+  signature?: Prisma.SortOrderInput | Prisma.SortOrder
+  signedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   organizationId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -320,6 +378,11 @@ export type BudgetScalarWhereWithAggregatesInput = {
   totalAmount?: Prisma.FloatWithAggregatesFilter<"Budget"> | number
   status?: Prisma.EnumStatusWithAggregatesFilter<"Budget"> | $Enums.Status
   observacoes?: Prisma.StringNullableWithAggregatesFilter<"Budget"> | string | null
+  kilometers?: Prisma.IntNullableWithAggregatesFilter<"Budget"> | number | null
+  fuelLevel?: Prisma.StringNullableWithAggregatesFilter<"Budget"> | string | null
+  checklist?: Prisma.JsonNullableWithAggregatesFilter<"Budget">
+  signature?: Prisma.StringNullableWithAggregatesFilter<"Budget"> | string | null
+  signedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Budget"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Budget"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Budget"> | Date | string
   organizationId?: Prisma.StringNullableWithAggregatesFilter<"Budget"> | string | null
@@ -330,11 +393,17 @@ export type BudgetCreateInput = {
   totalAmount: number
   status?: $Enums.Status
   observacoes?: string | null
+  kilometers?: number | null
+  fuelLevel?: string | null
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  signature?: string | null
+  signedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   customer: Prisma.CustomerCreateNestedOneWithoutBudgetsInput
   vehicle: Prisma.VehicleCreateNestedOneWithoutBudgetsInput
   items?: Prisma.BudgetItemCreateNestedManyWithoutBudgetInput
+  photos?: Prisma.BudgetPhotoCreateNestedManyWithoutBudgetInput
   organization?: Prisma.OrganizationCreateNestedOneWithoutBudgetsInput
   serviceOrder?: Prisma.ServiceOrderCreateNestedOneWithoutBudgetInput
 }
@@ -346,10 +415,16 @@ export type BudgetUncheckedCreateInput = {
   totalAmount: number
   status?: $Enums.Status
   observacoes?: string | null
+  kilometers?: number | null
+  fuelLevel?: string | null
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  signature?: string | null
+  signedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organizationId?: string | null
   items?: Prisma.BudgetItemUncheckedCreateNestedManyWithoutBudgetInput
+  photos?: Prisma.BudgetPhotoUncheckedCreateNestedManyWithoutBudgetInput
   serviceOrder?: Prisma.ServiceOrderUncheckedCreateNestedOneWithoutBudgetInput
 }
 
@@ -358,11 +433,17 @@ export type BudgetUpdateInput = {
   totalAmount?: Prisma.FloatFieldUpdateOperationsInput | number
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   observacoes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  kilometers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fuelLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  signature?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  signedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   customer?: Prisma.CustomerUpdateOneRequiredWithoutBudgetsNestedInput
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutBudgetsNestedInput
   items?: Prisma.BudgetItemUpdateManyWithoutBudgetNestedInput
+  photos?: Prisma.BudgetPhotoUpdateManyWithoutBudgetNestedInput
   organization?: Prisma.OrganizationUpdateOneWithoutBudgetsNestedInput
   serviceOrder?: Prisma.ServiceOrderUpdateOneWithoutBudgetNestedInput
 }
@@ -374,10 +455,16 @@ export type BudgetUncheckedUpdateInput = {
   totalAmount?: Prisma.FloatFieldUpdateOperationsInput | number
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   observacoes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  kilometers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fuelLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  signature?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  signedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   items?: Prisma.BudgetItemUncheckedUpdateManyWithoutBudgetNestedInput
+  photos?: Prisma.BudgetPhotoUncheckedUpdateManyWithoutBudgetNestedInput
   serviceOrder?: Prisma.ServiceOrderUncheckedUpdateOneWithoutBudgetNestedInput
 }
 
@@ -388,6 +475,11 @@ export type BudgetCreateManyInput = {
   totalAmount: number
   status?: $Enums.Status
   observacoes?: string | null
+  kilometers?: number | null
+  fuelLevel?: string | null
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  signature?: string | null
+  signedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organizationId?: string | null
@@ -398,6 +490,11 @@ export type BudgetUpdateManyMutationInput = {
   totalAmount?: Prisma.FloatFieldUpdateOperationsInput | number
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   observacoes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  kilometers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fuelLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  signature?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  signedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -409,6 +506,11 @@ export type BudgetUncheckedUpdateManyInput = {
   totalAmount?: Prisma.FloatFieldUpdateOperationsInput | number
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   observacoes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  kilometers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fuelLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  signature?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  signedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -437,6 +539,11 @@ export type BudgetCountOrderByAggregateInput = {
   totalAmount?: Prisma.SortOrder
   status?: Prisma.SortOrder
   observacoes?: Prisma.SortOrder
+  kilometers?: Prisma.SortOrder
+  fuelLevel?: Prisma.SortOrder
+  checklist?: Prisma.SortOrder
+  signature?: Prisma.SortOrder
+  signedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
@@ -444,6 +551,7 @@ export type BudgetCountOrderByAggregateInput = {
 
 export type BudgetAvgOrderByAggregateInput = {
   totalAmount?: Prisma.SortOrder
+  kilometers?: Prisma.SortOrder
 }
 
 export type BudgetMaxOrderByAggregateInput = {
@@ -453,6 +561,10 @@ export type BudgetMaxOrderByAggregateInput = {
   totalAmount?: Prisma.SortOrder
   status?: Prisma.SortOrder
   observacoes?: Prisma.SortOrder
+  kilometers?: Prisma.SortOrder
+  fuelLevel?: Prisma.SortOrder
+  signature?: Prisma.SortOrder
+  signedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
@@ -465,6 +577,10 @@ export type BudgetMinOrderByAggregateInput = {
   totalAmount?: Prisma.SortOrder
   status?: Prisma.SortOrder
   observacoes?: Prisma.SortOrder
+  kilometers?: Prisma.SortOrder
+  fuelLevel?: Prisma.SortOrder
+  signature?: Prisma.SortOrder
+  signedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
@@ -472,6 +588,7 @@ export type BudgetMinOrderByAggregateInput = {
 
 export type BudgetSumOrderByAggregateInput = {
   totalAmount?: Prisma.SortOrder
+  kilometers?: Prisma.SortOrder
 }
 
 export type BudgetScalarRelationFilter = {
@@ -617,6 +734,28 @@ export type EnumStatusFieldUpdateOperationsInput = {
   set?: $Enums.Status
 }
 
+export type NullableIntFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
+export type BudgetCreateNestedOneWithoutPhotosInput = {
+  create?: Prisma.XOR<Prisma.BudgetCreateWithoutPhotosInput, Prisma.BudgetUncheckedCreateWithoutPhotosInput>
+  connectOrCreate?: Prisma.BudgetCreateOrConnectWithoutPhotosInput
+  connect?: Prisma.BudgetWhereUniqueInput
+}
+
+export type BudgetUpdateOneRequiredWithoutPhotosNestedInput = {
+  create?: Prisma.XOR<Prisma.BudgetCreateWithoutPhotosInput, Prisma.BudgetUncheckedCreateWithoutPhotosInput>
+  connectOrCreate?: Prisma.BudgetCreateOrConnectWithoutPhotosInput
+  upsert?: Prisma.BudgetUpsertWithoutPhotosInput
+  connect?: Prisma.BudgetWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.BudgetUpdateToOneWithWhereWithoutPhotosInput, Prisma.BudgetUpdateWithoutPhotosInput>, Prisma.BudgetUncheckedUpdateWithoutPhotosInput>
+}
+
 export type BudgetCreateNestedOneWithoutItemsInput = {
   create?: Prisma.XOR<Prisma.BudgetCreateWithoutItemsInput, Prisma.BudgetUncheckedCreateWithoutItemsInput>
   connectOrCreate?: Prisma.BudgetCreateOrConnectWithoutItemsInput
@@ -650,11 +789,17 @@ export type BudgetCreateWithoutOrganizationInput = {
   totalAmount: number
   status?: $Enums.Status
   observacoes?: string | null
+  kilometers?: number | null
+  fuelLevel?: string | null
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  signature?: string | null
+  signedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   customer: Prisma.CustomerCreateNestedOneWithoutBudgetsInput
   vehicle: Prisma.VehicleCreateNestedOneWithoutBudgetsInput
   items?: Prisma.BudgetItemCreateNestedManyWithoutBudgetInput
+  photos?: Prisma.BudgetPhotoCreateNestedManyWithoutBudgetInput
   serviceOrder?: Prisma.ServiceOrderCreateNestedOneWithoutBudgetInput
 }
 
@@ -665,9 +810,15 @@ export type BudgetUncheckedCreateWithoutOrganizationInput = {
   totalAmount: number
   status?: $Enums.Status
   observacoes?: string | null
+  kilometers?: number | null
+  fuelLevel?: string | null
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  signature?: string | null
+  signedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.BudgetItemUncheckedCreateNestedManyWithoutBudgetInput
+  photos?: Prisma.BudgetPhotoUncheckedCreateNestedManyWithoutBudgetInput
   serviceOrder?: Prisma.ServiceOrderUncheckedCreateNestedOneWithoutBudgetInput
 }
 
@@ -707,6 +858,11 @@ export type BudgetScalarWhereInput = {
   totalAmount?: Prisma.FloatFilter<"Budget"> | number
   status?: Prisma.EnumStatusFilter<"Budget"> | $Enums.Status
   observacoes?: Prisma.StringNullableFilter<"Budget"> | string | null
+  kilometers?: Prisma.IntNullableFilter<"Budget"> | number | null
+  fuelLevel?: Prisma.StringNullableFilter<"Budget"> | string | null
+  checklist?: Prisma.JsonNullableFilter<"Budget">
+  signature?: Prisma.StringNullableFilter<"Budget"> | string | null
+  signedAt?: Prisma.DateTimeNullableFilter<"Budget"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Budget"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Budget"> | Date | string
   organizationId?: Prisma.StringNullableFilter<"Budget"> | string | null
@@ -717,10 +873,16 @@ export type BudgetCreateWithoutCustomerInput = {
   totalAmount: number
   status?: $Enums.Status
   observacoes?: string | null
+  kilometers?: number | null
+  fuelLevel?: string | null
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  signature?: string | null
+  signedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   vehicle: Prisma.VehicleCreateNestedOneWithoutBudgetsInput
   items?: Prisma.BudgetItemCreateNestedManyWithoutBudgetInput
+  photos?: Prisma.BudgetPhotoCreateNestedManyWithoutBudgetInput
   organization?: Prisma.OrganizationCreateNestedOneWithoutBudgetsInput
   serviceOrder?: Prisma.ServiceOrderCreateNestedOneWithoutBudgetInput
 }
@@ -731,10 +893,16 @@ export type BudgetUncheckedCreateWithoutCustomerInput = {
   totalAmount: number
   status?: $Enums.Status
   observacoes?: string | null
+  kilometers?: number | null
+  fuelLevel?: string | null
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  signature?: string | null
+  signedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organizationId?: string | null
   items?: Prisma.BudgetItemUncheckedCreateNestedManyWithoutBudgetInput
+  photos?: Prisma.BudgetPhotoUncheckedCreateNestedManyWithoutBudgetInput
   serviceOrder?: Prisma.ServiceOrderUncheckedCreateNestedOneWithoutBudgetInput
 }
 
@@ -769,10 +937,16 @@ export type BudgetCreateWithoutVehicleInput = {
   totalAmount: number
   status?: $Enums.Status
   observacoes?: string | null
+  kilometers?: number | null
+  fuelLevel?: string | null
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  signature?: string | null
+  signedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   customer: Prisma.CustomerCreateNestedOneWithoutBudgetsInput
   items?: Prisma.BudgetItemCreateNestedManyWithoutBudgetInput
+  photos?: Prisma.BudgetPhotoCreateNestedManyWithoutBudgetInput
   organization?: Prisma.OrganizationCreateNestedOneWithoutBudgetsInput
   serviceOrder?: Prisma.ServiceOrderCreateNestedOneWithoutBudgetInput
 }
@@ -783,10 +957,16 @@ export type BudgetUncheckedCreateWithoutVehicleInput = {
   totalAmount: number
   status?: $Enums.Status
   observacoes?: string | null
+  kilometers?: number | null
+  fuelLevel?: string | null
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  signature?: string | null
+  signedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organizationId?: string | null
   items?: Prisma.BudgetItemUncheckedCreateNestedManyWithoutBudgetInput
+  photos?: Prisma.BudgetPhotoUncheckedCreateNestedManyWithoutBudgetInput
   serviceOrder?: Prisma.ServiceOrderUncheckedCreateNestedOneWithoutBudgetInput
 }
 
@@ -816,15 +996,113 @@ export type BudgetUpdateManyWithWhereWithoutVehicleInput = {
   data: Prisma.XOR<Prisma.BudgetUpdateManyMutationInput, Prisma.BudgetUncheckedUpdateManyWithoutVehicleInput>
 }
 
+export type BudgetCreateWithoutPhotosInput = {
+  id?: string
+  totalAmount: number
+  status?: $Enums.Status
+  observacoes?: string | null
+  kilometers?: number | null
+  fuelLevel?: string | null
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  signature?: string | null
+  signedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  customer: Prisma.CustomerCreateNestedOneWithoutBudgetsInput
+  vehicle: Prisma.VehicleCreateNestedOneWithoutBudgetsInput
+  items?: Prisma.BudgetItemCreateNestedManyWithoutBudgetInput
+  organization?: Prisma.OrganizationCreateNestedOneWithoutBudgetsInput
+  serviceOrder?: Prisma.ServiceOrderCreateNestedOneWithoutBudgetInput
+}
+
+export type BudgetUncheckedCreateWithoutPhotosInput = {
+  id?: string
+  customerId: string
+  vehicleId: string
+  totalAmount: number
+  status?: $Enums.Status
+  observacoes?: string | null
+  kilometers?: number | null
+  fuelLevel?: string | null
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  signature?: string | null
+  signedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organizationId?: string | null
+  items?: Prisma.BudgetItemUncheckedCreateNestedManyWithoutBudgetInput
+  serviceOrder?: Prisma.ServiceOrderUncheckedCreateNestedOneWithoutBudgetInput
+}
+
+export type BudgetCreateOrConnectWithoutPhotosInput = {
+  where: Prisma.BudgetWhereUniqueInput
+  create: Prisma.XOR<Prisma.BudgetCreateWithoutPhotosInput, Prisma.BudgetUncheckedCreateWithoutPhotosInput>
+}
+
+export type BudgetUpsertWithoutPhotosInput = {
+  update: Prisma.XOR<Prisma.BudgetUpdateWithoutPhotosInput, Prisma.BudgetUncheckedUpdateWithoutPhotosInput>
+  create: Prisma.XOR<Prisma.BudgetCreateWithoutPhotosInput, Prisma.BudgetUncheckedCreateWithoutPhotosInput>
+  where?: Prisma.BudgetWhereInput
+}
+
+export type BudgetUpdateToOneWithWhereWithoutPhotosInput = {
+  where?: Prisma.BudgetWhereInput
+  data: Prisma.XOR<Prisma.BudgetUpdateWithoutPhotosInput, Prisma.BudgetUncheckedUpdateWithoutPhotosInput>
+}
+
+export type BudgetUpdateWithoutPhotosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  totalAmount?: Prisma.FloatFieldUpdateOperationsInput | number
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
+  observacoes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  kilometers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fuelLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  signature?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  signedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  customer?: Prisma.CustomerUpdateOneRequiredWithoutBudgetsNestedInput
+  vehicle?: Prisma.VehicleUpdateOneRequiredWithoutBudgetsNestedInput
+  items?: Prisma.BudgetItemUpdateManyWithoutBudgetNestedInput
+  organization?: Prisma.OrganizationUpdateOneWithoutBudgetsNestedInput
+  serviceOrder?: Prisma.ServiceOrderUpdateOneWithoutBudgetNestedInput
+}
+
+export type BudgetUncheckedUpdateWithoutPhotosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  customerId?: Prisma.StringFieldUpdateOperationsInput | string
+  vehicleId?: Prisma.StringFieldUpdateOperationsInput | string
+  totalAmount?: Prisma.FloatFieldUpdateOperationsInput | number
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
+  observacoes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  kilometers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fuelLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  signature?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  signedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  items?: Prisma.BudgetItemUncheckedUpdateManyWithoutBudgetNestedInput
+  serviceOrder?: Prisma.ServiceOrderUncheckedUpdateOneWithoutBudgetNestedInput
+}
+
 export type BudgetCreateWithoutItemsInput = {
   id?: string
   totalAmount: number
   status?: $Enums.Status
   observacoes?: string | null
+  kilometers?: number | null
+  fuelLevel?: string | null
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  signature?: string | null
+  signedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   customer: Prisma.CustomerCreateNestedOneWithoutBudgetsInput
   vehicle: Prisma.VehicleCreateNestedOneWithoutBudgetsInput
+  photos?: Prisma.BudgetPhotoCreateNestedManyWithoutBudgetInput
   organization?: Prisma.OrganizationCreateNestedOneWithoutBudgetsInput
   serviceOrder?: Prisma.ServiceOrderCreateNestedOneWithoutBudgetInput
 }
@@ -836,9 +1114,15 @@ export type BudgetUncheckedCreateWithoutItemsInput = {
   totalAmount: number
   status?: $Enums.Status
   observacoes?: string | null
+  kilometers?: number | null
+  fuelLevel?: string | null
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  signature?: string | null
+  signedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organizationId?: string | null
+  photos?: Prisma.BudgetPhotoUncheckedCreateNestedManyWithoutBudgetInput
   serviceOrder?: Prisma.ServiceOrderUncheckedCreateNestedOneWithoutBudgetInput
 }
 
@@ -863,10 +1147,16 @@ export type BudgetUpdateWithoutItemsInput = {
   totalAmount?: Prisma.FloatFieldUpdateOperationsInput | number
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   observacoes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  kilometers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fuelLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  signature?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  signedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   customer?: Prisma.CustomerUpdateOneRequiredWithoutBudgetsNestedInput
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutBudgetsNestedInput
+  photos?: Prisma.BudgetPhotoUpdateManyWithoutBudgetNestedInput
   organization?: Prisma.OrganizationUpdateOneWithoutBudgetsNestedInput
   serviceOrder?: Prisma.ServiceOrderUpdateOneWithoutBudgetNestedInput
 }
@@ -878,9 +1168,15 @@ export type BudgetUncheckedUpdateWithoutItemsInput = {
   totalAmount?: Prisma.FloatFieldUpdateOperationsInput | number
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   observacoes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  kilometers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fuelLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  signature?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  signedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  photos?: Prisma.BudgetPhotoUncheckedUpdateManyWithoutBudgetNestedInput
   serviceOrder?: Prisma.ServiceOrderUncheckedUpdateOneWithoutBudgetNestedInput
 }
 
@@ -889,11 +1185,17 @@ export type BudgetCreateWithoutServiceOrderInput = {
   totalAmount: number
   status?: $Enums.Status
   observacoes?: string | null
+  kilometers?: number | null
+  fuelLevel?: string | null
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  signature?: string | null
+  signedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   customer: Prisma.CustomerCreateNestedOneWithoutBudgetsInput
   vehicle: Prisma.VehicleCreateNestedOneWithoutBudgetsInput
   items?: Prisma.BudgetItemCreateNestedManyWithoutBudgetInput
+  photos?: Prisma.BudgetPhotoCreateNestedManyWithoutBudgetInput
   organization?: Prisma.OrganizationCreateNestedOneWithoutBudgetsInput
 }
 
@@ -904,10 +1206,16 @@ export type BudgetUncheckedCreateWithoutServiceOrderInput = {
   totalAmount: number
   status?: $Enums.Status
   observacoes?: string | null
+  kilometers?: number | null
+  fuelLevel?: string | null
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  signature?: string | null
+  signedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organizationId?: string | null
   items?: Prisma.BudgetItemUncheckedCreateNestedManyWithoutBudgetInput
+  photos?: Prisma.BudgetPhotoUncheckedCreateNestedManyWithoutBudgetInput
 }
 
 export type BudgetCreateOrConnectWithoutServiceOrderInput = {
@@ -931,11 +1239,17 @@ export type BudgetUpdateWithoutServiceOrderInput = {
   totalAmount?: Prisma.FloatFieldUpdateOperationsInput | number
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   observacoes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  kilometers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fuelLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  signature?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  signedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   customer?: Prisma.CustomerUpdateOneRequiredWithoutBudgetsNestedInput
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutBudgetsNestedInput
   items?: Prisma.BudgetItemUpdateManyWithoutBudgetNestedInput
+  photos?: Prisma.BudgetPhotoUpdateManyWithoutBudgetNestedInput
   organization?: Prisma.OrganizationUpdateOneWithoutBudgetsNestedInput
 }
 
@@ -946,10 +1260,16 @@ export type BudgetUncheckedUpdateWithoutServiceOrderInput = {
   totalAmount?: Prisma.FloatFieldUpdateOperationsInput | number
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   observacoes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  kilometers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fuelLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  signature?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  signedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   items?: Prisma.BudgetItemUncheckedUpdateManyWithoutBudgetNestedInput
+  photos?: Prisma.BudgetPhotoUncheckedUpdateManyWithoutBudgetNestedInput
 }
 
 export type BudgetCreateManyOrganizationInput = {
@@ -959,6 +1279,11 @@ export type BudgetCreateManyOrganizationInput = {
   totalAmount: number
   status?: $Enums.Status
   observacoes?: string | null
+  kilometers?: number | null
+  fuelLevel?: string | null
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  signature?: string | null
+  signedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -968,11 +1293,17 @@ export type BudgetUpdateWithoutOrganizationInput = {
   totalAmount?: Prisma.FloatFieldUpdateOperationsInput | number
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   observacoes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  kilometers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fuelLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  signature?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  signedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   customer?: Prisma.CustomerUpdateOneRequiredWithoutBudgetsNestedInput
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutBudgetsNestedInput
   items?: Prisma.BudgetItemUpdateManyWithoutBudgetNestedInput
+  photos?: Prisma.BudgetPhotoUpdateManyWithoutBudgetNestedInput
   serviceOrder?: Prisma.ServiceOrderUpdateOneWithoutBudgetNestedInput
 }
 
@@ -983,9 +1314,15 @@ export type BudgetUncheckedUpdateWithoutOrganizationInput = {
   totalAmount?: Prisma.FloatFieldUpdateOperationsInput | number
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   observacoes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  kilometers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fuelLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  signature?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  signedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.BudgetItemUncheckedUpdateManyWithoutBudgetNestedInput
+  photos?: Prisma.BudgetPhotoUncheckedUpdateManyWithoutBudgetNestedInput
   serviceOrder?: Prisma.ServiceOrderUncheckedUpdateOneWithoutBudgetNestedInput
 }
 
@@ -996,6 +1333,11 @@ export type BudgetUncheckedUpdateManyWithoutOrganizationInput = {
   totalAmount?: Prisma.FloatFieldUpdateOperationsInput | number
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   observacoes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  kilometers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fuelLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  signature?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  signedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1006,6 +1348,11 @@ export type BudgetCreateManyCustomerInput = {
   totalAmount: number
   status?: $Enums.Status
   observacoes?: string | null
+  kilometers?: number | null
+  fuelLevel?: string | null
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  signature?: string | null
+  signedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organizationId?: string | null
@@ -1016,10 +1363,16 @@ export type BudgetUpdateWithoutCustomerInput = {
   totalAmount?: Prisma.FloatFieldUpdateOperationsInput | number
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   observacoes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  kilometers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fuelLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  signature?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  signedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutBudgetsNestedInput
   items?: Prisma.BudgetItemUpdateManyWithoutBudgetNestedInput
+  photos?: Prisma.BudgetPhotoUpdateManyWithoutBudgetNestedInput
   organization?: Prisma.OrganizationUpdateOneWithoutBudgetsNestedInput
   serviceOrder?: Prisma.ServiceOrderUpdateOneWithoutBudgetNestedInput
 }
@@ -1030,10 +1383,16 @@ export type BudgetUncheckedUpdateWithoutCustomerInput = {
   totalAmount?: Prisma.FloatFieldUpdateOperationsInput | number
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   observacoes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  kilometers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fuelLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  signature?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  signedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   items?: Prisma.BudgetItemUncheckedUpdateManyWithoutBudgetNestedInput
+  photos?: Prisma.BudgetPhotoUncheckedUpdateManyWithoutBudgetNestedInput
   serviceOrder?: Prisma.ServiceOrderUncheckedUpdateOneWithoutBudgetNestedInput
 }
 
@@ -1043,6 +1402,11 @@ export type BudgetUncheckedUpdateManyWithoutCustomerInput = {
   totalAmount?: Prisma.FloatFieldUpdateOperationsInput | number
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   observacoes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  kilometers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fuelLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  signature?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  signedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1054,6 +1418,11 @@ export type BudgetCreateManyVehicleInput = {
   totalAmount: number
   status?: $Enums.Status
   observacoes?: string | null
+  kilometers?: number | null
+  fuelLevel?: string | null
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  signature?: string | null
+  signedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organizationId?: string | null
@@ -1064,10 +1433,16 @@ export type BudgetUpdateWithoutVehicleInput = {
   totalAmount?: Prisma.FloatFieldUpdateOperationsInput | number
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   observacoes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  kilometers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fuelLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  signature?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  signedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   customer?: Prisma.CustomerUpdateOneRequiredWithoutBudgetsNestedInput
   items?: Prisma.BudgetItemUpdateManyWithoutBudgetNestedInput
+  photos?: Prisma.BudgetPhotoUpdateManyWithoutBudgetNestedInput
   organization?: Prisma.OrganizationUpdateOneWithoutBudgetsNestedInput
   serviceOrder?: Prisma.ServiceOrderUpdateOneWithoutBudgetNestedInput
 }
@@ -1078,10 +1453,16 @@ export type BudgetUncheckedUpdateWithoutVehicleInput = {
   totalAmount?: Prisma.FloatFieldUpdateOperationsInput | number
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   observacoes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  kilometers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fuelLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  signature?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  signedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   items?: Prisma.BudgetItemUncheckedUpdateManyWithoutBudgetNestedInput
+  photos?: Prisma.BudgetPhotoUncheckedUpdateManyWithoutBudgetNestedInput
   serviceOrder?: Prisma.ServiceOrderUncheckedUpdateOneWithoutBudgetNestedInput
 }
 
@@ -1091,6 +1472,11 @@ export type BudgetUncheckedUpdateManyWithoutVehicleInput = {
   totalAmount?: Prisma.FloatFieldUpdateOperationsInput | number
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   observacoes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  kilometers?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  fuelLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  checklist?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  signature?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  signedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1103,10 +1489,12 @@ export type BudgetUncheckedUpdateManyWithoutVehicleInput = {
 
 export type BudgetCountOutputType = {
   items: number
+  photos: number
 }
 
 export type BudgetCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   items?: boolean | BudgetCountOutputTypeCountItemsArgs
+  photos?: boolean | BudgetCountOutputTypeCountPhotosArgs
 }
 
 /**
@@ -1126,6 +1514,13 @@ export type BudgetCountOutputTypeCountItemsArgs<ExtArgs extends runtime.Types.Ex
   where?: Prisma.BudgetItemWhereInput
 }
 
+/**
+ * BudgetCountOutputType without action
+ */
+export type BudgetCountOutputTypeCountPhotosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BudgetPhotoWhereInput
+}
+
 
 export type BudgetSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1134,12 +1529,18 @@ export type BudgetSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   totalAmount?: boolean
   status?: boolean
   observacoes?: boolean
+  kilometers?: boolean
+  fuelLevel?: boolean
+  checklist?: boolean
+  signature?: boolean
+  signedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   organizationId?: boolean
   customer?: boolean | Prisma.CustomerDefaultArgs<ExtArgs>
   vehicle?: boolean | Prisma.VehicleDefaultArgs<ExtArgs>
   items?: boolean | Prisma.Budget$itemsArgs<ExtArgs>
+  photos?: boolean | Prisma.Budget$photosArgs<ExtArgs>
   organization?: boolean | Prisma.Budget$organizationArgs<ExtArgs>
   serviceOrder?: boolean | Prisma.Budget$serviceOrderArgs<ExtArgs>
   _count?: boolean | Prisma.BudgetCountOutputTypeDefaultArgs<ExtArgs>
@@ -1154,16 +1555,22 @@ export type BudgetSelectScalar = {
   totalAmount?: boolean
   status?: boolean
   observacoes?: boolean
+  kilometers?: boolean
+  fuelLevel?: boolean
+  checklist?: boolean
+  signature?: boolean
+  signedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   organizationId?: boolean
 }
 
-export type BudgetOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "customerId" | "vehicleId" | "totalAmount" | "status" | "observacoes" | "createdAt" | "updatedAt" | "organizationId", ExtArgs["result"]["budget"]>
+export type BudgetOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "customerId" | "vehicleId" | "totalAmount" | "status" | "observacoes" | "kilometers" | "fuelLevel" | "checklist" | "signature" | "signedAt" | "createdAt" | "updatedAt" | "organizationId", ExtArgs["result"]["budget"]>
 export type BudgetInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   customer?: boolean | Prisma.CustomerDefaultArgs<ExtArgs>
   vehicle?: boolean | Prisma.VehicleDefaultArgs<ExtArgs>
   items?: boolean | Prisma.Budget$itemsArgs<ExtArgs>
+  photos?: boolean | Prisma.Budget$photosArgs<ExtArgs>
   organization?: boolean | Prisma.Budget$organizationArgs<ExtArgs>
   serviceOrder?: boolean | Prisma.Budget$serviceOrderArgs<ExtArgs>
   _count?: boolean | Prisma.BudgetCountOutputTypeDefaultArgs<ExtArgs>
@@ -1175,6 +1582,7 @@ export type $BudgetPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     customer: Prisma.$CustomerPayload<ExtArgs>
     vehicle: Prisma.$VehiclePayload<ExtArgs>
     items: Prisma.$BudgetItemPayload<ExtArgs>[]
+    photos: Prisma.$BudgetPhotoPayload<ExtArgs>[]
     organization: Prisma.$OrganizationPayload<ExtArgs> | null
     serviceOrder: Prisma.$ServiceOrderPayload<ExtArgs> | null
   }
@@ -1185,6 +1593,11 @@ export type $BudgetPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     totalAmount: number
     status: $Enums.Status
     observacoes: string | null
+    kilometers: number | null
+    fuelLevel: string | null
+    checklist: runtime.JsonValue | null
+    signature: string | null
+    signedAt: Date | null
     createdAt: Date
     updatedAt: Date
     organizationId: string | null
@@ -1531,6 +1944,7 @@ export interface Prisma__BudgetClient<T, Null = never, ExtArgs extends runtime.T
   customer<T extends Prisma.CustomerDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CustomerDefaultArgs<ExtArgs>>): Prisma.Prisma__CustomerClient<runtime.Types.Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   vehicle<T extends Prisma.VehicleDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VehicleDefaultArgs<ExtArgs>>): Prisma.Prisma__VehicleClient<runtime.Types.Result.GetResult<Prisma.$VehiclePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   items<T extends Prisma.Budget$itemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Budget$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BudgetItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  photos<T extends Prisma.Budget$photosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Budget$photosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BudgetPhotoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   organization<T extends Prisma.Budget$organizationArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Budget$organizationArgs<ExtArgs>>): Prisma.Prisma__OrganizationClient<runtime.Types.Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   serviceOrder<T extends Prisma.Budget$serviceOrderArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Budget$serviceOrderArgs<ExtArgs>>): Prisma.Prisma__ServiceOrderClient<runtime.Types.Result.GetResult<Prisma.$ServiceOrderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
@@ -1568,6 +1982,11 @@ export interface BudgetFieldRefs {
   readonly totalAmount: Prisma.FieldRef<"Budget", 'Float'>
   readonly status: Prisma.FieldRef<"Budget", 'Status'>
   readonly observacoes: Prisma.FieldRef<"Budget", 'String'>
+  readonly kilometers: Prisma.FieldRef<"Budget", 'Int'>
+  readonly fuelLevel: Prisma.FieldRef<"Budget", 'String'>
+  readonly checklist: Prisma.FieldRef<"Budget", 'Json'>
+  readonly signature: Prisma.FieldRef<"Budget", 'String'>
+  readonly signedAt: Prisma.FieldRef<"Budget", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Budget", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Budget", 'DateTime'>
   readonly organizationId: Prisma.FieldRef<"Budget", 'String'>
@@ -1940,6 +2359,30 @@ export type Budget$itemsArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
   take?: number
   skip?: number
   distinct?: Prisma.BudgetItemScalarFieldEnum | Prisma.BudgetItemScalarFieldEnum[]
+}
+
+/**
+ * Budget.photos
+ */
+export type Budget$photosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BudgetPhoto
+   */
+  select?: Prisma.BudgetPhotoSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BudgetPhoto
+   */
+  omit?: Prisma.BudgetPhotoOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BudgetPhotoInclude<ExtArgs> | null
+  where?: Prisma.BudgetPhotoWhereInput
+  orderBy?: Prisma.BudgetPhotoOrderByWithRelationInput | Prisma.BudgetPhotoOrderByWithRelationInput[]
+  cursor?: Prisma.BudgetPhotoWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BudgetPhotoScalarFieldEnum | Prisma.BudgetPhotoScalarFieldEnum[]
 }
 
 /**

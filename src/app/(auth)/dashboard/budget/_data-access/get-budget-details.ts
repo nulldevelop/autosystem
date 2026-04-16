@@ -16,6 +16,7 @@ export async function getBudgetDetails(budgetId: string) {
           product: true,
         },
       },
+      photos: true,
       serviceOrder: true,
     },
   });

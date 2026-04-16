@@ -1,48 +1,45 @@
 "use client";
 
-import { PDFDownloadLink } from "@react-pdf/renderer";
 import { FileDown, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import type { BudgetWithRelations } from "@/types/budget";
-import { BudgetPDF } from "./BudgetPDF";
 
 interface PDFDownloadButtonProps {
   budget: BudgetWithRelations;
 }
 
 export function PDFDownloadButton({ budget }: PDFDownloadButtonProps) {
-  const [shouldRender, setShouldRender] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  if (!shouldRender) {
-    return (
-      <Button variant="outline" size="sm" onClick={() => setShouldRender(true)}>
-        Baixar PDF
-        <FileDown className="w-4 h-4 ml-2" />
-      </Button>
-    );
-  }
+  const handleDownload = () => {
+    setIsLoading(true);
+    // Redireciona para a API de download
+    window.location.href = `/api/budget/${budget.id}/pdf`;
+    
+    // Pequeno delay para resetar o loading (já que o navegador vai tratar o download)
+    setTimeout(() => setIsLoading(false), 2000);
+  };
 
   return (
-    <PDFDownloadLink
-      document={<BudgetPDF budget={budget as any} />}
-      fileName={`orcamento-${budget.id.substring(0, 6)}.pdf`}
+    <Button 
+      variant="outline" 
+      size="sm" 
+      onClick={handleDownload} 
+      disabled={isLoading}
+      className="w-full h-9 gap-2 border-white/5 bg-white/5 hover:bg-white/10 text-[10px] font-black uppercase tracking-wider"
     >
-      {({ loading }) => (
-        <Button variant="outline" size="sm" disabled={loading}>
-          {loading ? (
-            <>
-              Gerando...
-              <Loader2 className="w-4 h-4 ml-2 animate-spin" />
-            </>
-          ) : (
-            <>
-              Download
-              <FileDown className="w-4 h-4 ml-2" />
-            </>
-          )}
-        </Button>
+      {isLoading ? (
+        <>
+          Gerando...
+          <Loader2 className="w-4 h-4 animate-spin" />
+        </>
+      ) : (
+        <>
+          Baixar PDF
+          <FileDown className="w-4 h-4" />
+        </>
       )}
-    </PDFDownloadLink>
+    </Button>
   );
 }

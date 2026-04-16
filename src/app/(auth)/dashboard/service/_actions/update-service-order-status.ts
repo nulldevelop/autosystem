@@ -3,10 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { ServiceOrderStatus } from "@/generated/prisma/client";
-import { canPermission } from "@/utils/permissions/canPermission";
-import { getSession } from "@/lib/getSession";
 import { getActiveOrganization } from "@/lib/getActiveOrganization";
+import { getSession } from "@/lib/getSession";
 import { prisma } from "@/lib/prisma";
+import { canPermission } from "@/utils/permissions/canPermission";
 
 const updateServiceOrderStatusSchema = z.object({
   serviceOrderId: z.string(),
@@ -43,10 +43,7 @@ export async function updateServiceOrderStatus(
       return { success: false, message: "Ordem de Serviço não encontrada." };
     }
 
-    if (
-      serviceOrder.status === "canceled" &&
-      status !== "canceled"
-    ) {
+    if (serviceOrder.status === "canceled" && status !== "canceled") {
       const permission = await canPermission({ type: "service" });
 
       if (!permission.hasPermission) {
@@ -78,7 +75,22 @@ export async function updateServiceOrderStatus(
       },
     });
 
+    if (status === "completed") {
+      await prisma.transaction.updateMany({
+        where: {
+          serviceOrderId: serviceOrderId,
+          type: "INCOME",
+        },
+        data: {
+          status: "PAID",
+          paymentDate: new Date(),
+        },
+      });
+    }
+
+    revalidatePath("/dashboard");
     revalidatePath("/dashboard/service");
+    revalidatePath("/dashboard/financeiro");
     return {
       success: true,
       message: "Status da Ordem de Serviço atualizado com sucesso!",

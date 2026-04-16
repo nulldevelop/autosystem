@@ -394,11 +394,13 @@ export const ModelName = {
   Customer: 'Customer',
   Vehicle: 'Vehicle',
   Budget: 'Budget',
+  BudgetPhoto: 'BudgetPhoto',
   Product: 'Product',
   ProductMovement: 'ProductMovement',
   BudgetItem: 'BudgetItem',
   ServiceOrder: 'ServiceOrder',
   ServiceOrderItem: 'ServiceOrderItem',
+  Transaction: 'Transaction',
   Subscription: 'Subscription'
 } as const
 
@@ -415,7 +417,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "account" | "verification" | "organization" | "member" | "invitation" | "customer" | "vehicle" | "budget" | "product" | "productMovement" | "budgetItem" | "serviceOrder" | "serviceOrderItem" | "subscription"
+    modelProps: "user" | "session" | "account" | "verification" | "organization" | "member" | "invitation" | "customer" | "vehicle" | "budget" | "budgetPhoto" | "product" | "productMovement" | "budgetItem" | "serviceOrder" | "serviceOrderItem" | "transaction" | "subscription"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1079,6 +1081,72 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    BudgetPhoto: {
+      payload: Prisma.$BudgetPhotoPayload<ExtArgs>
+      fields: Prisma.BudgetPhotoFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BudgetPhotoFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetPhotoPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BudgetPhotoFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetPhotoPayload>
+        }
+        findFirst: {
+          args: Prisma.BudgetPhotoFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetPhotoPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BudgetPhotoFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetPhotoPayload>
+        }
+        findMany: {
+          args: Prisma.BudgetPhotoFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetPhotoPayload>[]
+        }
+        create: {
+          args: Prisma.BudgetPhotoCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetPhotoPayload>
+        }
+        createMany: {
+          args: Prisma.BudgetPhotoCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.BudgetPhotoDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetPhotoPayload>
+        }
+        update: {
+          args: Prisma.BudgetPhotoUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetPhotoPayload>
+        }
+        deleteMany: {
+          args: Prisma.BudgetPhotoDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BudgetPhotoUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.BudgetPhotoUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetPhotoPayload>
+        }
+        aggregate: {
+          args: Prisma.BudgetPhotoAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBudgetPhoto>
+        }
+        groupBy: {
+          args: Prisma.BudgetPhotoGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BudgetPhotoGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BudgetPhotoCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BudgetPhotoCountAggregateOutputType> | number
+        }
+      }
+    }
     Product: {
       payload: Prisma.$ProductPayload<ExtArgs>
       fields: Prisma.ProductFieldRefs
@@ -1409,6 +1477,72 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Transaction: {
+      payload: Prisma.$TransactionPayload<ExtArgs>
+      fields: Prisma.TransactionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TransactionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TransactionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TransactionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TransactionPayload>
+        }
+        findFirst: {
+          args: Prisma.TransactionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TransactionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TransactionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TransactionPayload>
+        }
+        findMany: {
+          args: Prisma.TransactionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TransactionPayload>[]
+        }
+        create: {
+          args: Prisma.TransactionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TransactionPayload>
+        }
+        createMany: {
+          args: Prisma.TransactionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.TransactionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TransactionPayload>
+        }
+        update: {
+          args: Prisma.TransactionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TransactionPayload>
+        }
+        deleteMany: {
+          args: Prisma.TransactionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TransactionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.TransactionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TransactionPayload>
+        }
+        aggregate: {
+          args: Prisma.TransactionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTransaction>
+        }
+        groupBy: {
+          args: Prisma.TransactionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TransactionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TransactionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TransactionCountAggregateOutputType> | number
+        }
+      }
+    }
     Subscription: {
       payload: Prisma.$SubscriptionPayload<ExtArgs>
       fields: Prisma.SubscriptionFieldRefs
@@ -1651,12 +1785,27 @@ export const BudgetScalarFieldEnum = {
   totalAmount: 'totalAmount',
   status: 'status',
   observacoes: 'observacoes',
+  kilometers: 'kilometers',
+  fuelLevel: 'fuelLevel',
+  checklist: 'checklist',
+  signature: 'signature',
+  signedAt: 'signedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   organizationId: 'organizationId'
 } as const
 
 export type BudgetScalarFieldEnum = (typeof BudgetScalarFieldEnum)[keyof typeof BudgetScalarFieldEnum]
+
+
+export const BudgetPhotoScalarFieldEnum = {
+  id: 'id',
+  budgetId: 'budgetId',
+  url: 'url',
+  createdAt: 'createdAt'
+} as const
+
+export type BudgetPhotoScalarFieldEnum = (typeof BudgetPhotoScalarFieldEnum)[keyof typeof BudgetPhotoScalarFieldEnum]
 
 
 export const ProductScalarFieldEnum = {
@@ -1727,6 +1876,27 @@ export const ServiceOrderItemScalarFieldEnum = {
 export type ServiceOrderItemScalarFieldEnum = (typeof ServiceOrderItemScalarFieldEnum)[keyof typeof ServiceOrderItemScalarFieldEnum]
 
 
+export const TransactionScalarFieldEnum = {
+  id: 'id',
+  description: 'description',
+  amount: 'amount',
+  costAmount: 'costAmount',
+  netAmount: 'netAmount',
+  type: 'type',
+  status: 'status',
+  category: 'category',
+  dueDate: 'dueDate',
+  paymentDate: 'paymentDate',
+  paymentMethod: 'paymentMethod',
+  serviceOrderId: 'serviceOrderId',
+  organizationId: 'organizationId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TransactionScalarFieldEnum = (typeof TransactionScalarFieldEnum)[keyof typeof TransactionScalarFieldEnum]
+
+
 export const SubscriptionScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -1750,6 +1920,14 @@ export const SortOrder = {
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const NullsOrder = {
@@ -1867,15 +2045,43 @@ export const VehicleOrderByRelevanceFieldEnum = {
 export type VehicleOrderByRelevanceFieldEnum = (typeof VehicleOrderByRelevanceFieldEnum)[keyof typeof VehicleOrderByRelevanceFieldEnum]
 
 
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
+
+
+export const QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
+} as const
+
+export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
 export const BudgetOrderByRelevanceFieldEnum = {
   id: 'id',
   customerId: 'customerId',
   vehicleId: 'vehicleId',
   observacoes: 'observacoes',
+  fuelLevel: 'fuelLevel',
+  signature: 'signature',
   organizationId: 'organizationId'
 } as const
 
 export type BudgetOrderByRelevanceFieldEnum = (typeof BudgetOrderByRelevanceFieldEnum)[keyof typeof BudgetOrderByRelevanceFieldEnum]
+
+
+export const BudgetPhotoOrderByRelevanceFieldEnum = {
+  id: 'id',
+  budgetId: 'budgetId',
+  url: 'url'
+} as const
+
+export type BudgetPhotoOrderByRelevanceFieldEnum = (typeof BudgetPhotoOrderByRelevanceFieldEnum)[keyof typeof BudgetPhotoOrderByRelevanceFieldEnum]
 
 
 export const ProductOrderByRelevanceFieldEnum = {
@@ -1927,6 +2133,17 @@ export const ServiceOrderItemOrderByRelevanceFieldEnum = {
 } as const
 
 export type ServiceOrderItemOrderByRelevanceFieldEnum = (typeof ServiceOrderItemOrderByRelevanceFieldEnum)[keyof typeof ServiceOrderItemOrderByRelevanceFieldEnum]
+
+
+export const TransactionOrderByRelevanceFieldEnum = {
+  id: 'id',
+  description: 'description',
+  paymentMethod: 'paymentMethod',
+  serviceOrderId: 'serviceOrderId',
+  organizationId: 'organizationId'
+} as const
+
+export type TransactionOrderByRelevanceFieldEnum = (typeof TransactionOrderByRelevanceFieldEnum)[keyof typeof TransactionOrderByRelevanceFieldEnum]
 
 
 export const SubscriptionOrderByRelevanceFieldEnum = {
@@ -1997,6 +2214,20 @@ export type EnumStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMod
 
 
 /**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
  * Reference to a field of type 'MovementType'
  */
 export type EnumMovementTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MovementType'>
@@ -2007,6 +2238,27 @@ export type EnumMovementTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$Pri
  * Reference to a field of type 'ServiceOrderStatus'
  */
 export type EnumServiceOrderStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ServiceOrderStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'TransactionType'
+ */
+export type EnumTransactionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TransactionType'>
+    
+
+
+/**
+ * Reference to a field of type 'TransactionStatus'
+ */
+export type EnumTransactionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TransactionStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'TransactionCategory'
+ */
+export type EnumTransactionCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TransactionCategory'>
     
 
 
@@ -2121,11 +2373,13 @@ export type GlobalOmitConfig = {
   customer?: Prisma.CustomerOmit
   vehicle?: Prisma.VehicleOmit
   budget?: Prisma.BudgetOmit
+  budgetPhoto?: Prisma.BudgetPhotoOmit
   product?: Prisma.ProductOmit
   productMovement?: Prisma.ProductMovementOmit
   budgetItem?: Prisma.BudgetItemOmit
   serviceOrder?: Prisma.ServiceOrderOmit
   serviceOrderItem?: Prisma.ServiceOrderItemOmit
+  transaction?: Prisma.TransactionOmit
   subscription?: Prisma.SubscriptionOmit
 }
 

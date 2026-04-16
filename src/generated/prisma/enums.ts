@@ -45,6 +45,35 @@ export const ServiceOrderStatus = {
 export type ServiceOrderStatus = (typeof ServiceOrderStatus)[keyof typeof ServiceOrderStatus]
 
 
+export const TransactionType = {
+  INCOME: 'INCOME',
+  EXPENSE: 'EXPENSE'
+} as const
+
+export type TransactionType = (typeof TransactionType)[keyof typeof TransactionType]
+
+
+export const TransactionStatus = {
+  PENDING: 'PENDING',
+  PAID: 'PAID',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type TransactionStatus = (typeof TransactionStatus)[keyof typeof TransactionStatus]
+
+
+export const TransactionCategory = {
+  SERVICE: 'SERVICE',
+  PRODUCT: 'PRODUCT',
+  RENT: 'RENT',
+  SALARY: 'SALARY',
+  TAX: 'TAX',
+  OTHER: 'OTHER'
+} as const
+
+export type TransactionCategory = (typeof TransactionCategory)[keyof typeof TransactionCategory]
+
+
 export const Plan = {
   BASIC: 'BASIC',
   PLUS: 'PLUS',

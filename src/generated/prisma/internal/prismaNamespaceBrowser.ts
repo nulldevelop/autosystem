@@ -61,11 +61,13 @@ export const ModelName = {
   Customer: 'Customer',
   Vehicle: 'Vehicle',
   Budget: 'Budget',
+  BudgetPhoto: 'BudgetPhoto',
   Product: 'Product',
   ProductMovement: 'ProductMovement',
   BudgetItem: 'BudgetItem',
   ServiceOrder: 'ServiceOrder',
   ServiceOrderItem: 'ServiceOrderItem',
+  Transaction: 'Transaction',
   Subscription: 'Subscription'
 } as const
 
@@ -222,12 +224,27 @@ export const BudgetScalarFieldEnum = {
   totalAmount: 'totalAmount',
   status: 'status',
   observacoes: 'observacoes',
+  kilometers: 'kilometers',
+  fuelLevel: 'fuelLevel',
+  checklist: 'checklist',
+  signature: 'signature',
+  signedAt: 'signedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   organizationId: 'organizationId'
 } as const
 
 export type BudgetScalarFieldEnum = (typeof BudgetScalarFieldEnum)[keyof typeof BudgetScalarFieldEnum]
+
+
+export const BudgetPhotoScalarFieldEnum = {
+  id: 'id',
+  budgetId: 'budgetId',
+  url: 'url',
+  createdAt: 'createdAt'
+} as const
+
+export type BudgetPhotoScalarFieldEnum = (typeof BudgetPhotoScalarFieldEnum)[keyof typeof BudgetPhotoScalarFieldEnum]
 
 
 export const ProductScalarFieldEnum = {
@@ -298,6 +315,27 @@ export const ServiceOrderItemScalarFieldEnum = {
 export type ServiceOrderItemScalarFieldEnum = (typeof ServiceOrderItemScalarFieldEnum)[keyof typeof ServiceOrderItemScalarFieldEnum]
 
 
+export const TransactionScalarFieldEnum = {
+  id: 'id',
+  description: 'description',
+  amount: 'amount',
+  costAmount: 'costAmount',
+  netAmount: 'netAmount',
+  type: 'type',
+  status: 'status',
+  category: 'category',
+  dueDate: 'dueDate',
+  paymentDate: 'paymentDate',
+  paymentMethod: 'paymentMethod',
+  serviceOrderId: 'serviceOrderId',
+  organizationId: 'organizationId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TransactionScalarFieldEnum = (typeof TransactionScalarFieldEnum)[keyof typeof TransactionScalarFieldEnum]
+
+
 export const SubscriptionScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -321,6 +359,14 @@ export const SortOrder = {
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const NullsOrder = {
@@ -438,15 +484,43 @@ export const VehicleOrderByRelevanceFieldEnum = {
 export type VehicleOrderByRelevanceFieldEnum = (typeof VehicleOrderByRelevanceFieldEnum)[keyof typeof VehicleOrderByRelevanceFieldEnum]
 
 
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
+
+
+export const QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
+} as const
+
+export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
 export const BudgetOrderByRelevanceFieldEnum = {
   id: 'id',
   customerId: 'customerId',
   vehicleId: 'vehicleId',
   observacoes: 'observacoes',
+  fuelLevel: 'fuelLevel',
+  signature: 'signature',
   organizationId: 'organizationId'
 } as const
 
 export type BudgetOrderByRelevanceFieldEnum = (typeof BudgetOrderByRelevanceFieldEnum)[keyof typeof BudgetOrderByRelevanceFieldEnum]
+
+
+export const BudgetPhotoOrderByRelevanceFieldEnum = {
+  id: 'id',
+  budgetId: 'budgetId',
+  url: 'url'
+} as const
+
+export type BudgetPhotoOrderByRelevanceFieldEnum = (typeof BudgetPhotoOrderByRelevanceFieldEnum)[keyof typeof BudgetPhotoOrderByRelevanceFieldEnum]
 
 
 export const ProductOrderByRelevanceFieldEnum = {
@@ -498,6 +572,17 @@ export const ServiceOrderItemOrderByRelevanceFieldEnum = {
 } as const
 
 export type ServiceOrderItemOrderByRelevanceFieldEnum = (typeof ServiceOrderItemOrderByRelevanceFieldEnum)[keyof typeof ServiceOrderItemOrderByRelevanceFieldEnum]
+
+
+export const TransactionOrderByRelevanceFieldEnum = {
+  id: 'id',
+  description: 'description',
+  paymentMethod: 'paymentMethod',
+  serviceOrderId: 'serviceOrderId',
+  organizationId: 'organizationId'
+} as const
+
+export type TransactionOrderByRelevanceFieldEnum = (typeof TransactionOrderByRelevanceFieldEnum)[keyof typeof TransactionOrderByRelevanceFieldEnum]
 
 
 export const SubscriptionOrderByRelevanceFieldEnum = {

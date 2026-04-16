@@ -1,7 +1,7 @@
 "use client";
 
 import { PDFDownloadLink } from "@react-pdf/renderer";
-import { FileText, Loader2 } from "lucide-react";
+import { FileText, Loader2, PlusCircle } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import {
@@ -54,28 +54,39 @@ export function PDFServiceOrderDownloadButton({
     return (
       <AlertDialog>
         <AlertDialogTrigger asChild>
-          <Button variant="outline" size="sm" disabled={isCreating}>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            disabled={isCreating}
+            className="w-full h-9 gap-2 border-white/5 bg-white/5 hover:bg-white/10 text-[10px] font-black uppercase tracking-wider"
+          >
             {isCreating ? (
               <>
                 Criando...
-                <Loader2 className="w-4 h-4 ml-2 animate-spin" />
+                <Loader2 className="w-4 h-4 animate-spin" />
               </>
             ) : (
-              "Gerar O.S."
+              <>
+                Gerar O.S.
+                <PlusCircle className="w-4 h-4" />
+              </>
             )}
           </Button>
         </AlertDialogTrigger>
-        <AlertDialogContent>
+        <AlertDialogContent className="bg-zinc-950 border-white/10 text-white">
           <AlertDialogHeader>
-            <AlertDialogTitle>Confirmar Ordem de Serviço</AlertDialogTitle>
-            <AlertDialogDescription>
+            <AlertDialogTitle className="font-black uppercase italic tracking-tighter text-2xl">Confirmar Ordem de Serviço</AlertDialogTitle>
+            <AlertDialogDescription className="text-white/60">
               Ao confirmar, o orçamento será automaticamente aprovado e uma nova
               Ordem de Serviço será criada. Esta ação não pode ser revertida.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={handleCreateServiceOrder}>
+            <AlertDialogCancel className="bg-white/5 border-white/10 text-white hover:bg-white/10">Cancelar</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleCreateServiceOrder}
+              className="bg-primary text-black hover:bg-primary/90 font-bold"
+            >
               Confirmar
             </AlertDialogAction>
           </AlertDialogFooter>
@@ -86,9 +97,14 @@ export function PDFServiceOrderDownloadButton({
 
   if (!shouldRender) {
     return (
-      <Button variant="outline" size="sm" onClick={() => setShouldRender(true)}>
+      <Button 
+        variant="outline" 
+        size="sm" 
+        onClick={() => setShouldRender(true)}
+        className="w-full h-9 gap-2 border-white/5 bg-white/5 hover:bg-white/10 text-[10px] font-black uppercase tracking-wider"
+      >
         Baixar O.S.
-        <FileText className="w-4 h-4 ml-2" />
+        <FileText className="w-4 h-4" />
       </Button>
     );
   }
@@ -97,18 +113,24 @@ export function PDFServiceOrderDownloadButton({
     <PDFDownloadLink
       document={<ServiceOrderPDF budget={initialBudget as any} />}
       fileName={`ordem-de-servico-${initialBudget.id.substring(0, 6)}.pdf`}
+      style={{ width: '100%' }}
     >
       {({ loading }) => (
-        <Button variant="outline" size="sm" disabled={loading}>
+        <Button 
+          variant="outline" 
+          size="sm" 
+          disabled={loading}
+          className="w-full h-9 gap-2 border-white/5 bg-white/5 hover:bg-white/10 text-[10px] font-black uppercase tracking-wider"
+        >
           {loading ? (
             <>
               Gerando...
-              <Loader2 className="w-4 h-4 ml-2 animate-spin" />
+              <Loader2 className="w-4 h-4 animate-spin" />
             </>
           ) : (
             <>
               Download O.S.
-              <FileText className="w-4 h-4 ml-2" />
+              <FileText className="w-4 h-4" />
             </>
           )}
         </Button>

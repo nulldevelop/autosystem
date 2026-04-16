@@ -1,0 +1,7 @@
+-- AlterTable
+ALTER TABLE `budget` ADD COLUMN `itemsAmount` DOUBLE NOT NULL DEFAULT 0,
+    ADD COLUMN `laborValue` DOUBLE NOT NULL DEFAULT 0;
+
+-- AlterTable
+ALTER TABLE `service_order` ADD COLUMN `itemsAmount` DOUBLE NOT NULL DEFAULT 0,
+    ADD COLUMN `laborValue` DOUBLE NOT NULL DEFAULT 0;

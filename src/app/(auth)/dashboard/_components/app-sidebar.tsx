@@ -22,7 +22,6 @@ import {
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
@@ -35,20 +34,32 @@ import { getSubscription } from "../_data-access/get-subscriptio";
 import { getVehiclesCount } from "../_data-access/get-vehicles-count";
 import { getProductsCount } from "../product/_data-access/get-products-count";
 import { getServiceOrdersCount } from "../service/_data-access/get-service-orders-count";
+import { SidebarItem } from "./sidebar-item";
 
 type MenuItem = {
   title: string;
   url: string;
-  icon: any;
-  color?: string;
+  iconName: string;
   badge?: number;
+};
+
+const iconMap: Record<string, any> = {
+  LayoutDashboard,
+  BarChart3,
+  Send,
+  Wrench,
+  TrendingUp,
+  Package,
+  Users,
+  Car,
+  CreditCard,
+  Settings,
 };
 
 export async function AppSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
   const session = await getSession();
-
   let allowedRoutes: string[] = [];
 
   const [
@@ -85,38 +96,36 @@ export async function AppSidebar({
     {
       title: "Orçamentos",
       url: "/dashboard/budget",
-      icon: Send,
-      color: "text-primary",
+      iconName: "Send",
       badge: budgetsCount > 0 ? budgetsCount : undefined,
     },
     {
       title: "Ordens de Serviço",
       url: "/dashboard/service",
-      icon: Wrench,
+      iconName: "Wrench",
       badge: serviceOrdersCount > 0 ? serviceOrdersCount : undefined,
     },
     {
       title: "Financeiro",
       url: "/dashboard/financeiro",
-      icon: TrendingUp,
-      color: "text-primary",
+      iconName: "TrendingUp",
     },
     {
       title: "Estoque",
       url: "/dashboard/product",
-      icon: Package,
+      iconName: "Package",
       badge: productsCount > 0 ? productsCount : undefined,
     },
     {
       title: "Clientes",
       url: "/dashboard/customer",
-      icon: Users,
+      iconName: "Users",
       badge: customersCount > 0 ? customersCount : undefined,
     },
     {
       title: "Veículos",
       url: "/dashboard/vehicle",
-      icon: Car,
+      iconName: "Car",
       badge: vehiclesCount > 0 ? vehiclesCount : undefined,
     },
   ].filter((item) => allowedRoutes.includes(item.url));
@@ -125,52 +134,39 @@ export async function AppSidebar({
     {
       title: "Overview",
       items: [
-        {
-          title: "Dashboard",
-          url: "/dashboard",
-          icon: LayoutDashboard,
-        },
+        { title: "Dashboard", url: "/dashboard", iconName: "LayoutDashboard" },
         {
           title: "Relatórios",
           url: "/dashboard/relatorios",
-          icon: BarChart3,
+          iconName: "BarChart3",
         },
       ],
     },
     {
-      title: "Operacional",
+      title: "Gestão",
       items: allGestaoItems,
     },
     {
-      title: "Configurações",
+      title: "Sistema",
       items: [
-        { title: "Notificações", url: "/dashboard/notificacoes", icon: Bell },
+        { title: "Planos", url: "/dashboard/plans", iconName: "CreditCard" },
         {
-          title: "Oficina / Ajustes",
+          title: "Configurações",
           url: "/dashboard/config",
-          icon: Settings,
+          iconName: "Settings",
         },
-        { title: "Assinatura", url: "/dashboard/plans", icon: CreditCard },
       ],
     },
   ];
 
   return (
-    <Sidebar className="bg-[#0a0a0a] border-r border-white/5" {...props}>
-      <SidebarHeader className="p-6">
+    <Sidebar {...props} className="bg-[#0a0a0a] border-r border-white/5">
+      <SidebarHeader className="p-4 border-b border-white/5">
         <div className="flex items-center gap-3">
-          <Logo />
-          <div className="grid flex-1 text-left">
-            <span className="text-xl font-black italic tracking-tighter text-white">
-              AUTO<span className="text-primary">SYSTEM</span>
-            </span>
-            <div className="flex items-center gap-2">
-              <div className="h-1 w-1 rounded-full bg-primary" />
-              <span className="text-[10px] text-white/40 uppercase tracking-widest font-black">
-                Performance UI
-              </span>
-            </div>
-          </div>
+          <Logo className="size-8" />
+          <span className="text-xl font-black italic tracking-tighter text-white">
+            AUTO<span className="text-primary">SYSTEM</span>
+          </span>
         </div>
       </SidebarHeader>
 
@@ -184,31 +180,7 @@ export async function AppSidebar({
               <SidebarMenu className="gap-1">
                 {group.items.map((item) => (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton
-                      asChild
-                      tooltip={item.title}
-                      className="transition-all duration-300 group py-6 rounded-xl hover:bg-white/[0.03] active:scale-95"
-                    >
-                      <Link
-                        href={item.url}
-                        className="flex items-center gap-4 px-4"
-                      >
-                        <item.icon
-                          className={`size-5 transition-all duration-300 ${
-                            item.color ||
-                            "text-white/40 group-hover:text-primary group-data-active:text-primary group-hover:scale-110 group-hover:drop-shadow-[0_0_8px_rgba(34,197,94,0.5)]"
-                          }`}
-                        />
-                        <span className="font-bold tracking-tight text-sm text-white/60 group-hover:text-white transition-colors">
-                          {item.title}
-                        </span>
-                        {item.badge && item.badge > 0 && (
-                          <span className="ml-auto flex items-center justify-center rounded-full bg-primary/10 border border-primary/20 px-2 py-0.5 text-[10px] font-black text-primary glow-primary">
-                            {item.badge}
-                          </span>
-                        )}
-                      </Link>
-                    </SidebarMenuButton>
+                    <SidebarItem item={item} />
                   </SidebarMenuItem>
                 ))}
               </SidebarMenu>

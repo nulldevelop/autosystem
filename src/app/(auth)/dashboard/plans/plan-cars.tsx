@@ -1,6 +1,6 @@
 "use client";
 
-import { Check } from "lucide-react";
+import { Check, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -35,15 +35,14 @@ export function PlanCards() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Toggle de intervalo de cobrança */}
+    <div className="space-y-8">
       <div className="flex items-center justify-center gap-4">
         <button
           type="button"
-          className={`text-sm font-medium transition-colors ${
+          className={`text-xs font-black uppercase tracking-widest transition-colors px-3 py-2 rounded-lg ${
             billingInterval === "monthly"
-              ? "text-white"
-              : "text-gray-500 hover:text-gray-300"
+              ? "bg-primary text-black"
+              : "text-white/40 hover:text-white hover:bg-white/5"
           }`}
           onClick={() => setBillingInterval("monthly")}
         >
@@ -51,82 +50,60 @@ export function PlanCards() {
         </button>
         <button
           type="button"
-          className="relative inline-flex h-6 w-11 items-center rounded-full bg-white/10 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-black"
-          onClick={() =>
-            setBillingInterval(
-              billingInterval === "monthly" ? "yearly" : "monthly",
-            )
-          }
-          aria-label="Alternar intervalo de cobrança"
-        >
-          <span
-            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-              billingInterval === "yearly" ? "translate-x-6" : "translate-x-1"
-            }`}
-          />
-        </button>
-        <button
-          type="button"
-          className={`text-sm font-medium transition-colors ${
+          className={`text-xs font-black uppercase tracking-widest transition-colors px-3 py-2 rounded-lg ${
             billingInterval === "yearly"
-              ? "text-white"
-              : "text-gray-500 hover:text-gray-300"
+              ? "bg-primary text-black"
+              : "text-white/40 hover:text-white hover:bg-white/5"
           }`}
           onClick={() => setBillingInterval("yearly")}
         >
           Anual
+          <span className="ml-2 text-[10px] bg-green-500 text-black px-1.5 py-0.5 rounded-full">
+            20% OFF
+          </span>
         </button>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-5xl mx-auto">
         {subscriptionPlans.map((plan, index) => (
           <Card
             key={plan.slug}
-            className={`flex flex-col bg-black/50 border relative ${
+            className={`relative flex flex-col bg-white/5 border transition-all duration-300 group ${
               index === 1
-                ? "border-green-500/50 shadow-[0_0_20px_rgba(34,197,94,0.2)] scale-105"
-                : "border-white/10"
-            } transition-all duration-200 hover:border-white/20`}
+                ? "border-primary/50 shadow-[0_0_30px_rgba(var(--primary-rgb),0.2)] md:scale-105"
+                : "border-white/10 hover:border-white/20"
+            }`}
           >
-            {billingInterval === "yearly" && (
-              <div className="absolute top-4 right-4 bg-orange-500 text-white text-[10px] font-black px-2 py-1 rounded-full uppercase -rotate-12 z-10">
-                20% OFF
-              </div>
-            )}
             {index === 1 && (
-              <div className="bg-green-500 text-black text-center text-xs font-black py-2 uppercase tracking-wider">
-                Melhor Escolha
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-black text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest flex items-center gap-1">
+                <Sparkles className="w-3 h-3" /> Mais Popular
               </div>
             )}
 
             <CardHeader className="pb-4">
-              <CardTitle className="text-xl font-bold text-white">
+              <CardTitle className="text-lg font-black italic uppercase tracking-tighter text-white">
                 {plan.name}
               </CardTitle>
               <div className="flex flex-col mt-4">
                 {plan.oldPrice && (
-                  <span className="text-sm text-gray-500 line-through mb-1">
+                  <span className="text-xs text-white/40 line-through mb-1">
                     R$ {plan.oldPrice.monthly.toFixed(2).replace(".", ",")}
                   </span>
                 )}
                 <div className="flex items-baseline gap-1">
-                  <span className="text-3xl font-black text-white">
+                  <span className="text-3xl font-black italic text-white">
                     R${" "}
                     {billingInterval === "yearly"
-                      ? plan.price.yearly.toFixed(2).replace(".", ",")
+                      ? (plan.price.yearly / 12).toFixed(2).replace(".", ",")
                       : plan.price.monthly.toFixed(2).replace(".", ",")}
                   </span>
-                  <span className="text-sm font-medium text-gray-400">
-                    {billingInterval === "yearly" ? "/ano" : "/mês"}
+                  <span className="text-xs font-medium text-white/40 uppercase">
+                    /mês
                   </span>
                 </div>
                 {billingInterval === "yearly" && (
-                  <p className="text-xs text-green-500 mt-1">
-                    Economize{" "}
-                    {(plan.price.monthly * 12 - plan.price.yearly)
-                      .toFixed(2)
-                      .replace(".", ",")}{" "}
-                    por ano
+                  <p className="text-xs text-primary mt-1 font-medium">
+                    R$ {plan.price.yearly.toFixed(2).replace(".", ",")} por ano
                   </p>
                 )}
               </div>
@@ -137,9 +114,9 @@ export function PlanCards() {
                 {plan.features.map((feature) => (
                   <li
                     key={feature}
-                    className="flex items-start gap-3 text-sm text-gray-300"
+                    className="flex items-start gap-3 text-xs text-white/60"
                   >
-                    <Check className="h-4 w-4 text-green-500 shrink-0 mt-0.5" />
+                    <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
                     <span>{feature}</span>
                   </li>
                 ))}
@@ -148,9 +125,9 @@ export function PlanCards() {
 
             <CardFooter className="pt-4">
               <Button
-                className={`w-full font-semibold transition-all duration-200 ${
+                className={`w-full font-black uppercase text-xs tracking-widest transition-all duration-200 ${
                   index === 1
-                    ? "bg-green-500 hover:bg-green-600 text-black"
+                    ? "bg-primary hover:bg-primary/90 text-black shadow-lg shadow-primary/20"
                     : "bg-white/5 hover:bg-white/10 text-white border border-white/10"
                 }`}
                 variant={index === 1 ? "default" : "outline"}
@@ -159,7 +136,7 @@ export function PlanCards() {
               >
                 {loading === plan.slug
                   ? "Processando..."
-                  : `Escolher ${plan.name}`}
+                  : `Assinar ${plan.name}`}
               </Button>
             </CardFooter>
           </Card>

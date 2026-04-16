@@ -68,6 +68,11 @@ export type Vehicle = Prisma.VehicleModel
  */
 export type Budget = Prisma.BudgetModel
 /**
+ * Model BudgetPhoto
+ * 
+ */
+export type BudgetPhoto = Prisma.BudgetPhotoModel
+/**
  * Model Product
  * 
  */
@@ -92,6 +97,11 @@ export type ServiceOrder = Prisma.ServiceOrderModel
  * 
  */
 export type ServiceOrderItem = Prisma.ServiceOrderItemModel
+/**
+ * Model Transaction
+ * 
+ */
+export type Transaction = Prisma.TransactionModel
 /**
  * Model Subscription
  * 

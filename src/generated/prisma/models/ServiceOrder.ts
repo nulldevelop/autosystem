@@ -261,6 +261,7 @@ export type ServiceOrderWhereInput = {
   vehicle?: Prisma.XOR<Prisma.VehicleScalarRelationFilter, Prisma.VehicleWhereInput>
   items?: Prisma.ServiceOrderItemListRelationFilter
   organization?: Prisma.XOR<Prisma.OrganizationNullableScalarRelationFilter, Prisma.OrganizationWhereInput> | null
+  transaction?: Prisma.XOR<Prisma.TransactionNullableScalarRelationFilter, Prisma.TransactionWhereInput> | null
 }
 
 export type ServiceOrderOrderByWithRelationInput = {
@@ -279,6 +280,7 @@ export type ServiceOrderOrderByWithRelationInput = {
   vehicle?: Prisma.VehicleOrderByWithRelationInput
   items?: Prisma.ServiceOrderItemOrderByRelationAggregateInput
   organization?: Prisma.OrganizationOrderByWithRelationInput
+  transaction?: Prisma.TransactionOrderByWithRelationInput
   _relevance?: Prisma.ServiceOrderOrderByRelevanceInput
 }
 
@@ -301,6 +303,7 @@ export type ServiceOrderWhereUniqueInput = Prisma.AtLeast<{
   vehicle?: Prisma.XOR<Prisma.VehicleScalarRelationFilter, Prisma.VehicleWhereInput>
   items?: Prisma.ServiceOrderItemListRelationFilter
   organization?: Prisma.XOR<Prisma.OrganizationNullableScalarRelationFilter, Prisma.OrganizationWhereInput> | null
+  transaction?: Prisma.XOR<Prisma.TransactionNullableScalarRelationFilter, Prisma.TransactionWhereInput> | null
 }, "id" | "budgetId">
 
 export type ServiceOrderOrderByWithAggregationInput = {
@@ -349,6 +352,7 @@ export type ServiceOrderCreateInput = {
   vehicle: Prisma.VehicleCreateNestedOneWithoutServiceOrdersInput
   items?: Prisma.ServiceOrderItemCreateNestedManyWithoutServiceOrderInput
   organization?: Prisma.OrganizationCreateNestedOneWithoutServiceOrdersInput
+  transaction?: Prisma.TransactionCreateNestedOneWithoutServiceOrderInput
 }
 
 export type ServiceOrderUncheckedCreateInput = {
@@ -363,6 +367,7 @@ export type ServiceOrderUncheckedCreateInput = {
   updatedAt?: Date | string
   organizationId?: string | null
   items?: Prisma.ServiceOrderItemUncheckedCreateNestedManyWithoutServiceOrderInput
+  transaction?: Prisma.TransactionUncheckedCreateNestedOneWithoutServiceOrderInput
 }
 
 export type ServiceOrderUpdateInput = {
@@ -377,6 +382,7 @@ export type ServiceOrderUpdateInput = {
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutServiceOrdersNestedInput
   items?: Prisma.ServiceOrderItemUpdateManyWithoutServiceOrderNestedInput
   organization?: Prisma.OrganizationUpdateOneWithoutServiceOrdersNestedInput
+  transaction?: Prisma.TransactionUpdateOneWithoutServiceOrderNestedInput
 }
 
 export type ServiceOrderUncheckedUpdateInput = {
@@ -391,6 +397,7 @@ export type ServiceOrderUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   items?: Prisma.ServiceOrderItemUncheckedUpdateManyWithoutServiceOrderNestedInput
+  transaction?: Prisma.TransactionUncheckedUpdateOneWithoutServiceOrderNestedInput
 }
 
 export type ServiceOrderCreateManyInput = {
@@ -677,6 +684,22 @@ export type ServiceOrderUpdateOneRequiredWithoutItemsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ServiceOrderUpdateToOneWithWhereWithoutItemsInput, Prisma.ServiceOrderUpdateWithoutItemsInput>, Prisma.ServiceOrderUncheckedUpdateWithoutItemsInput>
 }
 
+export type ServiceOrderCreateNestedOneWithoutTransactionInput = {
+  create?: Prisma.XOR<Prisma.ServiceOrderCreateWithoutTransactionInput, Prisma.ServiceOrderUncheckedCreateWithoutTransactionInput>
+  connectOrCreate?: Prisma.ServiceOrderCreateOrConnectWithoutTransactionInput
+  connect?: Prisma.ServiceOrderWhereUniqueInput
+}
+
+export type ServiceOrderUpdateOneWithoutTransactionNestedInput = {
+  create?: Prisma.XOR<Prisma.ServiceOrderCreateWithoutTransactionInput, Prisma.ServiceOrderUncheckedCreateWithoutTransactionInput>
+  connectOrCreate?: Prisma.ServiceOrderCreateOrConnectWithoutTransactionInput
+  upsert?: Prisma.ServiceOrderUpsertWithoutTransactionInput
+  disconnect?: Prisma.ServiceOrderWhereInput | boolean
+  delete?: Prisma.ServiceOrderWhereInput | boolean
+  connect?: Prisma.ServiceOrderWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ServiceOrderUpdateToOneWithWhereWithoutTransactionInput, Prisma.ServiceOrderUpdateWithoutTransactionInput>, Prisma.ServiceOrderUncheckedUpdateWithoutTransactionInput>
+}
+
 export type ServiceOrderCreateWithoutOrganizationInput = {
   id?: string
   totalAmount: number
@@ -688,6 +711,7 @@ export type ServiceOrderCreateWithoutOrganizationInput = {
   customer: Prisma.CustomerCreateNestedOneWithoutServiceOrdersInput
   vehicle: Prisma.VehicleCreateNestedOneWithoutServiceOrdersInput
   items?: Prisma.ServiceOrderItemCreateNestedManyWithoutServiceOrderInput
+  transaction?: Prisma.TransactionCreateNestedOneWithoutServiceOrderInput
 }
 
 export type ServiceOrderUncheckedCreateWithoutOrganizationInput = {
@@ -701,6 +725,7 @@ export type ServiceOrderUncheckedCreateWithoutOrganizationInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.ServiceOrderItemUncheckedCreateNestedManyWithoutServiceOrderInput
+  transaction?: Prisma.TransactionUncheckedCreateNestedOneWithoutServiceOrderInput
 }
 
 export type ServiceOrderCreateOrConnectWithoutOrganizationInput = {
@@ -756,6 +781,7 @@ export type ServiceOrderCreateWithoutCustomerInput = {
   vehicle: Prisma.VehicleCreateNestedOneWithoutServiceOrdersInput
   items?: Prisma.ServiceOrderItemCreateNestedManyWithoutServiceOrderInput
   organization?: Prisma.OrganizationCreateNestedOneWithoutServiceOrdersInput
+  transaction?: Prisma.TransactionCreateNestedOneWithoutServiceOrderInput
 }
 
 export type ServiceOrderUncheckedCreateWithoutCustomerInput = {
@@ -769,6 +795,7 @@ export type ServiceOrderUncheckedCreateWithoutCustomerInput = {
   updatedAt?: Date | string
   organizationId?: string | null
   items?: Prisma.ServiceOrderItemUncheckedCreateNestedManyWithoutServiceOrderInput
+  transaction?: Prisma.TransactionUncheckedCreateNestedOneWithoutServiceOrderInput
 }
 
 export type ServiceOrderCreateOrConnectWithoutCustomerInput = {
@@ -808,6 +835,7 @@ export type ServiceOrderCreateWithoutVehicleInput = {
   customer: Prisma.CustomerCreateNestedOneWithoutServiceOrdersInput
   items?: Prisma.ServiceOrderItemCreateNestedManyWithoutServiceOrderInput
   organization?: Prisma.OrganizationCreateNestedOneWithoutServiceOrdersInput
+  transaction?: Prisma.TransactionCreateNestedOneWithoutServiceOrderInput
 }
 
 export type ServiceOrderUncheckedCreateWithoutVehicleInput = {
@@ -821,6 +849,7 @@ export type ServiceOrderUncheckedCreateWithoutVehicleInput = {
   updatedAt?: Date | string
   organizationId?: string | null
   items?: Prisma.ServiceOrderItemUncheckedCreateNestedManyWithoutServiceOrderInput
+  transaction?: Prisma.TransactionUncheckedCreateNestedOneWithoutServiceOrderInput
 }
 
 export type ServiceOrderCreateOrConnectWithoutVehicleInput = {
@@ -860,6 +889,7 @@ export type ServiceOrderCreateWithoutBudgetInput = {
   vehicle: Prisma.VehicleCreateNestedOneWithoutServiceOrdersInput
   items?: Prisma.ServiceOrderItemCreateNestedManyWithoutServiceOrderInput
   organization?: Prisma.OrganizationCreateNestedOneWithoutServiceOrdersInput
+  transaction?: Prisma.TransactionCreateNestedOneWithoutServiceOrderInput
 }
 
 export type ServiceOrderUncheckedCreateWithoutBudgetInput = {
@@ -873,6 +903,7 @@ export type ServiceOrderUncheckedCreateWithoutBudgetInput = {
   updatedAt?: Date | string
   organizationId?: string | null
   items?: Prisma.ServiceOrderItemUncheckedCreateNestedManyWithoutServiceOrderInput
+  transaction?: Prisma.TransactionUncheckedCreateNestedOneWithoutServiceOrderInput
 }
 
 export type ServiceOrderCreateOrConnectWithoutBudgetInput = {
@@ -902,6 +933,7 @@ export type ServiceOrderUpdateWithoutBudgetInput = {
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutServiceOrdersNestedInput
   items?: Prisma.ServiceOrderItemUpdateManyWithoutServiceOrderNestedInput
   organization?: Prisma.OrganizationUpdateOneWithoutServiceOrdersNestedInput
+  transaction?: Prisma.TransactionUpdateOneWithoutServiceOrderNestedInput
 }
 
 export type ServiceOrderUncheckedUpdateWithoutBudgetInput = {
@@ -915,6 +947,7 @@ export type ServiceOrderUncheckedUpdateWithoutBudgetInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   items?: Prisma.ServiceOrderItemUncheckedUpdateManyWithoutServiceOrderNestedInput
+  transaction?: Prisma.TransactionUncheckedUpdateOneWithoutServiceOrderNestedInput
 }
 
 export type ServiceOrderCreateWithoutItemsInput = {
@@ -928,6 +961,7 @@ export type ServiceOrderCreateWithoutItemsInput = {
   customer: Prisma.CustomerCreateNestedOneWithoutServiceOrdersInput
   vehicle: Prisma.VehicleCreateNestedOneWithoutServiceOrdersInput
   organization?: Prisma.OrganizationCreateNestedOneWithoutServiceOrdersInput
+  transaction?: Prisma.TransactionCreateNestedOneWithoutServiceOrderInput
 }
 
 export type ServiceOrderUncheckedCreateWithoutItemsInput = {
@@ -941,6 +975,7 @@ export type ServiceOrderUncheckedCreateWithoutItemsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   organizationId?: string | null
+  transaction?: Prisma.TransactionUncheckedCreateNestedOneWithoutServiceOrderInput
 }
 
 export type ServiceOrderCreateOrConnectWithoutItemsInput = {
@@ -970,6 +1005,7 @@ export type ServiceOrderUpdateWithoutItemsInput = {
   customer?: Prisma.CustomerUpdateOneRequiredWithoutServiceOrdersNestedInput
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutServiceOrdersNestedInput
   organization?: Prisma.OrganizationUpdateOneWithoutServiceOrdersNestedInput
+  transaction?: Prisma.TransactionUpdateOneWithoutServiceOrderNestedInput
 }
 
 export type ServiceOrderUncheckedUpdateWithoutItemsInput = {
@@ -983,6 +1019,79 @@ export type ServiceOrderUncheckedUpdateWithoutItemsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transaction?: Prisma.TransactionUncheckedUpdateOneWithoutServiceOrderNestedInput
+}
+
+export type ServiceOrderCreateWithoutTransactionInput = {
+  id?: string
+  totalAmount: number
+  status?: $Enums.ServiceOrderStatus
+  observacoes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  budget: Prisma.BudgetCreateNestedOneWithoutServiceOrderInput
+  customer: Prisma.CustomerCreateNestedOneWithoutServiceOrdersInput
+  vehicle: Prisma.VehicleCreateNestedOneWithoutServiceOrdersInput
+  items?: Prisma.ServiceOrderItemCreateNestedManyWithoutServiceOrderInput
+  organization?: Prisma.OrganizationCreateNestedOneWithoutServiceOrdersInput
+}
+
+export type ServiceOrderUncheckedCreateWithoutTransactionInput = {
+  id?: string
+  budgetId: string
+  customerId: string
+  vehicleId: string
+  totalAmount: number
+  status?: $Enums.ServiceOrderStatus
+  observacoes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organizationId?: string | null
+  items?: Prisma.ServiceOrderItemUncheckedCreateNestedManyWithoutServiceOrderInput
+}
+
+export type ServiceOrderCreateOrConnectWithoutTransactionInput = {
+  where: Prisma.ServiceOrderWhereUniqueInput
+  create: Prisma.XOR<Prisma.ServiceOrderCreateWithoutTransactionInput, Prisma.ServiceOrderUncheckedCreateWithoutTransactionInput>
+}
+
+export type ServiceOrderUpsertWithoutTransactionInput = {
+  update: Prisma.XOR<Prisma.ServiceOrderUpdateWithoutTransactionInput, Prisma.ServiceOrderUncheckedUpdateWithoutTransactionInput>
+  create: Prisma.XOR<Prisma.ServiceOrderCreateWithoutTransactionInput, Prisma.ServiceOrderUncheckedCreateWithoutTransactionInput>
+  where?: Prisma.ServiceOrderWhereInput
+}
+
+export type ServiceOrderUpdateToOneWithWhereWithoutTransactionInput = {
+  where?: Prisma.ServiceOrderWhereInput
+  data: Prisma.XOR<Prisma.ServiceOrderUpdateWithoutTransactionInput, Prisma.ServiceOrderUncheckedUpdateWithoutTransactionInput>
+}
+
+export type ServiceOrderUpdateWithoutTransactionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  totalAmount?: Prisma.FloatFieldUpdateOperationsInput | number
+  status?: Prisma.EnumServiceOrderStatusFieldUpdateOperationsInput | $Enums.ServiceOrderStatus
+  observacoes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  budget?: Prisma.BudgetUpdateOneRequiredWithoutServiceOrderNestedInput
+  customer?: Prisma.CustomerUpdateOneRequiredWithoutServiceOrdersNestedInput
+  vehicle?: Prisma.VehicleUpdateOneRequiredWithoutServiceOrdersNestedInput
+  items?: Prisma.ServiceOrderItemUpdateManyWithoutServiceOrderNestedInput
+  organization?: Prisma.OrganizationUpdateOneWithoutServiceOrdersNestedInput
+}
+
+export type ServiceOrderUncheckedUpdateWithoutTransactionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  budgetId?: Prisma.StringFieldUpdateOperationsInput | string
+  customerId?: Prisma.StringFieldUpdateOperationsInput | string
+  vehicleId?: Prisma.StringFieldUpdateOperationsInput | string
+  totalAmount?: Prisma.FloatFieldUpdateOperationsInput | number
+  status?: Prisma.EnumServiceOrderStatusFieldUpdateOperationsInput | $Enums.ServiceOrderStatus
+  observacoes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  items?: Prisma.ServiceOrderItemUncheckedUpdateManyWithoutServiceOrderNestedInput
 }
 
 export type ServiceOrderCreateManyOrganizationInput = {
@@ -1008,6 +1117,7 @@ export type ServiceOrderUpdateWithoutOrganizationInput = {
   customer?: Prisma.CustomerUpdateOneRequiredWithoutServiceOrdersNestedInput
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutServiceOrdersNestedInput
   items?: Prisma.ServiceOrderItemUpdateManyWithoutServiceOrderNestedInput
+  transaction?: Prisma.TransactionUpdateOneWithoutServiceOrderNestedInput
 }
 
 export type ServiceOrderUncheckedUpdateWithoutOrganizationInput = {
@@ -1021,6 +1131,7 @@ export type ServiceOrderUncheckedUpdateWithoutOrganizationInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.ServiceOrderItemUncheckedUpdateManyWithoutServiceOrderNestedInput
+  transaction?: Prisma.TransactionUncheckedUpdateOneWithoutServiceOrderNestedInput
 }
 
 export type ServiceOrderUncheckedUpdateManyWithoutOrganizationInput = {
@@ -1058,6 +1169,7 @@ export type ServiceOrderUpdateWithoutCustomerInput = {
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutServiceOrdersNestedInput
   items?: Prisma.ServiceOrderItemUpdateManyWithoutServiceOrderNestedInput
   organization?: Prisma.OrganizationUpdateOneWithoutServiceOrdersNestedInput
+  transaction?: Prisma.TransactionUpdateOneWithoutServiceOrderNestedInput
 }
 
 export type ServiceOrderUncheckedUpdateWithoutCustomerInput = {
@@ -1071,6 +1183,7 @@ export type ServiceOrderUncheckedUpdateWithoutCustomerInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   items?: Prisma.ServiceOrderItemUncheckedUpdateManyWithoutServiceOrderNestedInput
+  transaction?: Prisma.TransactionUncheckedUpdateOneWithoutServiceOrderNestedInput
 }
 
 export type ServiceOrderUncheckedUpdateManyWithoutCustomerInput = {
@@ -1108,6 +1221,7 @@ export type ServiceOrderUpdateWithoutVehicleInput = {
   customer?: Prisma.CustomerUpdateOneRequiredWithoutServiceOrdersNestedInput
   items?: Prisma.ServiceOrderItemUpdateManyWithoutServiceOrderNestedInput
   organization?: Prisma.OrganizationUpdateOneWithoutServiceOrdersNestedInput
+  transaction?: Prisma.TransactionUpdateOneWithoutServiceOrderNestedInput
 }
 
 export type ServiceOrderUncheckedUpdateWithoutVehicleInput = {
@@ -1121,6 +1235,7 @@ export type ServiceOrderUncheckedUpdateWithoutVehicleInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   items?: Prisma.ServiceOrderItemUncheckedUpdateManyWithoutServiceOrderNestedInput
+  transaction?: Prisma.TransactionUncheckedUpdateOneWithoutServiceOrderNestedInput
 }
 
 export type ServiceOrderUncheckedUpdateManyWithoutVehicleInput = {
@@ -1182,6 +1297,7 @@ export type ServiceOrderSelect<ExtArgs extends runtime.Types.Extensions.Internal
   vehicle?: boolean | Prisma.VehicleDefaultArgs<ExtArgs>
   items?: boolean | Prisma.ServiceOrder$itemsArgs<ExtArgs>
   organization?: boolean | Prisma.ServiceOrder$organizationArgs<ExtArgs>
+  transaction?: boolean | Prisma.ServiceOrder$transactionArgs<ExtArgs>
   _count?: boolean | Prisma.ServiceOrderCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["serviceOrder"]>
 
@@ -1207,6 +1323,7 @@ export type ServiceOrderInclude<ExtArgs extends runtime.Types.Extensions.Interna
   vehicle?: boolean | Prisma.VehicleDefaultArgs<ExtArgs>
   items?: boolean | Prisma.ServiceOrder$itemsArgs<ExtArgs>
   organization?: boolean | Prisma.ServiceOrder$organizationArgs<ExtArgs>
+  transaction?: boolean | Prisma.ServiceOrder$transactionArgs<ExtArgs>
   _count?: boolean | Prisma.ServiceOrderCountOutputTypeDefaultArgs<ExtArgs>
 }
 
@@ -1218,6 +1335,7 @@ export type $ServiceOrderPayload<ExtArgs extends runtime.Types.Extensions.Intern
     vehicle: Prisma.$VehiclePayload<ExtArgs>
     items: Prisma.$ServiceOrderItemPayload<ExtArgs>[]
     organization: Prisma.$OrganizationPayload<ExtArgs> | null
+    transaction: Prisma.$TransactionPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1575,6 +1693,7 @@ export interface Prisma__ServiceOrderClient<T, Null = never, ExtArgs extends run
   vehicle<T extends Prisma.VehicleDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VehicleDefaultArgs<ExtArgs>>): Prisma.Prisma__VehicleClient<runtime.Types.Result.GetResult<Prisma.$VehiclePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   items<T extends Prisma.ServiceOrder$itemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ServiceOrder$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ServiceOrderItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   organization<T extends Prisma.ServiceOrder$organizationArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ServiceOrder$organizationArgs<ExtArgs>>): Prisma.Prisma__OrganizationClient<runtime.Types.Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  transaction<T extends Prisma.ServiceOrder$transactionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ServiceOrder$transactionArgs<ExtArgs>>): Prisma.Prisma__TransactionClient<runtime.Types.Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2002,6 +2121,25 @@ export type ServiceOrder$organizationArgs<ExtArgs extends runtime.Types.Extensio
    */
   include?: Prisma.OrganizationInclude<ExtArgs> | null
   where?: Prisma.OrganizationWhereInput
+}
+
+/**
+ * ServiceOrder.transaction
+ */
+export type ServiceOrder$transactionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Transaction
+   */
+  select?: Prisma.TransactionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Transaction
+   */
+  omit?: Prisma.TransactionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TransactionInclude<ExtArgs> | null
+  where?: Prisma.TransactionWhereInput
 }
 
 /**

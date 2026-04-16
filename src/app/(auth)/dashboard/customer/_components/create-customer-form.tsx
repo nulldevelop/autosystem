@@ -109,11 +109,13 @@ export function CreateCustomerForm({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
-        <DialogHeader>
-          <DialogTitle>Adicionar Novo Cliente</DialogTitle>
-          <DialogDescription>
-            Preencha os campos abaixo para adicionar um novo cliente.
+      <DialogContent className="sm:max-w-lg max-w-[calc(100vw-32px)] max-h-[calc(100vh-32px)] overflow-y-auto bg-zinc-950 border-white/10 text-white p-4 sm:p-6">
+        <DialogHeader className="mb-4">
+          <DialogTitle className="text-xl font-black uppercase italic tracking-tighter">
+            Novo Cliente
+          </DialogTitle>
+          <DialogDescription className="text-white/60 text-sm">
+            Preencha os dados do cliente
           </DialogDescription>
         </DialogHeader>
 
