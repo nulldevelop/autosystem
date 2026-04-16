@@ -395,6 +395,7 @@ export const ModelName = {
   Vehicle: 'Vehicle',
   Budget: 'Budget',
   Product: 'Product',
+  ProductMovement: 'ProductMovement',
   BudgetItem: 'BudgetItem',
   ServiceOrder: 'ServiceOrder',
   ServiceOrderItem: 'ServiceOrderItem',
@@ -414,7 +415,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "account" | "verification" | "organization" | "member" | "invitation" | "customer" | "vehicle" | "budget" | "product" | "budgetItem" | "serviceOrder" | "serviceOrderItem" | "subscription"
+    modelProps: "user" | "session" | "account" | "verification" | "organization" | "member" | "invitation" | "customer" | "vehicle" | "budget" | "product" | "productMovement" | "budgetItem" | "serviceOrder" | "serviceOrderItem" | "subscription"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1144,6 +1145,72 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ProductMovement: {
+      payload: Prisma.$ProductMovementPayload<ExtArgs>
+      fields: Prisma.ProductMovementFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ProductMovementFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProductMovementPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ProductMovementFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProductMovementPayload>
+        }
+        findFirst: {
+          args: Prisma.ProductMovementFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProductMovementPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ProductMovementFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProductMovementPayload>
+        }
+        findMany: {
+          args: Prisma.ProductMovementFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProductMovementPayload>[]
+        }
+        create: {
+          args: Prisma.ProductMovementCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProductMovementPayload>
+        }
+        createMany: {
+          args: Prisma.ProductMovementCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.ProductMovementDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProductMovementPayload>
+        }
+        update: {
+          args: Prisma.ProductMovementUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProductMovementPayload>
+        }
+        deleteMany: {
+          args: Prisma.ProductMovementDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ProductMovementUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.ProductMovementUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProductMovementPayload>
+        }
+        aggregate: {
+          args: Prisma.ProductMovementAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateProductMovement>
+        }
+        groupBy: {
+          args: Prisma.ProductMovementGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProductMovementGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ProductMovementCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProductMovementCountAggregateOutputType> | number
+        }
+      }
+    }
     BudgetItem: {
       payload: Prisma.$BudgetItemPayload<ExtArgs>
       fields: Prisma.BudgetItemFieldRefs
@@ -1595,14 +1662,31 @@ export type BudgetScalarFieldEnum = (typeof BudgetScalarFieldEnum)[keyof typeof 
 export const ProductScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  price: 'price',
   sku: 'sku',
+  category: 'category',
+  unit: 'unit',
+  price: 'price',
+  costPrice: 'costPrice',
+  stockQuantity: 'stockQuantity',
+  minStock: 'minStock',
   organizationId: 'organizationId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type ProductScalarFieldEnum = (typeof ProductScalarFieldEnum)[keyof typeof ProductScalarFieldEnum]
+
+
+export const ProductMovementScalarFieldEnum = {
+  id: 'id',
+  productId: 'productId',
+  type: 'type',
+  quantity: 'quantity',
+  reason: 'reason',
+  createdAt: 'createdAt'
+} as const
+
+export type ProductMovementScalarFieldEnum = (typeof ProductMovementScalarFieldEnum)[keyof typeof ProductMovementScalarFieldEnum]
 
 
 export const BudgetItemScalarFieldEnum = {
@@ -1798,10 +1882,21 @@ export const ProductOrderByRelevanceFieldEnum = {
   id: 'id',
   name: 'name',
   sku: 'sku',
+  category: 'category',
+  unit: 'unit',
   organizationId: 'organizationId'
 } as const
 
 export type ProductOrderByRelevanceFieldEnum = (typeof ProductOrderByRelevanceFieldEnum)[keyof typeof ProductOrderByRelevanceFieldEnum]
+
+
+export const ProductMovementOrderByRelevanceFieldEnum = {
+  id: 'id',
+  productId: 'productId',
+  reason: 'reason'
+} as const
+
+export type ProductMovementOrderByRelevanceFieldEnum = (typeof ProductMovementOrderByRelevanceFieldEnum)[keyof typeof ProductMovementOrderByRelevanceFieldEnum]
 
 
 export const BudgetItemOrderByRelevanceFieldEnum = {
@@ -1898,6 +1993,13 @@ export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, '
  * Reference to a field of type 'Status'
  */
 export type EnumStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Status'>
+    
+
+
+/**
+ * Reference to a field of type 'MovementType'
+ */
+export type EnumMovementTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MovementType'>
     
 
 
@@ -2020,6 +2122,7 @@ export type GlobalOmitConfig = {
   vehicle?: Prisma.VehicleOmit
   budget?: Prisma.BudgetOmit
   product?: Prisma.ProductOmit
+  productMovement?: Prisma.ProductMovementOmit
   budgetItem?: Prisma.BudgetItemOmit
   serviceOrder?: Prisma.ServiceOrderOmit
   serviceOrderItem?: Prisma.ServiceOrderItemOmit

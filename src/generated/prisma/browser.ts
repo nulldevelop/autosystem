@@ -73,6 +73,11 @@ export type Budget = Prisma.BudgetModel
  */
 export type Product = Prisma.ProductModel
 /**
+ * Model ProductMovement
+ * 
+ */
+export type ProductMovement = Prisma.ProductMovementModel
+/**
  * Model BudgetItem
  * 
  */

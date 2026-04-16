@@ -216,6 +216,7 @@ model Product {
 
   budgets       BudgetItem[]
   serviceOrders ServiceOrderItem[]
+  movements     ProductMovement[]
 
   organizationId String?
   organization   Organization? @relation(fields: [organizationId], references: [id])
@@ -224,6 +225,27 @@ model Product {
 
   @@index([organizationId])
   @@map("product")
+}
+
+enum MovementType {
+  IN
+  OUT
+  ADJUSTMENT
+}
+
+model ProductMovement {
+  id        String   @id @default(uuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  type      MovementType
+  quantity  Int
+  reason    String?
+  
+  createdAt DateTime @default(now())
+
+  @@index([productId])
+  @@map("product_movement")
 }
 
 model BudgetItem {

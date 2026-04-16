@@ -26,6 +26,15 @@ export const Status = {
 export type Status = (typeof Status)[keyof typeof Status]
 
 
+export const MovementType = {
+  IN: 'IN',
+  OUT: 'OUT',
+  ADJUSTMENT: 'ADJUSTMENT'
+} as const
+
+export type MovementType = (typeof MovementType)[keyof typeof MovementType]
+
+
 export const ServiceOrderStatus = {
   open: 'open',
   in_progress: 'in_progress',

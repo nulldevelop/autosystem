@@ -1,4 +1,4 @@
-import { writeFile, mkdir } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
@@ -21,7 +21,7 @@ export async function POST(req: Request) {
     if (!file || !organizationId) {
       return NextResponse.json(
         { error: "Arquivo ou ID da organização ausente" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -33,7 +33,7 @@ export async function POST(req: Request) {
     if (!organization) {
       return NextResponse.json(
         { error: "Organização não encontrada" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -55,6 +55,9 @@ export async function POST(req: Request) {
     return NextResponse.json({ url: publicPath });
   } catch (error) {
     console.error("Erro no upload:", error);
-    return NextResponse.json({ error: "Falha ao salvar o arquivo" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Falha ao salvar o arquivo" },
+      { status: 500 },
+    );
   }
 }

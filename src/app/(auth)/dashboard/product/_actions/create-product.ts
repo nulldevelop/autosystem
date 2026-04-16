@@ -61,6 +61,13 @@ export async function createProduct(
       data: {
         ...data,
         organizationId: session.session.activeOrganizationId,
+        movements: data.stockQuantity > 0 ? {
+          create: {
+            type: "IN",
+            quantity: data.stockQuantity,
+            reason: "Estoque inicial",
+          }
+        } : undefined
       },
     });
 

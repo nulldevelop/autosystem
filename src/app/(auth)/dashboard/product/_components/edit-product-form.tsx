@@ -1,3 +1,5 @@
+"use client";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -28,17 +30,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { createProduct } from "../_actions/create-product";
+import { updateProduct } from "../_actions/update-product";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import type { Product } from "@/generated/prisma/client";
 
 const formSchema = z.object({
+  id: z.string().uuid(),
   name: z.string().min(1, "O nome do produto é obrigatório."),
   price: z.number().nonnegative("O preço deve ser um número positivo."),
   costPrice: z.number().nonnegative("O preço de custo deve ser um número positivo."),
   sku: z.string().min(1, "O SKU é obrigatório."),
   category: z.string().min(1, "A categoria é obrigatória."),
   unit: z.string().min(1, "A unidade é obrigatória."),
-  stockQuantity: z.number().int().nonnegative("A quantidade deve ser positiva."),
   minStock: z.number().int().nonnegative("O estoque mínimo deve ser positivo."),
 });
 
@@ -57,12 +60,14 @@ const CATEGORIES = [
 
 const UNITS = ["UN", "LT", "KG", "PAR", "KIT", "MT"];
 
-export function CreateProductForm({
+export function EditProductForm({
   open,
   onOpenChange,
+  product,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  product: Product | null;
 }) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -70,53 +75,46 @@ export function CreateProductForm({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      price: 0,
-      costPrice: 0,
-      sku: "",
-      category: "Geral",
-      unit: "UN",
-      stockQuantity: 0,
-      minStock: 0,
+      id: product?.id || "",
+      name: product?.name || "",
+      price: product?.price || 0,
+      costPrice: product?.costPrice || 0,
+      sku: product?.sku || "",
+      category: product?.category || "Geral",
+      unit: product?.unit || "UN",
+      minStock: product?.minStock || 0,
     },
   });
 
-  // Geração automática de SKU
-  const name = form.watch("name");
-  const category = form.watch("category");
-  const unit = form.watch("unit");
-
   useEffect(() => {
-    const currentSku = form.getValues("sku");
-    // Só gera se o nome tiver pelo menos 3 letras e o SKU estiver vazio ou for um gerado automaticamente (padrão)
-    if (name && name.length >= 3 && category && unit && (!currentSku || currentSku.includes("-"))) {
-      const cleanName = name.trim().split(" ")[0].substring(0, 3).toUpperCase();
-      const cleanCat = category.trim().substring(0, 3).toUpperCase();
-      const cleanUnit = unit.trim().toUpperCase();
-      
-      // Criar um hash simples baseado no nome completo para manter o SKU estável mas único
-      const nameHash = name.length + (name.charCodeAt(0) || 0);
-      const generatedSku = `${cleanCat}-${cleanName}-${cleanUnit}-${nameHash}`.replace(/[^A-Z0-9-]/g, "");
-      
-      form.setValue("sku", generatedSku, { shouldValidate: true });
+    if (product) {
+      form.reset({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        costPrice: product.costPrice,
+        sku: product.sku,
+        category: product.category || "Geral",
+        unit: product.unit || "UN",
+        minStock: product.minStock,
+      });
     }
-  }, [name, category, unit, form]);
+  }, [product, form]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     try {
-      const result = await createProduct(values);
+      const result = await updateProduct(values);
       if (!result.success) {
         toast.error(result.message);
         return;
       }
       toast.success(result.message);
-      form.reset();
       router.refresh();
       onOpenChange(false);
     } catch (error) {
-      console.error("Erro ao criar produto:", error);
-      toast.error("Ocorreu um erro inesperado. Tente novamente.");
+      console.error(error);
+      toast.error("Erro ao atualizar produto");
     } finally {
       setIsLoading(false);
     }
@@ -127,10 +125,10 @@ export function CreateProductForm({
       <DialogContent className="sm:max-w-2xl bg-zinc-950 border-white/5">
         <DialogHeader>
           <DialogTitle className="text-2xl font-black italic uppercase tracking-tighter text-white">
-            Cadastrar <span className="text-primary">Novo Item</span>
+            Editar <span className="text-primary">Produto</span>
           </DialogTitle>
           <DialogDescription className="text-white/40 font-bold uppercase tracking-widest text-[10px]">
-            Insira os detalhes técnicos e financeiros do produto
+            Atualize as informações técnicas e financeiras do item
           </DialogDescription>
         </DialogHeader>
 
@@ -143,9 +141,9 @@ export function CreateProductForm({
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">Nome do Produto</FormLabel>
+                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">Nome</FormLabel>
                       <FormControl>
-                        <Input placeholder="Ex: Óleo de Motor 5W30" className="bg-white/5 border-white/10" {...field} />
+                        <Input className="bg-white/5 border-white/10" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -157,9 +155,9 @@ export function CreateProductForm({
                   name="sku"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">SKU / Código</FormLabel>
+                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">SKU</FormLabel>
                       <FormControl>
-                        <Input placeholder="Ex: PRD-001" className="bg-white/5 border-white/10" {...field} />
+                        <Input className="bg-white/5 border-white/10 font-mono" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -172,10 +170,10 @@ export function CreateProductForm({
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">Categoria</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
                         <FormControl>
                           <SelectTrigger className="bg-white/5 border-white/10">
-                            <SelectValue placeholder="Selecione uma categoria" />
+                            <SelectValue />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent className="bg-zinc-900 border-white/10">
@@ -195,10 +193,10 @@ export function CreateProductForm({
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">Unidade</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
                         <FormControl>
                           <SelectTrigger className="bg-white/5 border-white/10">
-                            <SelectValue placeholder="Unidade" />
+                            <SelectValue />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent className="bg-zinc-900 border-white/10">
@@ -217,12 +215,11 @@ export function CreateProductForm({
                   name="costPrice"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">Preço de Custo (R$)</FormLabel>
+                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">Custo (R$)</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
                           step="0.01"
-                          placeholder="0.00"
                           className="bg-white/5 border-white/10 text-emerald-500 font-bold"
                           {...field}
                           onChange={(e) => field.onChange(e.target.valueAsNumber)}
@@ -238,33 +235,12 @@ export function CreateProductForm({
                   name="price"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">Preço de Venda (R$)</FormLabel>
+                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">Venda (R$)</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
                           step="0.01"
-                          placeholder="0.00"
                           className="bg-white/5 border-white/10 text-primary font-bold"
-                          {...field}
-                          onChange={(e) => field.onChange(e.target.valueAsNumber)}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="stockQuantity"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">Estoque Inicial</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          placeholder="0"
-                          className="bg-white/5 border-white/10"
                           {...field}
                           onChange={(e) => field.onChange(e.target.valueAsNumber)}
                         />
@@ -279,11 +255,10 @@ export function CreateProductForm({
                   name="minStock"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">Estoque Mínimo (Alerta)</FormLabel>
+                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">Estoque Mínimo</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
-                          placeholder="0"
                           className="bg-white/5 border-white/10"
                           {...field}
                           onChange={(e) => field.onChange(e.target.valueAsNumber)}
@@ -299,8 +274,8 @@ export function CreateProductForm({
                 <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="flex-1">
                   Cancelar
                 </Button>
-                <Button type="submit" disabled={isLoading} className="flex-1 glow-primary">
-                  {isLoading ? "Processando..." : "Cadastrar Produto"}
+                <Button type="submit" disabled={isLoading} className="flex-1 glow-primary uppercase font-black italic">
+                  {isLoading ? "Salvando..." : "Salvar Alterações"}
                 </Button>
               </div>
             </form>

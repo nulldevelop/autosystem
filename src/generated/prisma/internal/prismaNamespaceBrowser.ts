@@ -62,6 +62,7 @@ export const ModelName = {
   Vehicle: 'Vehicle',
   Budget: 'Budget',
   Product: 'Product',
+  ProductMovement: 'ProductMovement',
   BudgetItem: 'BudgetItem',
   ServiceOrder: 'ServiceOrder',
   ServiceOrderItem: 'ServiceOrderItem',
@@ -232,14 +233,31 @@ export type BudgetScalarFieldEnum = (typeof BudgetScalarFieldEnum)[keyof typeof 
 export const ProductScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  price: 'price',
   sku: 'sku',
+  category: 'category',
+  unit: 'unit',
+  price: 'price',
+  costPrice: 'costPrice',
+  stockQuantity: 'stockQuantity',
+  minStock: 'minStock',
   organizationId: 'organizationId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type ProductScalarFieldEnum = (typeof ProductScalarFieldEnum)[keyof typeof ProductScalarFieldEnum]
+
+
+export const ProductMovementScalarFieldEnum = {
+  id: 'id',
+  productId: 'productId',
+  type: 'type',
+  quantity: 'quantity',
+  reason: 'reason',
+  createdAt: 'createdAt'
+} as const
+
+export type ProductMovementScalarFieldEnum = (typeof ProductMovementScalarFieldEnum)[keyof typeof ProductMovementScalarFieldEnum]
 
 
 export const BudgetItemScalarFieldEnum = {
@@ -435,10 +453,21 @@ export const ProductOrderByRelevanceFieldEnum = {
   id: 'id',
   name: 'name',
   sku: 'sku',
+  category: 'category',
+  unit: 'unit',
   organizationId: 'organizationId'
 } as const
 
 export type ProductOrderByRelevanceFieldEnum = (typeof ProductOrderByRelevanceFieldEnum)[keyof typeof ProductOrderByRelevanceFieldEnum]
+
+
+export const ProductMovementOrderByRelevanceFieldEnum = {
+  id: 'id',
+  productId: 'productId',
+  reason: 'reason'
+} as const
+
+export type ProductMovementOrderByRelevanceFieldEnum = (typeof ProductMovementOrderByRelevanceFieldEnum)[keyof typeof ProductMovementOrderByRelevanceFieldEnum]
 
 
 export const BudgetItemOrderByRelevanceFieldEnum = {
