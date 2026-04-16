@@ -117,34 +117,34 @@ function TransactionCardMobile({
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <Card className="border-white/5 bg-zinc-950/40">
-      <CardContent className="p-3">
-        <div className="flex items-start gap-3">
+    <Card className="border-white/5 bg-zinc-950/40 overflow-hidden">
+      <CardContent className="p-3 space-y-2">
+        <div className="flex items-start gap-2">
           <div
             className={cn(
-              "size-10 rounded-xl flex items-center justify-center shrink-0 border",
+              "size-9 rounded-lg flex items-center justify-center shrink-0 border",
               transaction.type === "INCOME"
                 ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20"
                 : "bg-secondary/10 text-secondary border-secondary/20",
             )}
           >
             {transaction.type === "INCOME" ? (
-              <ArrowUpRight className="size-5" />
+              <ArrowUpRight className="size-4" />
             ) : (
-              <ArrowDownRight className="size-5" />
+              <ArrowDownRight className="size-4" />
             )}
           </div>
 
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-[7px] font-black text-white/30 uppercase tracking-widest bg-white/5 px-1.5 py-0.5 rounded truncate">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="text-[6px] font-black text-white/30 uppercase tracking-widest bg-white/5 px-1 py-0.5 rounded truncate max-w-[80px]">
                 {transaction.category === "SERVICE"
-                  ? "ORDEM DE SERVIÇO"
+                  ? "OS"
                   : transaction.category}
               </span>
               <Badge
                 className={cn(
-                  "px-1.5 py-0 h-4 text-[6px] font-black uppercase tracking-[0.05em] border-0 shrink-0",
+                  "px-1 py-0 h-3.5 text-[5px] font-black uppercase tracking-[0.05em] border-0 shrink-0",
                   transaction.status === "PAID"
                     ? "bg-emerald-500/10 text-emerald-500"
                     : "bg-yellow-500/10 text-yellow-500",
@@ -159,13 +159,13 @@ function TransactionCardMobile({
               </Badge>
             </div>
 
-            <h3 className="text-sm font-black text-white uppercase tracking-tight leading-tight mt-1 truncate">
+            <h3 className="text-xs font-black text-white uppercase tracking-tight leading-tight mt-0.5 truncate">
               {transaction.description}
             </h3>
 
-            <div className="flex items-center gap-1 text-white/30 mt-0.5">
-              <Calendar className="size-2.5" />
-              <span className="text-[8px] font-bold uppercase">
+            <div className="flex items-center gap-1 text-white/30">
+              <Calendar className="size-2" />
+              <span className="text-[7px] font-bold uppercase">
                 {format(new Date(transaction.createdAt), "dd MMM yyyy", {
                   locale: ptBR,
                 })}
@@ -176,13 +176,13 @@ function TransactionCardMobile({
           <div className="text-right shrink-0">
             {transaction.type === "INCOME" ? (
               <>
-                <p className="text-xs font-bold text-white/50">
+                <p className="text-[9px] font-bold text-white/40">
                   {new Intl.NumberFormat("pt-BR", {
                     style: "currency",
                     currency: "BRL",
                   }).format(transaction.amount)}
                 </p>
-                <p className="text-sm font-black italic text-primary">
+                <p className="text-xs font-black italic text-primary">
                   {new Intl.NumberFormat("pt-BR", {
                     style: "currency",
                     currency: "BRL",
@@ -190,7 +190,7 @@ function TransactionCardMobile({
                 </p>
               </>
             ) : (
-              <p className="text-sm font-black italic text-secondary">
+              <p className="text-xs font-black italic text-secondary">
                 -
                 {new Intl.NumberFormat("pt-BR", {
                   style: "currency",
@@ -204,14 +204,14 @@ function TransactionCardMobile({
         <button
           type="button"
           onClick={() => setExpanded(!expanded)}
-          className="w-full mt-2 py-1.5 text-[8px] font-black text-white/30 uppercase tracking-widest border-t border-white/5"
+          className="w-full py-1 text-[7px] font-black text-white/30 uppercase tracking-widest border-t border-white/5"
         >
-          {expanded ? "OCULTAR DETALHES" : "VER DETALHES"}
+          {expanded ? "OCULTAR" : "DETALHES"}
         </button>
 
         {expanded && (
-          <div className="mt-3 pt-3 border-t border-white/5 space-y-2">
-            <div className="flex justify-between text-[9px]">
+          <div className="pt-2 border-t border-white/5 space-y-1.5">
+            <div className="flex justify-between text-[8px]">
               <span className="text-white/30 font-bold uppercase">Bruto:</span>
               <span className="text-white/70 font-black">
                 {new Intl.NumberFormat("pt-BR", {
@@ -222,7 +222,7 @@ function TransactionCardMobile({
             </div>
             {transaction.type === "INCOME" && (
               <>
-                <div className="flex justify-between text-[9px]">
+                <div className="flex justify-between text-[8px]">
                   <span className="text-white/30 font-bold uppercase">
                     Peças:
                   </span>
@@ -234,7 +234,7 @@ function TransactionCardMobile({
                     }).format(transaction.costAmount)}
                   </span>
                 </div>
-                <div className="flex justify-between text-[9px]">
+                <div className="flex justify-between text-[8px]">
                   <span className="text-primary/50 font-bold uppercase">
                     Líquido:
                   </span>
@@ -248,10 +248,10 @@ function TransactionCardMobile({
               </>
             )}
 
-            <div className="flex gap-2 mt-3">
+            <div className="pt-2">
               {transaction.status === "PENDING" ? (
-                <Button className="flex-1 bg-emerald-600 text-white hover:bg-emerald-700 text-[8px] font-black uppercase h-8">
-                  Baixar Conta
+                <Button className="w-full bg-emerald-600 text-white hover:bg-emerald-700 text-[7px] font-black uppercase h-7">
+                  Baixar
                 </Button>
               ) : (
                 <PDFDownloadLink
@@ -266,13 +266,13 @@ function TransactionCardMobile({
                   {({ loading }) => (
                     <Button
                       variant="outline"
-                      className="flex-1 border-white/5 bg-white/5 text-[8px] font-black uppercase h-8"
+                      className="w-full border-white/5 bg-white/5 text-[7px] font-black uppercase h-7"
                       disabled={loading}
                     >
                       {loading ? (
-                        <Loader2 className="w-3 h-3 animate-spin" />
+                        <Loader2 className="w-2.5 h-2.5 animate-spin" />
                       ) : (
-                        <FileText className="w-3 h-3" />
+                        <FileText className="w-2.5 h-2.5 mr-1" />
                       )}
                       Recibo
                     </Button>
@@ -306,8 +306,8 @@ export function FinanceiroClient({
   );
 
   return (
-    <div className="flex flex-col gap-4 lg:h-[calc(100svh-100px)] overflow-hidden">
-      <div className="flex flex-col gap-4 shrink-0 px-1">
+    <div className="flex flex-col gap-3 lg:gap-4 lg:h-[calc(100svh-100px)] lg:overflow-hidden h-screen overflow-hidden">
+      <div className="flex flex-col gap-3 lg:gap-4 shrink-0 px-3 lg:px-1 overflow-y-auto lg:overflow-visible">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-3">
           <div>
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black italic uppercase tracking-tighter text-white">
@@ -606,8 +606,8 @@ export function FinanceiroClient({
         defaultType={modalType}
       />
 
-      <ScrollArea className="flex-1 sm:pr-4">
-        <div className="flex flex-col gap-2 sm:gap-3 pb-10 px-1">
+      <div className="flex-1 overflow-y-auto px-3 lg:px-1 lg:pr-4 pb-20">
+        <div className="flex flex-col gap-2 sm:gap-3 pb-4">
           {filteredTransactions.length > 0 ? (
             <>
               <div className="hidden sm:block">
@@ -790,7 +790,7 @@ export function FinanceiroClient({
             </div>
           )}
         </div>
-      </ScrollArea>
+      </div>
     </div>
   );
 }

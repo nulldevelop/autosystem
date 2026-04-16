@@ -1,5 +1,10 @@
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 
 export default function PlansLoading() {
   return (
@@ -18,7 +23,10 @@ export default function PlansLoading() {
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {[...Array(3)].map((_, i) => (
-            <Card key={i} className={`border-white/10 bg-black/20 ${i === 1 ? 'scale-105' : ''}`}>
+            <Card
+              key={i}
+              className={`border-white/10 bg-black/20 ${i === 1 ? "scale-105" : ""}`}
+            >
               <CardHeader className="pb-4">
                 <Skeleton className="h-7 w-32 bg-white/5" />
                 <div className="mt-4 space-y-2">

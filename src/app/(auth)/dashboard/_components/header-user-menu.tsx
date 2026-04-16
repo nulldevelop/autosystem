@@ -1,5 +1,7 @@
 "use client";
 
+import { ChevronDown, LogOut, Settings, User } from "lucide-react";
+import { LogoutButton } from "@/app/(auth)/dashboard/_components/logout-button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,8 +10,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogoutButton } from "@/app/(auth)/dashboard/_components/logout-button";
-import { ChevronDown, LogOut, Settings, User } from "lucide-react";
 
 export function HeaderUserMenu({ session }: { session: any }) {
   if (!session) return null;

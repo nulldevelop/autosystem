@@ -19,26 +19,31 @@ export async function adjustStock(input: z.infer<typeof adjustStockSchema>) {
       return { success: false, message: "Não autorizado" };
     }
 
-    const { productId, quantity, type, reason } = adjustStockSchema.parse(input);
+    const { productId, quantity, type, reason } =
+      adjustStockSchema.parse(input);
 
     await prisma.$transaction(async (tx) => {
       const product = await tx.product.findUnique({
-        where: { id: productId, organizationId: session.session.activeOrganizationId }
+        where: {
+          id: productId,
+          organizationId: session.session.activeOrganizationId,
+        },
       });
 
       if (!product) throw new Error("Produto não encontrado");
 
-      const newQuantity = type === "IN" 
-        ? product.stockQuantity + Math.abs(quantity)
-        : type === "OUT" 
-          ? product.stockQuantity - Math.abs(quantity)
-          : quantity;
+      const newQuantity =
+        type === "IN"
+          ? product.stockQuantity + Math.abs(quantity)
+          : type === "OUT"
+            ? product.stockQuantity - Math.abs(quantity)
+            : quantity;
 
       if (newQuantity < 0) throw new Error("Estoque insuficiente");
 
       await tx.product.update({
         where: { id: productId },
-        data: { stockQuantity: newQuantity }
+        data: { stockQuantity: newQuantity },
       });
 
       await tx.productMovement.create({
@@ -46,8 +51,8 @@ export async function adjustStock(input: z.infer<typeof adjustStockSchema>) {
           productId,
           type,
           quantity: type === "ADJUSTMENT" ? quantity : Math.abs(quantity),
-          reason
-        }
+          reason,
+        },
       });
     });
 
@@ -55,6 +60,9 @@ export async function adjustStock(input: z.infer<typeof adjustStockSchema>) {
     return { success: true, message: "Estoque ajustado com sucesso!" };
   } catch (error: any) {
     console.error(error);
-    return { success: false, message: error.message || "Erro ao ajustar estoque" };
+    return {
+      success: false,
+      message: error.message || "Erro ao ajustar estoque",
+    };
   }
 }

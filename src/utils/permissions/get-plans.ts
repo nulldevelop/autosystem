@@ -1,5 +1,3 @@
-
-
 import type { Plan } from "@/generated/prisma/client";
 
 export interface PlanDetailInfo {

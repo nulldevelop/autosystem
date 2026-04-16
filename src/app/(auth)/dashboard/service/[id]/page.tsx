@@ -1,14 +1,16 @@
-import { Suspense } from "react";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { getServiceOrderDetails } from "../_data-access/get-service-order-details";
 import { ServiceOrderDetailsClient } from "./service-order-details-client";
-import { Skeleton } from "@/components/ui/skeleton";
 
 interface ServiceOrderPageProps {
   params: Promise<{ id: string }>;
 }
 
-export default async function ServiceOrderPage({ params }: ServiceOrderPageProps) {
+export default async function ServiceOrderPage({
+  params,
+}: ServiceOrderPageProps) {
   const { id } = await params;
   const serviceOrder = await getServiceOrderDetails(id);
 

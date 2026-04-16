@@ -4,8 +4,8 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { getSession } from "@/lib/getSession";
 import { prisma } from "@/lib/prisma";
-import { getBudgetDetails } from "../_data-access/get-budget-details";
 import { canPermission } from "@/utils/permissions/canPermission";
+import { getBudgetDetails } from "../_data-access/get-budget-details";
 
 const createServiceOrderSchema = z.object({
   budgetId: z.string().uuid({
@@ -62,8 +62,8 @@ export async function createServiceOrder(
     if (!permission.hasPermission) {
       return {
         success: false,
-        message: permission.expired 
-          ? "Sua assinatura expirou." 
+        message: permission.expired
+          ? "Sua assinatura expirou."
           : "Limite de plano atingido.",
       };
     }
@@ -100,12 +100,12 @@ export async function createServiceOrder(
       // 3. Processar itens (Estoque + Histórico)
       for (const item of budget.items) {
         const isCustom = item.product.sku.startsWith("CUST-");
-        
+
         if (!isCustom) {
           // 3a. Verificar Disponibilidade
           const product = await tx.product.findUnique({
             where: { id: item.productId },
-            select: { stockQuantity: true, name: true }
+            select: { stockQuantity: true, name: true },
           });
 
           if (!product) {
@@ -113,7 +113,9 @@ export async function createServiceOrder(
           }
 
           if (product.stockQuantity < item.quantity) {
-            throw new Error(`Estoque insuficiente para: ${product.name}. Disponível: ${product.stockQuantity}`);
+            throw new Error(
+              `Estoque insuficiente para: ${product.name}. Disponível: ${product.stockQuantity}`,
+            );
           }
 
           // 3b. Atualiza estoque
@@ -121,9 +123,9 @@ export async function createServiceOrder(
             where: { id: item.productId },
             data: {
               stockQuantity: {
-                decrement: item.quantity
-              }
-            }
+                decrement: item.quantity,
+              },
+            },
           });
 
           // 3c. Registra movimento de estoque
@@ -132,8 +134,8 @@ export async function createServiceOrder(
               productId: item.productId,
               type: "OUT",
               quantity: item.quantity,
-              reason: `Ordem de Serviço #${newServiceOrder.id.substring(0,8)}`,
-            }
+              reason: `Ordem de Serviço #${newServiceOrder.id.substring(0, 8)}`,
+            },
           });
         }
 
@@ -144,17 +146,17 @@ export async function createServiceOrder(
             productId: item.productId,
             quantity: item.quantity,
             unitPrice: item.unitPrice,
-          }
+          },
         });
 
         // Somar custo total para o financeiro
-        totalCostAmount += (item.product.costPrice * item.quantity);
+        totalCostAmount += item.product.costPrice * item.quantity;
       }
 
       // 4. Gerar Transação Financeira Automática
       await tx.transaction.create({
         data: {
-          description: `Receita OS #${newServiceOrder.id.substring(0,8)} - ${budget.customer.name}`,
+          description: `Receita OS #${newServiceOrder.id.substring(0, 8)} - ${budget.customer.name}`,
           amount: budget.totalAmount, // Bruto
           costAmount: totalCostAmount, // Peças/Custo
           netAmount: budget.totalAmount - totalCostAmount, // Limpo (Mão de obra + Lucro)
@@ -164,7 +166,7 @@ export async function createServiceOrder(
           dueDate: new Date(),
           serviceOrderId: newServiceOrder.id,
           organizationId: orgId,
-        }
+        },
       });
 
       return newServiceOrder;
@@ -176,7 +178,8 @@ export async function createServiceOrder(
 
     return {
       success: true,
-      message: "OS gerada com sucesso! Estoque atualizado e financeiro provisionado.",
+      message:
+        "OS gerada com sucesso! Estoque atualizado e financeiro provisionado.",
       serviceOrderId: result.id,
     };
   } catch (error: unknown) {

@@ -1,15 +1,9 @@
 "use client";
 
-import {
-  Document,
-  Page,
-  Text,
-  View,
-  StyleSheet,
-} from "@react-pdf/renderer";
-import type { Product } from "@/generated/prisma/client";
-import { PDFHeader } from "@/components/pdf/PDFHeader";
+import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 import { PDFFooter } from "@/components/pdf/PDFFooter";
+import { PDFHeader } from "@/components/pdf/PDFHeader";
+import type { Product } from "@/generated/prisma/client";
 
 const styles = StyleSheet.create({
   page: {
@@ -53,7 +47,7 @@ const styles = StyleSheet.create({
   colStock: { width: "10%", textAlign: "right" },
   colPrice: { width: "12.5%", textAlign: "right" },
   colTotal: { width: "12.5%", textAlign: "right" },
-  
+
   summarySection: {
     marginTop: 30,
     paddingTop: 15,
@@ -85,42 +79,71 @@ interface InventoryReportPDFProps {
   title: string;
 }
 
-export function InventoryReportPDF({ products, organization, title }: InventoryReportPDFProps) {
-  const totalValue = products.reduce((acc, p) => acc + (p.price * p.stockQuantity), 0);
+export function InventoryReportPDF({
+  products,
+  organization,
+  title,
+}: InventoryReportPDFProps) {
+  const totalValue = products.reduce(
+    (acc, p) => acc + p.price * p.stockQuantity,
+    0,
+  );
   const totalItems = products.reduce((acc, p) => acc + p.stockQuantity, 0);
-  
+
   return (
     <Document>
       <Page size="A4" orientation="landscape" style={styles.page}>
-        <PDFHeader 
-          organization={organization} 
-          title={title} 
+        <PDFHeader
+          organization={organization}
+          title={title}
           layout="landscape"
         />
 
         <View style={styles.table}>
           <View style={styles.tableHeader}>
             <Text style={[styles.tableColHeader, styles.colSku]}>SKU</Text>
-            <Text style={[styles.tableColHeader, styles.colName]}>Produto / Descrição</Text>
-            <Text style={[styles.tableColHeader, styles.colCat]}>Categoria</Text>
-            <Text style={[styles.tableColHeader, styles.colStock]}>Estoque</Text>
-            <Text style={[styles.tableColHeader, styles.colPrice]}>Preço Unit.</Text>
-            <Text style={[styles.tableColHeader, styles.colTotal]}>Subtotal</Text>
+            <Text style={[styles.tableColHeader, styles.colName]}>
+              Produto / Descrição
+            </Text>
+            <Text style={[styles.tableColHeader, styles.colCat]}>
+              Categoria
+            </Text>
+            <Text style={[styles.tableColHeader, styles.colStock]}>
+              Estoque
+            </Text>
+            <Text style={[styles.tableColHeader, styles.colPrice]}>
+              Preço Unit.
+            </Text>
+            <Text style={[styles.tableColHeader, styles.colTotal]}>
+              Subtotal
+            </Text>
           </View>
 
           {products.map((product) => (
             <View key={product.id} style={styles.tableRow}>
-              <Text style={[styles.tableCol, styles.colSku]}>{product.sku}</Text>
-              <Text style={[styles.tableCol, styles.colName]}>{product.name}</Text>
-              <Text style={[styles.tableCol, styles.colCat]}>{product.category}</Text>
+              <Text style={[styles.tableCol, styles.colSku]}>
+                {product.sku}
+              </Text>
+              <Text style={[styles.tableCol, styles.colName]}>
+                {product.name}
+              </Text>
+              <Text style={[styles.tableCol, styles.colCat]}>
+                {product.category}
+              </Text>
               <Text style={[styles.tableCol, styles.colStock]}>
                 {product.stockQuantity} {product.unit}
               </Text>
               <Text style={[styles.tableCol, styles.colPrice]}>
-                {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(product.price)}
+                {new Intl.NumberFormat("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                }).format(product.price)}
               </Text>
               <Text style={[styles.tableCol, styles.colTotal]}>
-                {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(product.price * product.stockQuantity)}
+                {new Intl.NumberFormat("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                }).format(product.price * product.stockQuantity)}
               </Text>
             </View>
           ))}
@@ -134,7 +157,10 @@ export function InventoryReportPDF({ products, organization, title }: InventoryR
           <View style={styles.summaryItem}>
             <Text style={styles.summaryLabel}>Valor Total em Estoque</Text>
             <Text style={[styles.summaryValue, { color: "#16A34A" }]}>
-              {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(totalValue)}
+              {new Intl.NumberFormat("pt-BR", {
+                style: "currency",
+                currency: "BRL",
+              }).format(totalValue)}
             </Text>
           </View>
         </View>

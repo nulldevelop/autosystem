@@ -47,7 +47,7 @@ interface PDFFooterProps {
 
 export function PDFFooter({ documentId }: PDFFooterProps) {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-  const systemLogoUrl = `${baseUrl.replace(/\/$/, '')}/images/logo.png`;
+  const systemLogoUrl = `${baseUrl.replace(/\/$/, "")}/images/logo.png`;
 
   return (
     <View style={styles.footer} fixed>
@@ -64,7 +64,9 @@ export function PDFFooter({ documentId }: PDFFooterProps) {
             <Text style={[styles.footerText, { fontFamily: "Courier" }]}>
               CÓDIGO DE VERIFICAÇÃO: {documentId.toUpperCase()}
             </Text>
-          ) : <View />}
+          ) : (
+            <View />
+          )}
         </View>
         <Text
           style={styles.pageNumber}

@@ -1,5 +1,5 @@
+import { AlertTriangle, DollarSign, Package, TrendingUp } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Package, AlertTriangle, TrendingUp, DollarSign } from "lucide-react";
 
 interface ProductStatsProps {
   products: any[];
@@ -7,9 +7,14 @@ interface ProductStatsProps {
 
 export function ProductStats({ products }: ProductStatsProps) {
   const totalProducts = products.length;
-  const lowStock = products.filter(p => p.stockQuantity <= p.minStock && p.stockQuantity > 0).length;
-  const outOfStock = products.filter(p => p.stockQuantity === 0).length;
-  const totalInventoryValue = products.reduce((acc, p) => acc + (p.price * p.stockQuantity), 0);
+  const lowStock = products.filter(
+    (p) => p.stockQuantity <= p.minStock && p.stockQuantity > 0,
+  ).length;
+  const outOfStock = products.filter((p) => p.stockQuantity === 0).length;
+  const totalInventoryValue = products.reduce(
+    (acc, p) => acc + p.price * p.stockQuantity,
+    0,
+  );
 
   const stats = [
     {
@@ -46,21 +51,24 @@ export function ProductStats({ products }: ProductStatsProps) {
   ];
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <div className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1 md:overflow-visible md:grid md:grid-cols-2 lg:grid-cols-4 md:pb-0 md:mx-0 md:px-0">
       {stats.map((stat) => (
-        <Card key={stat.label} className="border-white/5 bg-white/[0.02]">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-1">
+        <Card
+          key={stat.label}
+          className="min-w-[140px] md:min-w-0 border-white/5 bg-white/[0.02] shrink-0 md:shrink"
+        >
+          <CardContent className="p-4 md:p-6">
+            <div className="flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-white/40 mb-1 truncate">
                   {stat.label}
                 </p>
-                <h3 className="text-2xl font-black italic text-white tracking-tighter">
+                <h3 className="text-lg md:text-2xl font-black italic text-white tracking-tighter truncate">
                   {stat.value}
                 </h3>
               </div>
-              <div className={`p-3 rounded-xl ${stat.bgColor}`}>
-                <stat.icon className={`size-5 ${stat.color}`} />
+              <div className={`p-2 md:p-3 rounded-xl shrink-0 ${stat.bgColor}`}>
+                <stat.icon className={`size-4 md:size-5 ${stat.color}`} />
               </div>
             </div>
           </CardContent>

@@ -1,9 +1,12 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { prisma } from "@/lib/prisma";
 
-export async function signServiceOrder(serviceOrderId: string, signatureData: string) {
+export async function signServiceOrder(
+  serviceOrderId: string,
+  signatureData: string,
+) {
   try {
     const serviceOrder = await prisma.serviceOrder.update({
       where: { id: serviceOrderId },

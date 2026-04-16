@@ -26,5 +26,5 @@ export function formatCpf(value: string): string {
  * @returns Uma string contendo apenas os dígitos do CPF.
  */
 export function extractCpf(cpf: string): string {
-  return cpf.replace(/[\.-]/g, "");
+  return cpf.replace(/[.-]/g, "");
 }

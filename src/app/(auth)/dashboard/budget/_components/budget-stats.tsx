@@ -1,16 +1,16 @@
 "use client";
 
-import { Card } from "@/components/ui/card";
-import { 
-  Clock, 
-  CheckCircle2, 
-  XCircle, 
-  TrendingUp, 
+import {
+  CheckCircle2,
+  Clock,
   DollarSign,
-  FileText
+  FileText,
+  TrendingUp,
+  XCircle,
 } from "lucide-react";
-import type { BudgetWithRelations } from "@/types/budget";
+import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import type { BudgetWithRelations } from "@/types/budget";
 
 interface BudgetStatsProps {
   budgets: BudgetWithRelations[];
@@ -64,7 +64,10 @@ export function BudgetStats({ budgets }: BudgetStatsProps) {
     },
     {
       label: "Taxa de Conversão",
-      value: stats.total > 0 ? `${Math.round((stats.approved / stats.total) * 100)}%` : "0%",
+      value:
+        stats.total > 0
+          ? `${Math.round((stats.approved / stats.total) * 100)}%`
+          : "0%",
       subValue: "Média Global",
       icon: TrendingUp,
       color: "text-primary",
@@ -80,11 +83,19 @@ export function BudgetStats({ budgets }: BudgetStatsProps) {
           key={index}
           className={cn(
             "p-5 bg-zinc-950/50 border-white/5 backdrop-blur-sm group hover:border-white/10 transition-all duration-300",
-            "relative overflow-hidden"
+            "relative overflow-hidden",
           )}
         >
           <div className="flex items-center gap-4">
-            <div className={cn("p-3 rounded-2xl", item.bg, item.color, "border", item.border)}>
+            <div
+              className={cn(
+                "p-3 rounded-2xl",
+                item.bg,
+                item.color,
+                "border",
+                item.border,
+              )}
+            >
               <item.icon className="size-6" />
             </div>
             <div className="flex flex-col">
@@ -101,7 +112,7 @@ export function BudgetStats({ budgets }: BudgetStatsProps) {
               </div>
             </div>
           </div>
-          
+
           {/* Decorative Background Icon */}
           <item.icon className="absolute -right-4 -bottom-4 size-24 text-white/[0.02] -rotate-12 group-hover:rotate-0 transition-transform duration-500" />
         </Card>

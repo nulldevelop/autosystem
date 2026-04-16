@@ -1,10 +1,10 @@
-import { getReportData } from "./_data-access/get-report-data";
-import { RelatoriosClient } from "./_components/relatorios-client";
-import { parseISO, isValid, startOfMonth, endOfMonth } from "date-fns";
+import { endOfMonth, isValid, parseISO, startOfMonth } from "date-fns";
 import { Suspense } from "react";
-import Loading from "./loading";
 import { getSession } from "@/lib/getSession";
 import { prisma } from "@/lib/prisma";
+import { RelatoriosClient } from "./_components/relatorios-client";
+import { getReportData } from "./_data-access/get-report-data";
+import Loading from "./loading";
 
 interface PageProps {
   searchParams: Promise<{ from?: string; to?: string }>;
@@ -12,7 +12,7 @@ interface PageProps {
 
 export default async function RelatoriosPage({ searchParams }: PageProps) {
   const params = await searchParams;
-  
+
   const from = params.from ? parseISO(params.from) : startOfMonth(new Date());
   const to = params.to ? parseISO(params.to) : endOfMonth(new Date());
 
@@ -25,9 +25,9 @@ export default async function RelatoriosPage({ searchParams }: PageProps) {
     getSession(),
   ]);
 
-  const organization = session?.session.activeOrganizationId 
+  const organization = session?.session.activeOrganizationId
     ? await prisma.organization.findUnique({
-        where: { id: session.session.activeOrganizationId }
+        where: { id: session.session.activeOrganizationId },
       })
     : null;
 

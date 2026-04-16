@@ -54,9 +54,9 @@ export function PDFServiceOrderDownloadButton({
     return (
       <AlertDialog>
         <AlertDialogTrigger asChild>
-          <Button 
-            variant="outline" 
-            size="sm" 
+          <Button
+            variant="outline"
+            size="sm"
             disabled={isCreating}
             className="w-full h-9 gap-2 border-white/5 bg-white/5 hover:bg-white/10 text-[10px] font-black uppercase tracking-wider"
           >
@@ -75,15 +75,19 @@ export function PDFServiceOrderDownloadButton({
         </AlertDialogTrigger>
         <AlertDialogContent className="bg-zinc-950 border-white/10 text-white">
           <AlertDialogHeader>
-            <AlertDialogTitle className="font-black uppercase italic tracking-tighter text-2xl">Confirmar Ordem de Serviço</AlertDialogTitle>
+            <AlertDialogTitle className="font-black uppercase italic tracking-tighter text-2xl">
+              Confirmar Ordem de Serviço
+            </AlertDialogTitle>
             <AlertDialogDescription className="text-white/60">
               Ao confirmar, o orçamento será automaticamente aprovado e uma nova
               Ordem de Serviço será criada. Esta ação não pode ser revertida.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="bg-white/5 border-white/10 text-white hover:bg-white/10">Cancelar</AlertDialogCancel>
-            <AlertDialogAction 
+            <AlertDialogCancel className="bg-white/5 border-white/10 text-white hover:bg-white/10">
+              Cancelar
+            </AlertDialogCancel>
+            <AlertDialogAction
               onClick={handleCreateServiceOrder}
               className="bg-primary text-black hover:bg-primary/90 font-bold"
             >
@@ -97,9 +101,9 @@ export function PDFServiceOrderDownloadButton({
 
   if (!shouldRender) {
     return (
-      <Button 
-        variant="outline" 
-        size="sm" 
+      <Button
+        variant="outline"
+        size="sm"
         onClick={() => setShouldRender(true)}
         className="w-full h-9 gap-2 border-white/5 bg-white/5 hover:bg-white/10 text-[10px] font-black uppercase tracking-wider"
       >
@@ -113,12 +117,12 @@ export function PDFServiceOrderDownloadButton({
     <PDFDownloadLink
       document={<ServiceOrderPDF budget={initialBudget as any} />}
       fileName={`ordem-de-servico-${initialBudget.id.substring(0, 6)}.pdf`}
-      style={{ width: '100%' }}
+      style={{ width: "100%" }}
     >
       {({ loading }) => (
-        <Button 
-          variant="outline" 
-          size="sm" 
+        <Button
+          variant="outline"
+          size="sm"
           disabled={loading}
           className="w-full h-9 gap-2 border-white/5 bg-white/5 hover:bg-white/10 text-[10px] font-black uppercase tracking-wider"
         >

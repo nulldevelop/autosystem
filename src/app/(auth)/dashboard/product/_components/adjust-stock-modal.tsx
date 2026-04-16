@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -30,8 +30,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { adjustStock } from "../_actions/adjust-stock";
 import type { Product } from "@/generated/prisma/client";
+import { adjustStock } from "../_actions/adjust-stock";
 
 const formSchema = z.object({
   productId: z.string().uuid(),
@@ -100,19 +100,29 @@ export function AdjustStockModal({
             Ajustar <span className="text-primary">Estoque</span>
           </DialogTitle>
           <DialogDescription className="text-white/40 font-bold uppercase tracking-widest text-[10px]">
-            {product?.name} - Saldo atual: {product?.stockQuantity} {product?.unit}
+            {product?.name} - Saldo atual: {product?.stockQuantity}{" "}
+            {product?.unit}
           </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-2">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-4 py-2"
+          >
             <FormField
               control={form.control}
               name="type"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">Tipo de Movimentação</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
+                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">
+                    Tipo de Movimentação
+                  </FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    value={field.value}
+                  >
                     <FormControl>
                       <SelectTrigger className="bg-white/5 border-white/10">
                         <SelectValue />
@@ -121,7 +131,9 @@ export function AdjustStockModal({
                     <SelectContent className="bg-zinc-900 border-white/10">
                       <SelectItem value="IN">Entrada (+)</SelectItem>
                       <SelectItem value="OUT">Saída (-)</SelectItem>
-                      <SelectItem value="ADJUSTMENT">Ajuste de Saldo (=)</SelectItem>
+                      <SelectItem value="ADJUSTMENT">
+                        Ajuste de Saldo (=)
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -134,7 +146,9 @@ export function AdjustStockModal({
               name="quantity"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">Quantidade</FormLabel>
+                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">
+                    Quantidade
+                  </FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -153,9 +167,15 @@ export function AdjustStockModal({
               name="reason"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">Motivo / Observação</FormLabel>
+                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">
+                    Motivo / Observação
+                  </FormLabel>
                   <FormControl>
-                    <Input placeholder="Ex: Compra de fornecedor, Ajuste de inventário..." className="bg-white/5 border-white/10" {...field} />
+                    <Input
+                      placeholder="Ex: Compra de fornecedor, Ajuste de inventário..."
+                      className="bg-white/5 border-white/10"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -163,10 +183,19 @@ export function AdjustStockModal({
             />
 
             <div className="flex gap-3 pt-4">
-              <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="flex-1 text-[10px] font-black uppercase">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+                className="flex-1 text-[10px] font-black uppercase"
+              >
                 Cancelar
               </Button>
-              <Button type="submit" disabled={isLoading} className="flex-1 glow-primary uppercase font-black italic">
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="flex-1 glow-primary uppercase font-black italic"
+              >
                 {isLoading ? "Processando..." : "Confirmar Ajuste"}
               </Button>
             </div>

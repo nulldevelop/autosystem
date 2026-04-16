@@ -8,9 +8,9 @@ import {
 } from "@react-pdf/renderer";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import type { BudgetWithRelations } from "@/types/budget";
-import { PDFHeader } from "@/components/pdf/PDFHeader";
 import { PDFFooter } from "@/components/pdf/PDFFooter";
+import { PDFHeader } from "@/components/pdf/PDFHeader";
+import type { BudgetWithRelations } from "@/types/budget";
 
 const styles = StyleSheet.create({
   page: {
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textTransform: "uppercase",
     marginBottom: 5,
-  }
+  },
 });
 
 interface BudgetPDFProps {
@@ -190,11 +190,11 @@ interface BudgetPDFProps {
 }
 
 export function BudgetPDF({ budget }: BudgetPDFProps) {
-  const subtotal = (budget as any).itemsAmount || budget.items.reduce(
-    (acc, item) => acc + item.quantity * item.unitPrice,
-    0,
-  );
-  const marginValue = (budget as any).laborValue || (budget.totalAmount - subtotal);
+  const subtotal =
+    (budget as any).itemsAmount ||
+    budget.items.reduce((acc, item) => acc + item.quantity * item.unitPrice, 0);
+  const marginValue =
+    (budget as any).laborValue || budget.totalAmount - subtotal;
 
   return (
     <Document>
@@ -263,9 +263,13 @@ export function BudgetPDF({ budget }: BudgetPDFProps) {
                     >
                       <Text>{key.replace("_", " ").toUpperCase()}</Text>
                     </View>
-                  ) : <View key={key} />
+                  ) : (
+                    <View key={key} />
+                  ),
               )
-            ) : <View />}
+            ) : (
+              <View />
+            )}
           </View>
         </View>
 
@@ -376,21 +380,29 @@ export function BudgetPDF({ budget }: BudgetPDFProps) {
               {budget.observacoes}
             </Text>
           </View>
-        ) : <View />}
+        ) : (
+          <View />
+        )}
 
         <View style={styles.signatureSection} wrap={false}>
           {/* Assinatura do Cliente */}
           <View style={styles.signatureBox}>
             {budget.signature ? (
               <View>
-                <Image src={budget.signature} style={{ width: 100, height: 40 }} />
+                <Image
+                  src={budget.signature}
+                  style={{ width: 100, height: 40 }}
+                />
                 <Text style={{ fontSize: 6, color: "#94A3B8", marginTop: 4 }}>
-                  IP: {budget.id.substring(0, 12)} • Data: {format(new Date(budget.signedAt!), "dd/MM/yyyy HH:mm")}
+                  IP: {budget.id.substring(0, 12)} • Data:{" "}
+                  {format(new Date(budget.signedAt!), "dd/MM/yyyy HH:mm")}
                 </Text>
               </View>
             ) : (
               <View style={{ height: 40, justifyContent: "center" }}>
-                <Text style={{ fontSize: 7, color: "#CBD5E1", italic: true }}>Aguardando Assinatura Digital</Text>
+                <Text style={{ fontSize: 7, color: "#CBD5E1", italic: true }}>
+                  Aguardando Assinatura Digital
+                </Text>
               </View>
             )}
             <Text style={styles.signatureLabel}>Assinatura do Cliente</Text>
@@ -403,10 +415,13 @@ export function BudgetPDF({ budget }: BudgetPDFProps) {
               <Text>VALIDADO DIGITALMENTE</Text>
             </View>
             <Text style={{ fontSize: 6, color: "#94A3B8", marginBottom: 5 }}>
-              AUTENTICAÇÃO: {budget.organization?.id.substring(0, 18).toUpperCase()}
+              AUTENTICAÇÃO:{" "}
+              {budget.organization?.id.substring(0, 18).toUpperCase()}
             </Text>
             <Text style={styles.signatureLabel}>Assinatura da Oficina</Text>
-            <Text style={styles.signatureName}>{budget.organization?.name}</Text>
+            <Text style={styles.signatureName}>
+              {budget.organization?.name}
+            </Text>
           </View>
         </View>
 

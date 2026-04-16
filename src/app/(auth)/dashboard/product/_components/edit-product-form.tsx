@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -23,6 +23,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
   SelectContent,
@@ -30,15 +31,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { updateProduct } from "../_actions/update-product";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import type { Product } from "@/generated/prisma/client";
+import { updateProduct } from "../_actions/update-product";
 
 const formSchema = z.object({
   id: z.string().uuid(),
   name: z.string().min(1, "O nome do produto é obrigatório."),
   price: z.number().nonnegative("O preço deve ser um número positivo."),
-  costPrice: z.number().nonnegative("O preço de custo deve ser um número positivo."),
+  costPrice: z
+    .number()
+    .nonnegative("O preço de custo deve ser um número positivo."),
   sku: z.string().min(1, "O SKU é obrigatório."),
   category: z.string().min(1, "A categoria é obrigatória."),
   unit: z.string().min(1, "A unidade é obrigatória."),
@@ -134,16 +136,24 @@ export function EditProductForm({
 
         <ScrollArea className="max-h-[80vh] pr-4">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 py-4">
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-6 py-4"
+            >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">Nome</FormLabel>
+                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">
+                        Nome
+                      </FormLabel>
                       <FormControl>
-                        <Input className="bg-white/5 border-white/10" {...field} />
+                        <Input
+                          className="bg-white/5 border-white/10"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -155,9 +165,14 @@ export function EditProductForm({
                   name="sku"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">SKU</FormLabel>
+                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">
+                        SKU
+                      </FormLabel>
                       <FormControl>
-                        <Input className="bg-white/5 border-white/10 font-mono" {...field} />
+                        <Input
+                          className="bg-white/5 border-white/10 font-mono"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -169,8 +184,14 @@ export function EditProductForm({
                   name="category"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">Categoria</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
+                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">
+                        Categoria
+                      </FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        value={field.value}
+                      >
                         <FormControl>
                           <SelectTrigger className="bg-white/5 border-white/10">
                             <SelectValue />
@@ -178,7 +199,9 @@ export function EditProductForm({
                         </FormControl>
                         <SelectContent className="bg-zinc-900 border-white/10">
                           {CATEGORIES.map((cat) => (
-                            <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                            <SelectItem key={cat} value={cat}>
+                              {cat}
+                            </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
@@ -192,8 +215,14 @@ export function EditProductForm({
                   name="unit"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">Unidade</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
+                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">
+                        Unidade
+                      </FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        value={field.value}
+                      >
                         <FormControl>
                           <SelectTrigger className="bg-white/5 border-white/10">
                             <SelectValue />
@@ -201,7 +230,9 @@ export function EditProductForm({
                         </FormControl>
                         <SelectContent className="bg-zinc-900 border-white/10">
                           {UNITS.map((unit) => (
-                            <SelectItem key={unit} value={unit}>{unit}</SelectItem>
+                            <SelectItem key={unit} value={unit}>
+                              {unit}
+                            </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
@@ -215,14 +246,18 @@ export function EditProductForm({
                   name="costPrice"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">Custo (R$)</FormLabel>
+                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">
+                        Custo (R$)
+                      </FormLabel>
                       <FormControl>
                         <Input
                           type="number"
                           step="0.01"
                           className="bg-white/5 border-white/10 text-emerald-500 font-bold"
                           {...field}
-                          onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                          onChange={(e) =>
+                            field.onChange(e.target.valueAsNumber)
+                          }
                         />
                       </FormControl>
                       <FormMessage />
@@ -235,14 +270,18 @@ export function EditProductForm({
                   name="price"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">Venda (R$)</FormLabel>
+                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">
+                        Venda (R$)
+                      </FormLabel>
                       <FormControl>
                         <Input
                           type="number"
                           step="0.01"
                           className="bg-white/5 border-white/10 text-primary font-bold"
                           {...field}
-                          onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                          onChange={(e) =>
+                            field.onChange(e.target.valueAsNumber)
+                          }
                         />
                       </FormControl>
                       <FormMessage />
@@ -255,13 +294,17 @@ export function EditProductForm({
                   name="minStock"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">Estoque Mínimo</FormLabel>
+                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">
+                        Estoque Mínimo
+                      </FormLabel>
                       <FormControl>
                         <Input
                           type="number"
                           className="bg-white/5 border-white/10"
                           {...field}
-                          onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                          onChange={(e) =>
+                            field.onChange(e.target.valueAsNumber)
+                          }
                         />
                       </FormControl>
                       <FormMessage />
@@ -271,10 +314,19 @@ export function EditProductForm({
               </div>
 
               <div className="flex gap-3 pt-4">
-                <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="flex-1">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => onOpenChange(false)}
+                  className="flex-1"
+                >
                   Cancelar
                 </Button>
-                <Button type="submit" disabled={isLoading} className="flex-1 glow-primary uppercase font-black italic">
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className="flex-1 glow-primary uppercase font-black italic"
+                >
                   {isLoading ? "Salvando..." : "Salvar Alterações"}
                 </Button>
               </div>

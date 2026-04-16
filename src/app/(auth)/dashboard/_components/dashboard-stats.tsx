@@ -1,4 +1,3 @@
-import React from "react";
 import { addDays, isAfter } from "date-fns";
 import {
   Car,
@@ -9,6 +8,7 @@ import {
   Wrench,
 } from "lucide-react";
 import Link from "next/link";
+import React from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,10 +18,10 @@ import { planRoutes, trialRoutes } from "@/utils/permissions/plan-features"; // 
 import { TRIAL_DAYS } from "@/utils/permissions/trial-limits";
 import { getBudgetsCount } from "../_data-access/get-budgets-count";
 import { getCustomersCount } from "../_data-access/get-customers-count";
+import { getSubscription } from "../_data-access/get-subscriptio";
 import { getVehiclesCount } from "../_data-access/get-vehicles-count";
 import { getProductsCount } from "../product/_data-access/get-products-count";
 import { getServiceOrdersCount } from "../service/_data-access/get-service-orders-count";
-import { getSubscription } from "../_data-access/get-subscriptio";
 
 export async function DashboardStats() {
   const session = await getSession();
@@ -130,7 +130,11 @@ export async function DashboardStats() {
             className="relative overflow-hidden group border-white/5 hover:border-primary/20 transition-all duration-500"
           >
             <div className="absolute top-0 right-0 p-4 text-white/5 group-hover:text-primary/10 transition-colors duration-500">
-              {stat.icon && React.cloneElement(stat.icon as React.ReactElement<{ className?: string }>, { className: "size-16" })}
+              {stat.icon &&
+                React.cloneElement(
+                  stat.icon as React.ReactElement<{ className?: string }>,
+                  { className: "size-16" },
+                )}
             </div>
             <CardHeader className="pb-2">
               <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 group-hover:text-primary transition-colors">
@@ -139,17 +143,24 @@ export async function DashboardStats() {
             </CardHeader>
             <CardContent>
               <div className="text-5xl font-black italic tracking-tighter text-white mb-6 group-hover:translate-x-2 transition-transform duration-500">
-                {stat.count.toString().padStart(2, '0')}
+                {stat.count.toString().padStart(2, "0")}
               </div>
               <div className="flex items-center gap-2 relative z-10">
                 <Link href={stat.action.href} className="flex-1">
-                  <Button variant="tech" className="w-full justify-start h-8 px-3">
+                  <Button
+                    variant="tech"
+                    className="w-full justify-start h-8 px-3"
+                  >
                     {stat.action.label}
                   </Button>
                 </Link>
                 {stat.quickAction && (
                   <Link href={stat.quickAction.href}>
-                    <Button variant="default" size="icon-sm" className="rounded-lg size-8 glow-primary">
+                    <Button
+                      variant="default"
+                      size="icon-sm"
+                      className="rounded-lg size-8 glow-primary"
+                    >
                       <PlusCircle className="size-4" />
                     </Button>
                   </Link>

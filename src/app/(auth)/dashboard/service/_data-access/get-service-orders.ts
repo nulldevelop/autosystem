@@ -27,11 +27,11 @@ export async function getServiceOrders() {
           items: {
             include: {
               product: true,
-            }
+            },
           },
           organization: true,
-          serviceOrder: true
-        }
+          serviceOrder: true,
+        },
       },
     },
   });

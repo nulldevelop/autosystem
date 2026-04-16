@@ -332,7 +332,9 @@ export default async function DashboardPage() {
         {subscriptionType === "trial" && (
           <Rocket className="h-5 w-5 shrink-0 text-blue-500" />
         )}
-        <span className="text-xs md:text-sm text-white/80 leading-tight">{subscriptionMessage}</span>
+        <span className="text-xs md:text-sm text-white/80 leading-tight">
+          {subscriptionMessage}
+        </span>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -369,7 +371,9 @@ export default async function DashboardPage() {
             <p className="text-2xl font-black italic tracking-tighter text-white">
               {formatCurrency(totalRevenue)}
             </p>
-            <p className="text-[10px] text-white/40 mt-1 uppercase">Desde o início</p>
+            <p className="text-[10px] text-white/40 mt-1 uppercase">
+              Desde o início
+            </p>
           </CardContent>
         </Card>
 
@@ -384,7 +388,9 @@ export default async function DashboardPage() {
             <p className="text-2xl font-black italic tracking-tighter text-green-400">
               {formatCurrency(netProfit)}
             </p>
-            <p className="text-[10px] text-white/40 mt-1 uppercase">Receita - Custo Peças</p>
+            <p className="text-[10px] text-white/40 mt-1 uppercase">
+              Receita - Custo Peças
+            </p>
           </CardContent>
         </Card>
 
@@ -399,7 +405,9 @@ export default async function DashboardPage() {
             <p className="text-2xl font-black italic tracking-tighter text-white">
               {formatCurrency(revenueThisMonth)}
             </p>
-            <p className="text-[10px] text-white/40 mt-1 uppercase">Março 2026</p>
+            <p className="text-[10px] text-white/40 mt-1 uppercase">
+              Março 2026
+            </p>
           </CardContent>
         </Card>
 

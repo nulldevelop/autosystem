@@ -1,16 +1,10 @@
 "use client";
 
-import {
-  Document,
-  Page,
-  StyleSheet,
-  Text,
-  View,
-} from "@react-pdf/renderer";
+import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { PDFHeader } from "@/components/pdf/PDFHeader";
 import { PDFFooter } from "@/components/pdf/PDFFooter";
+import { PDFHeader } from "@/components/pdf/PDFHeader";
 
 const styles = StyleSheet.create({
   page: {
@@ -127,9 +121,9 @@ export function ReportPDF({ data, period, organization }: ReportPDFProps) {
   return (
     <Document>
       <Page size="A4" orientation="landscape" style={styles.page}>
-        <PDFHeader 
-          organization={organization} 
-          title="Relatório de Performance" 
+        <PDFHeader
+          organization={organization}
+          title="Relatório de Performance"
           layout="landscape"
           documentDate={period.end}
         />

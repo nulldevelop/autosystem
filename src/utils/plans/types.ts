@@ -11,4 +11,3 @@ export type PlansProps = {
   PLUS: PlanInfo;
   PROFESSIONAL: PlanInfo;
 };
-

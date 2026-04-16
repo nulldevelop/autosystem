@@ -105,7 +105,10 @@ export async function createCustomer(
   } catch (error: unknown) {
     console.error("Erro ao criar cliente:", error);
 
-    const errorMessage = error instanceof Error ? error.message : "Ocorreu um erro ao criar o cliente.";
+    const errorMessage =
+      error instanceof Error
+        ? error.message
+        : "Ocorreu um erro ao criar o cliente.";
 
     return {
       success: false,

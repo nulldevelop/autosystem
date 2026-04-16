@@ -1,7 +1,7 @@
 "use client";
 
-import type { PlanSlug } from "@/utils/plans/types";
 import { toast } from "sonner";
+import type { PlanSlug } from "@/utils/plans/types";
 
 type BillingInterval = "monthly" | "yearly";
 

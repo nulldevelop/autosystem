@@ -1,13 +1,17 @@
-import { prisma } from "@/lib/prisma";
-import { notFound } from "next/navigation";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { SignatureForm } from "./_components/signature-form";
-import { Card, CardContent } from "@/components/ui/card";
+import { Car, ClipboardCheck, User, Wrench } from "lucide-react";
+import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
-import { ClipboardCheck, Car, User, Wrench } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { prisma } from "@/lib/prisma";
+import { SignatureForm } from "./_components/signature-form";
 
-export default async function BudgetSignPage({ params }: { params: { id: string } }) {
+export default async function BudgetSignPage({
+  params,
+}: {
+  params: { id: string };
+}) {
   const budget = await prisma.budget.findUnique({
     where: { id: (await params).id },
     include: {
@@ -37,7 +41,10 @@ export default async function BudgetSignPage({ params }: { params: { id: string 
             Orçamento <span className="text-primary">Assinado</span>
           </h1>
           <p className="text-white/40 text-xs font-black uppercase tracking-widest mb-6">
-            Este documento já foi validado em {format(budget.signedAt!, "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
+            Este documento já foi validado em{" "}
+            {format(budget.signedAt!, "dd/MM/yyyy 'às' HH:mm", {
+              locale: ptBR,
+            })}
           </p>
           <Badge className="bg-green-500/10 text-green-500 border-green-500/20 px-4 py-1">
             STATUS: APROVADO
@@ -66,7 +73,9 @@ export default async function BudgetSignPage({ params }: { params: { id: string 
                 <User className="size-5" />
               </div>
               <div>
-                <p className="text-[10px] font-black uppercase text-white/40">Cliente</p>
+                <p className="text-[10px] font-black uppercase text-white/40">
+                  Cliente
+                </p>
                 <p className="text-sm font-bold">{budget.customer.name}</p>
               </div>
             </CardContent>
@@ -77,8 +86,12 @@ export default async function BudgetSignPage({ params }: { params: { id: string 
                 <Car className="size-5" />
               </div>
               <div>
-                <p className="text-[10px] font-black uppercase text-white/40">Veículo</p>
-                <p className="text-sm font-bold">{budget.vehicle.marca} {budget.vehicle.model}</p>
+                <p className="text-[10px] font-black uppercase text-white/40">
+                  Veículo
+                </p>
+                <p className="text-sm font-bold">
+                  {budget.vehicle.marca} {budget.vehicle.model}
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -88,9 +101,14 @@ export default async function BudgetSignPage({ params }: { params: { id: string 
                 <Wrench className="size-5" />
               </div>
               <div>
-                <p className="text-[10px] font-black uppercase text-white/40">Total</p>
+                <p className="text-[10px] font-black uppercase text-white/40">
+                  Total
+                </p>
                 <p className="text-sm font-bold text-primary">
-                  {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(budget.totalAmount)}
+                  {new Intl.NumberFormat("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  }).format(budget.totalAmount)}
                 </p>
               </div>
             </CardContent>
@@ -98,7 +116,9 @@ export default async function BudgetSignPage({ params }: { params: { id: string 
         </div>
 
         <div className="space-y-4">
-          <h3 className="text-[10px] font-black uppercase text-primary tracking-widest">Itens do Orçamento</h3>
+          <h3 className="text-[10px] font-black uppercase text-primary tracking-widest">
+            Itens do Orçamento
+          </h3>
           <div className="rounded-3xl border border-white/5 bg-white/[0.01] overflow-hidden">
             <table className="w-full text-left text-sm">
               <thead>
@@ -114,7 +134,10 @@ export default async function BudgetSignPage({ params }: { params: { id: string 
                     <td className="p-4 font-bold">{item.product.name}</td>
                     <td className="p-4 text-white/40">{item.quantity}</td>
                     <td className="p-4 text-right font-black text-primary">
-                      {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(item.quantity * item.unitPrice)}
+                      {new Intl.NumberFormat("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      }).format(item.quantity * item.unitPrice)}
                     </td>
                   </tr>
                 ))}

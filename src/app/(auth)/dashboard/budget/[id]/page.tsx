@@ -1,8 +1,8 @@
-import { Suspense } from "react";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { getBudgetDetails } from "../_data-access/get-budget-details";
 import { BudgetDetailsClient } from "./budget-details-client";
-import { Skeleton } from "@/components/ui/skeleton";
 
 interface BudgetPageProps {
   params: Promise<{ id: string }>;

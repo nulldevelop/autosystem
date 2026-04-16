@@ -1,40 +1,44 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { DollarSign, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogFooter 
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { 
-  Form, 
-  FormControl, 
-  FormField, 
-  FormItem, 
-  FormLabel, 
-  FormMessage 
-} from "@/components/ui/form";
-import { 
-  Combobox, 
-  ComboboxContent, 
-  ComboboxEmpty, 
-  ComboboxGroup, 
-  ComboboxInput, 
-  ComboboxItem, 
-  ComboboxList, 
-  ComboboxTrigger 
-} from "@/components/kibo-ui/combobox";
-import { TransactionType, TransactionCategory, TransactionStatus } from "@/generated/prisma/client";
-import { createTransaction } from "../_actions/create-transaction";
 import { toast } from "sonner";
-import { Loader2, DollarSign } from "lucide-react";
+import * as z from "zod";
+import {
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxGroup,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+  ComboboxTrigger,
+} from "@/components/kibo-ui/combobox";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  TransactionCategory,
+  TransactionStatus,
+  TransactionType,
+} from "@/generated/prisma/client";
 import { cn } from "@/lib/utils";
+import { createTransaction } from "../_actions/create-transaction";
 
 const formSchema = z.object({
   description: z.string().min(3, "Descrição muito curta"),
@@ -73,7 +77,11 @@ const PAYMENT_METHODS = [
   { label: "Transferência", value: "TRANSFER" },
 ];
 
-export function TransactionFormModal({ open, onOpenChange, defaultType }: TransactionFormModalProps) {
+export function TransactionFormModal({
+  open,
+  onOpenChange,
+  defaultType,
+}: TransactionFormModalProps) {
   const [isPending, setIsPending] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -117,10 +125,14 @@ export function TransactionFormModal({ open, onOpenChange, defaultType }: Transa
       <DialogContent className="bg-zinc-950 border-white/10 text-white sm:max-w-[450px]">
         <DialogHeader>
           <DialogTitle className="text-2xl font-black italic uppercase tracking-tighter flex items-center gap-2">
-            <div className={cn(
-              "p-2 rounded-lg",
-              isExpense ? "bg-secondary/20 text-secondary" : "bg-emerald-500/20 text-emerald-500"
-            )}>
+            <div
+              className={cn(
+                "p-2 rounded-lg",
+                isExpense
+                  ? "bg-secondary/20 text-secondary"
+                  : "bg-emerald-500/20 text-emerald-500",
+              )}
+            >
               <DollarSign className="size-5" />
             </div>
             {isExpense ? "Lançar Despesa" : "Receita Manual"}
@@ -128,17 +140,26 @@ export function TransactionFormModal({ open, onOpenChange, defaultType }: Transa
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 pt-4">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-4 pt-4"
+          >
             <FormField
               control={form.control}
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">Descrição / Fornecedor</FormLabel>
+                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">
+                    Descrição / Fornecedor
+                  </FormLabel>
                   <FormControl>
-                    <input 
+                    <input
                       {...field}
-                      placeholder={isExpense ? "Ex: Aluguel, Peças, Luz..." : "Ex: Venda de Acessórios..."}
+                      placeholder={
+                        isExpense
+                          ? "Ex: Aluguel, Peças, Luz..."
+                          : "Ex: Venda de Acessórios..."
+                      }
                       className="w-full bg-white/[0.03] border border-white/10 rounded-lg h-11 px-4 text-sm focus:border-primary/50 outline-none transition-all"
                     />
                   </FormControl>
@@ -153,9 +174,11 @@ export function TransactionFormModal({ open, onOpenChange, defaultType }: Transa
                 name="amount"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">Valor (R$)</FormLabel>
+                    <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">
+                      Valor (R$)
+                    </FormLabel>
                     <FormControl>
-                       <input 
+                      <input
                         {...field}
                         type="number"
                         step="0.01"
@@ -172,7 +195,9 @@ export function TransactionFormModal({ open, onOpenChange, defaultType }: Transa
                 name="status"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-2">Status</FormLabel>
+                    <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-2">
+                      Status
+                    </FormLabel>
                     <Combobox
                       value={field.value}
                       onValueChange={field.onChange}
@@ -183,7 +208,9 @@ export function TransactionFormModal({ open, onOpenChange, defaultType }: Transa
                       <ComboboxContent className="bg-zinc-950 border-white/10">
                         <ComboboxInput placeholder="Buscar status..." />
                         <ComboboxList>
-                          <ComboboxEmpty>Nenhum status encontrado.</ComboboxEmpty>
+                          <ComboboxEmpty>
+                            Nenhum status encontrado.
+                          </ComboboxEmpty>
                           <ComboboxGroup>
                             {STATUS_OPTIONS.map((option) => (
                               <ComboboxItem
@@ -210,7 +237,9 @@ export function TransactionFormModal({ open, onOpenChange, defaultType }: Transa
                 name="category"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-2">Categoria</FormLabel>
+                    <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-2">
+                      Categoria
+                    </FormLabel>
                     <Combobox
                       value={field.value}
                       onValueChange={field.onChange}
@@ -221,7 +250,9 @@ export function TransactionFormModal({ open, onOpenChange, defaultType }: Transa
                       <ComboboxContent className="bg-zinc-950 border-white/10">
                         <ComboboxInput placeholder="Buscar categoria..." />
                         <ComboboxList>
-                          <ComboboxEmpty>Nenhuma categoria encontrada.</ComboboxEmpty>
+                          <ComboboxEmpty>
+                            Nenhuma categoria encontrada.
+                          </ComboboxEmpty>
                           <ComboboxGroup>
                             {CATEGORY_OPTIONS.map((option) => (
                               <ComboboxItem
@@ -246,7 +277,9 @@ export function TransactionFormModal({ open, onOpenChange, defaultType }: Transa
                 name="paymentMethod"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-2">Método</FormLabel>
+                    <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-2">
+                      Método
+                    </FormLabel>
                     <Combobox
                       value={field.value}
                       onValueChange={field.onChange}
@@ -257,7 +290,9 @@ export function TransactionFormModal({ open, onOpenChange, defaultType }: Transa
                       <ComboboxContent className="bg-zinc-950 border-white/10">
                         <ComboboxInput placeholder="Buscar método..." />
                         <ComboboxList>
-                          <ComboboxEmpty>Nenhum método encontrado.</ComboboxEmpty>
+                          <ComboboxEmpty>
+                            Nenhum método encontrado.
+                          </ComboboxEmpty>
                           <ComboboxGroup>
                             {PAYMENT_METHODS.map((method) => (
                               <ComboboxItem
@@ -279,23 +314,29 @@ export function TransactionFormModal({ open, onOpenChange, defaultType }: Transa
             </div>
 
             <DialogFooter className="pt-6">
-              <Button 
-                type="button" 
-                variant="ghost" 
+              <Button
+                type="button"
+                variant="ghost"
                 onClick={() => onOpenChange(false)}
                 className="text-white/40 hover:text-white"
               >
                 Cancelar
               </Button>
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 disabled={isPending}
                 className={cn(
                   "font-black uppercase italic tracking-tighter px-8",
-                  isExpense ? "bg-secondary text-white hover:bg-secondary/90" : "bg-primary text-black hover:bg-primary/90"
+                  isExpense
+                    ? "bg-secondary text-white hover:bg-secondary/90"
+                    : "bg-primary text-black hover:bg-primary/90",
                 )}
               >
-                {isPending ? <Loader2 className="size-4 animate-spin" /> : "Confirmar Lançamento"}
+                {isPending ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  "Confirmar Lançamento"
+                )}
               </Button>
             </DialogFooter>
           </form>

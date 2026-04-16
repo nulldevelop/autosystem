@@ -1,7 +1,7 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { prisma } from "@/lib/prisma";
 
 export async function deleteVehicle(vehicleId: string) {
   try {
@@ -12,10 +12,10 @@ export async function deleteVehicle(vehicleId: string) {
         _count: {
           select: {
             budgets: true,
-            serviceOrders: true
-          }
-        }
-      }
+            serviceOrders: true,
+          },
+        },
+      },
     });
 
     if (!vehicle) {
@@ -23,9 +23,10 @@ export async function deleteVehicle(vehicleId: string) {
     }
 
     if (vehicle._count.budgets > 0 || vehicle._count.serviceOrders > 0) {
-      return { 
-        success: false, 
-        message: "Não é possível excluir um veículo com histórico de orçamentos ou ordens de serviço." 
+      return {
+        success: false,
+        message:
+          "Não é possível excluir um veículo com histórico de orçamentos ou ordens de serviço.",
       };
     }
 
@@ -34,10 +35,13 @@ export async function deleteVehicle(vehicleId: string) {
     });
 
     revalidatePath("/dashboard/vehicle");
-    
+
     return { success: true, message: "Veículo removido com sucesso!" };
   } catch (error) {
     console.error("Erro ao excluir veículo:", error);
-    return { success: false, message: "Erro interno ao tentar excluir o veículo." };
+    return {
+      success: false,
+      message: "Erro interno ao tentar excluir o veículo.",
+    };
   }
 }

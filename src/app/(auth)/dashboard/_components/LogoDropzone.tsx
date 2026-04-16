@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useState } from "react";
-import { Upload, X, ImageIcon, Loader2 } from "lucide-react";
+import { ImageIcon, Loader2, Upload, X } from "lucide-react";
 import Image from "next/image";
+import { useCallback, useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface LogoDropzoneProps {
@@ -12,44 +12,56 @@ interface LogoDropzoneProps {
   organizationId?: string;
 }
 
-export function LogoDropzone({ value, onChange, disabled, organizationId }: LogoDropzoneProps) {
+export function LogoDropzone({
+  value,
+  onChange,
+  disabled,
+  organizationId,
+}: LogoDropzoneProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [preview, setPreview] = useState<string | null>(
-    typeof value === "string" ? value : value instanceof File ? URL.createObjectURL(value) : null
+    typeof value === "string"
+      ? value
+      : value instanceof File
+        ? URL.createObjectURL(value)
+        : null,
   );
   const [uploading, setUploading] = useState(false);
 
-  const onUpload = useCallback(async (file: File) => {
-    // Se não tiver organizationId (criando nova), passamos o arquivo para o formulário
-    if (!organizationId) {
-      setPreview(URL.createObjectURL(file));
-      onChange(file);
-      return;
-    }
-
-    // Se tiver ID (editando), fazemos o upload direto
-    setUploading(true);
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("organizationId", organizationId);
-
-    try {
-      const response = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await response.json();
-      if (data.url) {
-        onChange(data.url);
-        setPreview(data.url);
+  const onUpload = useCallback(
+    async (file: File) => {
+      // Se não tiver organizationId (criando nova), passamos o arquivo para o formulário
+      if (!organizationId) {
+        setPreview(URL.createObjectURL(file));
+        onChange(file);
+        return;
       }
-    } catch (error) {
-      console.error("Erro no upload:", error);
-    } finally {
-      setUploading(false);
-    }
-  }, [organizationId, onChange]);
+
+      // Se tiver ID (editando), fazemos o upload direto
+      setUploading(true);
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("organizationId", organizationId);
+
+      try {
+        const response = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        const data = await response.json();
+        if (data.url) {
+          onChange(data.url);
+          setPreview(data.url);
+        }
+      } catch (error) {
+        console.error("Erro no upload:", error);
+      } finally {
+        setUploading(false);
+      }
+    },
+    [organizationId, onChange],
+  );
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
@@ -73,9 +85,11 @@ export function LogoDropzone({ value, onChange, disabled, organizationId }: Logo
     <div
       className={cn(
         "relative group flex flex-col items-center justify-center w-full h-40 border-2 border-dashed rounded-xl transition-all duration-300",
-        isDragging ? "border-primary bg-primary/5 scale-[1.02]" : "border-white/10 bg-white/[0.02] hover:border-white/20",
+        isDragging
+          ? "border-primary bg-primary/5 scale-[1.02]"
+          : "border-white/10 bg-white/[0.02] hover:border-white/20",
         disabled && "opacity-50 cursor-not-allowed",
-        preview && "border-none"
+        preview && "border-none",
       )}
       onDragOver={(e) => {
         e.preventDefault();

@@ -1,4 +1,3 @@
-
 /**
  * Formata uma string de números para o padrão de telefone brasileiro (ex: (XX) XXXXX-XXXX).
  * A função lida tanto com números de celular (11 dígitos) quanto fixos (10 dígitos).
@@ -31,5 +30,3 @@ export function extractPhoneNumber(phone: string) {
   const phoneValue = phone.replace(/[()\s-]/g, "");
   return phoneValue;
 }
-
-

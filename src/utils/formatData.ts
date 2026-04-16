@@ -7,7 +7,7 @@ export function formatData(dateString: string | number | Date): string {
 }
 
 export function formatDataWithHours(
-  dateString: string | number | Date
+  dateString: string | number | Date,
 ): string {
   const date = new Date(dateString);
   const day = String(date.getDate()).padStart(2, "0");

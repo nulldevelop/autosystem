@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textTransform: "uppercase",
     marginBottom: 5,
-  }
+  },
 });
 
 interface ServiceOrderPDFProps {
@@ -208,10 +208,12 @@ interface ServiceOrderPDFProps {
 export function ServiceOrderPDF({ budget }: ServiceOrderPDFProps) {
   const serviceOrder = budget.serviceOrder;
   const items = budget.items || [];
-  
+
   // Totais vindos do banco de dados (persistidos na criação/aprovação)
-  const laborTotal = (serviceOrder as any)?.laborValue || (budget as any)?.laborValue || 0;
-  const partsTotal = (serviceOrder as any)?.itemsAmount || (budget as any)?.itemsAmount || 0;
+  const laborTotal =
+    (serviceOrder as any)?.laborValue || (budget as any)?.laborValue || 0;
+  const partsTotal =
+    (serviceOrder as any)?.itemsAmount || (budget as any)?.itemsAmount || 0;
   const totalAmount = (serviceOrder as any)?.totalAmount || budget.totalAmount;
 
   const formatCurrency = (value: number) => {
@@ -274,22 +276,62 @@ export function ServiceOrderPDF({ budget }: ServiceOrderPDFProps) {
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Discriminação dos Serviços e Peças</Text>
+          <Text style={styles.sectionTitle}>
+            Discriminação dos Serviços e Peças
+          </Text>
           <View style={styles.table}>
             <View style={styles.tableHeader} fixed>
-              <Text style={[styles.tableHeaderCol, { flex: 4 }]}>Descrição do Item</Text>
-              <Text style={[styles.tableHeaderCol, { flex: 1, textAlign: "center" }]}>Qtd</Text>
-              <Text style={[styles.tableHeaderCol, { flex: 1.5, textAlign: "right" }]}>Unitário</Text>
-              <Text style={[styles.tableHeaderCol, { flex: 1.5, textAlign: "right" }]}>Total</Text>
+              <Text style={[styles.tableHeaderCol, { flex: 4 }]}>
+                Descrição do Item
+              </Text>
+              <Text
+                style={[
+                  styles.tableHeaderCol,
+                  { flex: 1, textAlign: "center" },
+                ]}
+              >
+                Qtd
+              </Text>
+              <Text
+                style={[
+                  styles.tableHeaderCol,
+                  { flex: 1.5, textAlign: "right" },
+                ]}
+              >
+                Unitário
+              </Text>
+              <Text
+                style={[
+                  styles.tableHeaderCol,
+                  { flex: 1.5, textAlign: "right" },
+                ]}
+              >
+                Total
+              </Text>
             </View>
             {items.map((item: any, index: number) => (
               <View key={index} style={styles.tableRow} wrap={false}>
-                <Text style={[styles.tableCell, { flex: 4, fontWeight: "bold" }]}>
+                <Text
+                  style={[styles.tableCell, { flex: 4, fontWeight: "bold" }]}
+                >
                   {item.product?.name || "Item não identificado"}
                 </Text>
-                <Text style={[styles.tableCell, { flex: 1, textAlign: "center" }]}>{item.quantity}</Text>
-                <Text style={[styles.tableCell, { flex: 1.5, textAlign: "right" }]}>{formatCurrency(item.unitPrice)}</Text>
-                <Text style={[styles.tableCell, { flex: 1.5, textAlign: "right", fontWeight: "bold" }]}>
+                <Text
+                  style={[styles.tableCell, { flex: 1, textAlign: "center" }]}
+                >
+                  {item.quantity}
+                </Text>
+                <Text
+                  style={[styles.tableCell, { flex: 1.5, textAlign: "right" }]}
+                >
+                  {formatCurrency(item.unitPrice)}
+                </Text>
+                <Text
+                  style={[
+                    styles.tableCell,
+                    { flex: 1.5, textAlign: "right", fontWeight: "bold" },
+                  ]}
+                >
                   {formatCurrency(item.unitPrice * item.quantity)}
                 </Text>
               </View>
@@ -301,15 +343,21 @@ export function ServiceOrderPDF({ budget }: ServiceOrderPDFProps) {
           <View style={styles.totalsBox}>
             <View style={styles.totalRow}>
               <Text style={styles.totalLabel}>Mão de Obra</Text>
-              <Text style={styles.totalValue}>{formatCurrency(laborTotal)}</Text>
+              <Text style={styles.totalValue}>
+                {formatCurrency(laborTotal)}
+              </Text>
             </View>
             <View style={styles.totalRow}>
               <Text style={styles.totalLabel}>Total de Peças</Text>
-              <Text style={styles.totalValue}>{formatCurrency(partsTotal)}</Text>
+              <Text style={styles.totalValue}>
+                {formatCurrency(partsTotal)}
+              </Text>
             </View>
             <View style={styles.grandTotalRow}>
               <Text style={styles.grandTotalLabel}>VALOR TOTAL DA O.S.</Text>
-              <Text style={styles.grandTotalValue}>{formatCurrency(totalAmount)}</Text>
+              <Text style={styles.grandTotalValue}>
+                {formatCurrency(totalAmount)}
+              </Text>
             </View>
           </View>
         </View>
@@ -317,29 +365,38 @@ export function ServiceOrderPDF({ budget }: ServiceOrderPDFProps) {
         <View style={styles.clauseSection} wrap={false}>
           <Text style={styles.clauseTitle}>Termos e Condições</Text>
           <Text style={styles.clauseText}>
-            1. O cliente autoriza a execução dos serviços acima descritos com validade técnica imediata.
+            1. O cliente autoriza a execução dos serviços acima descritos com
+            validade técnica imediata.
           </Text>
           <Text style={styles.clauseText}>
-            2. A garantia dos serviços realizados é de 90 dias conforme legislação vigente.
+            2. A garantia dos serviços realizados é de 90 dias conforme
+            legislação vigente.
           </Text>
           <Text style={styles.clauseText}>
-            3. A assinatura digital abaixo confirma a entrega e conformidade do veículo e serviços prestados.
+            3. A assinatura digital abaixo confirma a entrega e conformidade do
+            veículo e serviços prestados.
           </Text>
         </View>
 
         <View style={styles.signatureSection} wrap={false}>
           {/* Assinatura do Cliente */}
-            <View style={styles.signatureBox}>
+          <View style={styles.signatureBox}>
             {serviceOrder?.signature ? (
               <View>
-                <Image src={serviceOrder.signature} style={{ width: 100, height: 40 }} />
+                <Image
+                  src={serviceOrder.signature}
+                  style={{ width: 100, height: 40 }}
+                />
                 <Text style={{ fontSize: 6, color: "#94A3B8", marginTop: 4 }}>
-                  IP: {serviceOrder.id.substring(0, 12)} • Data: {format(new Date(serviceOrder.signedAt!), "dd/MM/yyyy HH:mm")}
+                  IP: {serviceOrder.id.substring(0, 12)} • Data:{" "}
+                  {format(new Date(serviceOrder.signedAt!), "dd/MM/yyyy HH:mm")}
                 </Text>
               </View>
             ) : (
               <View style={{ height: 40, justifyContent: "center" }}>
-                <Text style={{ fontSize: 7, color: "#CBD5E1", italic: true }}>Aguardando Assinatura Digital</Text>
+                <Text style={{ fontSize: 7, color: "#CBD5E1", italic: true }}>
+                  Aguardando Assinatura Digital
+                </Text>
               </View>
             )}
             <Text style={styles.signatureLabel}>Assinatura do Cliente</Text>
@@ -352,10 +409,13 @@ export function ServiceOrderPDF({ budget }: ServiceOrderPDFProps) {
               <Text>VALIDADO DIGITALMENTE</Text>
             </View>
             <Text style={{ fontSize: 6, color: "#94A3B8", marginBottom: 5 }}>
-              AUTENTICAÇÃO: {budget.organization?.id.substring(0, 18).toUpperCase()}
+              AUTENTICAÇÃO:{" "}
+              {budget.organization?.id.substring(0, 18).toUpperCase()}
             </Text>
             <Text style={styles.signatureLabel}>Assinatura da Oficina</Text>
-            <Text style={styles.signatureName}>{budget.organization?.name}</Text>
+            <Text style={styles.signatureName}>
+              {budget.organization?.name}
+            </Text>
           </View>
         </View>
 

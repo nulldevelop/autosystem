@@ -1,12 +1,12 @@
 "use client";
 
+import { Loader2, PenTool, RotateCcw } from "lucide-react";
 import { useRef, useState } from "react";
 import SignatureCanvas from "react-signature-canvas";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { toast } from "sonner";
 import { signServiceOrder } from "../_actions/sign-service-order";
-import { Loader2, RotateCcw, PenTool } from "lucide-react";
 
 export function SignatureForm({ serviceOrderId }: { serviceOrderId: string }) {
   const sigCanvas = useRef<SignatureCanvas>(null);
@@ -22,8 +22,10 @@ export function SignatureForm({ serviceOrderId }: { serviceOrderId: string }) {
       return;
     }
 
-    const signatureData = sigCanvas.current?.getTrimmedCanvas().toDataURL("image/png");
-    
+    const signatureData = sigCanvas.current
+      ?.getTrimmedCanvas()
+      .toDataURL("image/png");
+
     if (!signatureData) return;
 
     setIsSubmitting(true);
@@ -44,8 +46,12 @@ export function SignatureForm({ serviceOrderId }: { serviceOrderId: string }) {
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="space-y-2">
-        <h3 className="text-[10px] font-black uppercase text-primary tracking-widest">Assinatura Digital da O.S.</h3>
-        <p className="text-xs text-white/40">Confirme a autorização dos serviços em execução</p>
+        <h3 className="text-[10px] font-black uppercase text-primary tracking-widest">
+          Assinatura Digital da O.S.
+        </h3>
+        <p className="text-xs text-white/40">
+          Confirme a autorização dos serviços em execução
+        </p>
       </div>
 
       <div className="relative group">
@@ -89,10 +95,11 @@ export function SignatureForm({ serviceOrderId }: { serviceOrderId: string }) {
           "Finalizar Assinatura da O.S."
         )}
       </Button>
-      
+
       <p className="text-[9px] text-center text-white/20 font-medium leading-relaxed">
-        Ao assinar, você autoriza formalmente o início ou continuação dos trabalhos técnicos descritos nesta Ordem de Serviço. 
-        Este registro eletrônico possui validade técnica e jurídica.
+        Ao assinar, você autoriza formalmente o início ou continuação dos
+        trabalhos técnicos descritos nesta Ordem de Serviço. Este registro
+        eletrônico possui validade técnica e jurídica.
       </p>
     </div>
   );

@@ -1,12 +1,12 @@
 "use client";
 
+import { Loader2, PenTool, RotateCcw } from "lucide-react";
 import { useRef, useState } from "react";
 import SignatureCanvas from "react-signature-canvas";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { toast } from "sonner";
 import { signBudget } from "../_actions/sign-budget";
-import { Loader2, RotateCcw, PenTool } from "lucide-react";
 
 export function SignatureForm({ budgetId }: { budgetId: string }) {
   const sigCanvas = useRef<SignatureCanvas>(null);
@@ -22,8 +22,10 @@ export function SignatureForm({ budgetId }: { budgetId: string }) {
       return;
     }
 
-    const signatureData = sigCanvas.current?.getTrimmedCanvas().toDataURL("image/png");
-    
+    const signatureData = sigCanvas.current
+      ?.getTrimmedCanvas()
+      .toDataURL("image/png");
+
     if (!signatureData) return;
 
     setIsSubmitting(true);
@@ -44,8 +46,12 @@ export function SignatureForm({ budgetId }: { budgetId: string }) {
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="space-y-2">
-        <h3 className="text-[10px] font-black uppercase text-primary tracking-widest">Assinatura Digital</h3>
-        <p className="text-xs text-white/40">Use o seu dedo ou mouse para assinar no campo abaixo</p>
+        <h3 className="text-[10px] font-black uppercase text-primary tracking-widest">
+          Assinatura Digital
+        </h3>
+        <p className="text-xs text-white/40">
+          Use o seu dedo ou mouse para assinar no campo abaixo
+        </p>
       </div>
 
       <div className="relative group">
@@ -89,10 +95,11 @@ export function SignatureForm({ budgetId }: { budgetId: string }) {
           "Confirmar e Aprovar Orçamento"
         )}
       </Button>
-      
+
       <p className="text-[9px] text-center text-white/20 font-medium leading-relaxed">
-        Ao clicar em confirmar, você declara estar de acordo com os valores e serviços descritos neste orçamento técnico. 
-        A assinatura digital possui validade jurídica conforme MP 2.200-2/2001.
+        Ao clicar em confirmar, você declara estar de acordo com os valores e
+        serviços descritos neste orçamento técnico. A assinatura digital possui
+        validade jurídica conforme MP 2.200-2/2001.
       </p>
     </div>
   );

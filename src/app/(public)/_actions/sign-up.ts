@@ -32,7 +32,9 @@ type SignUpResponse =
       success: false;
       error: {
         message: string;
-        fieldErrors?: Partial<Record<keyof z.infer<typeof signUpSchema>, string[]>>;
+        fieldErrors?: Partial<
+          Record<keyof z.infer<typeof signUpSchema>, string[]>
+        >;
       };
     };
 

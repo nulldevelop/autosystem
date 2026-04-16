@@ -1,13 +1,7 @@
 "use client";
 
+import { Calendar, Car, Fuel, History, TrendingUp } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { 
-  Car, 
-  Calendar, 
-  History, 
-  TrendingUp,
-  Fuel
-} from "lucide-react";
 import type { Vehicle } from "@/generated/prisma/client";
 import { cn } from "@/lib/utils";
 
@@ -17,17 +11,23 @@ interface VehicleStatsProps {
 
 export function VehicleStats({ vehicles }: VehicleStatsProps) {
   const currentYear = new Date().getFullYear();
-  
+
   const stats = {
     total: vehicles.length,
-    newerThanFiveYears: vehicles.filter(v => v.year >= currentYear - 5).length,
-    mostCommonBrand: vehicles.reduce((acc, v) => {
+    newerThanFiveYears: vehicles.filter((v) => v.year >= currentYear - 5)
+      .length,
+    mostCommonBrand: vehicles.reduce(
+      (acc, v) => {
         acc[v.marca] = (acc[v.marca] || 0) + 1;
         return acc;
-    }, {} as Record<string, number>),
+      },
+      {} as Record<string, number>,
+    ),
   };
 
-  const topBrand = Object.entries(stats.mostCommonBrand).sort((a, b) => b[1] - a[1])[0]?.[0] || "N/A";
+  const topBrand =
+    Object.entries(stats.mostCommonBrand).sort((a, b) => b[1] - a[1])[0]?.[0] ||
+    "N/A";
 
   const items = [
     {
@@ -69,37 +69,48 @@ export function VehicleStats({ vehicles }: VehicleStatsProps) {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1 md:overflow-visible md:grid md:grid-cols-2 lg:grid-cols-4 md:pb-0 md:mx-0 md:px-0">
       {items.map((item, index) => (
         <Card
           key={index}
           className={cn(
-            "p-5 bg-zinc-950/50 border-white/5 backdrop-blur-sm group hover:border-white/10 transition-all duration-300",
-            "relative overflow-hidden"
+            "min-w-[160px] md:min-w-0 p-4 md:p-5 bg-zinc-950/50 border-white/5 backdrop-blur-sm group hover:border-white/10 transition-all duration-300 shrink-0 md:shrink",
+            "relative overflow-hidden",
           )}
         >
-          <div className="flex items-center gap-4">
-            <div className={cn("p-3 rounded-2xl", item.bg, item.color, "border", item.border)}>
-              <item.icon className="size-6" />
+          <div className="flex items-center gap-3 md:gap-4">
+            <div
+              className={cn(
+                "p-2 md:p-3 rounded-xl md:rounded-2xl",
+                item.bg,
+                item.color,
+                "border",
+                item.border,
+              )}
+            >
+              <item.icon className="size-4 md:size-6" />
             </div>
-            <div className="flex flex-col">
-              <span className="text-[10px] font-black uppercase tracking-widest text-white/30">
+            <div className="flex flex-col min-w-0">
+              <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-white/30 truncate">
                 {item.label}
               </span>
-              <div className="flex items-baseline gap-2">
-                <span className={cn(
+              <div className="flex items-baseline gap-1.5 md:gap-2">
+                <span
+                  className={cn(
                     "font-black italic uppercase tracking-tighter text-white",
-                    typeof item.value === 'string' ? "text-xl" : "text-2xl"
-                )}>
+                    typeof item.value === "string"
+                      ? "text-base md:text-xl"
+                      : "text-lg md:text-2xl",
+                  )}
+                >
                   {item.value}
                 </span>
-                <span className="text-[10px] font-bold text-white/20 uppercase">
+                <span className="text-[8px] md:text-[10px] font-bold text-white/20 uppercase truncate hidden sm:block">
                   {item.subValue}
                 </span>
               </div>
             </div>
           </div>
-          <item.icon className="absolute -right-4 -bottom-4 size-24 text-white/[0.02] -rotate-12 group-hover:rotate-0 transition-transform duration-500" />
         </Card>
       ))}
     </div>

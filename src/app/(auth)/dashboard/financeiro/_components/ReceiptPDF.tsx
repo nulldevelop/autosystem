@@ -1,16 +1,10 @@
 "use client";
 
-import {
-  Document,
-  Page,
-  StyleSheet,
-  Text,
-  View,
-} from "@react-pdf/renderer";
+import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { PDFHeader } from "@/components/pdf/PDFHeader";
 import { PDFFooter } from "@/components/pdf/PDFFooter";
+import { PDFHeader } from "@/components/pdf/PDFHeader";
 
 const styles = StyleSheet.create({
   page: {
@@ -136,9 +130,9 @@ export function ReceiptPDF({ transaction, organization }: ReceiptPDFProps) {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        <PDFHeader 
-          organization={organization} 
-          title="Recibo de Pagamento" 
+        <PDFHeader
+          organization={organization}
+          title="Recibo de Pagamento"
           documentNumber={transaction.id.substring(0, 8).toUpperCase()}
           documentDate={new Date(transaction.createdAt)}
         />

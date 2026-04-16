@@ -155,15 +155,15 @@ export function PDFHeader({
   layout = "portrait",
 }: PDFHeaderProps) {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-  
+
   const getFullUrl = (path: string | null | undefined) => {
     if (!path) return null;
     if (path.startsWith("http")) return path;
-    return `${baseUrl.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
+    return `${baseUrl.replace(/\/$/, "")}/${path.replace(/^\//, "")}`;
   };
 
   const orgLogoUrl = getFullUrl(organization?.logo);
-  const systemLogoUrl = `${baseUrl.replace(/\/$/, '')}/images/logo.png`;
+  const systemLogoUrl = `${baseUrl.replace(/\/$/, "")}/images/logo.png`;
 
   const formatNA = (value: string | null | undefined) => {
     return value && value !== "N/A" ? value : "Não informado";
@@ -176,7 +176,9 @@ export function PDFHeader({
           <Image src={systemLogoUrl} style={styles.systemLogoLandscape} />
           {orgLogoUrl ? (
             <Image src={orgLogoUrl} style={styles.orgLogoLandscape} />
-          ) : <View />}
+          ) : (
+            <View />
+          )}
           <View style={styles.orgTextContainerLandscape}>
             <Text style={styles.orgNameLandscape}>
               {organization?.name || "AUTO SYSTEM"}
@@ -205,7 +207,10 @@ export function PDFHeader({
     <View>
       <View style={styles.headerContainerPortrait}>
         <View style={styles.brandContainer}>
-          <Image src={orgLogoUrl || systemLogoUrl} style={styles.logoPortrait} />
+          <Image
+            src={orgLogoUrl || systemLogoUrl}
+            style={styles.logoPortrait}
+          />
           <View>
             <Text style={styles.brandName}>
               {organization?.name || "AUTO SYSTEM"}
@@ -217,7 +222,9 @@ export function PDFHeader({
                 <Text>{formatNA(organization.address)}</Text>
                 <Text>Tel: {formatNA(organization.phone)}</Text>
               </View>
-            ) : <View />}
+            ) : (
+              <View />
+            )}
           </View>
         </View>
       </View>
@@ -229,7 +236,8 @@ export function PDFHeader({
             <Text style={styles.docNumberPortrait}>Nº {documentNumber}</Text>
           )}
           <Text style={styles.docDatePortrait}>
-            Emissão: {format(documentDate, "dd/MM/yyyy HH:mm", { locale: ptBR })}
+            Emissão:{" "}
+            {format(documentDate, "dd/MM/yyyy HH:mm", { locale: ptBR })}
           </Text>
         </View>
       </View>

@@ -14,7 +14,7 @@ const poppins = Poppins({
   variable: "--font-poppins",
 });
 
-import { Viewport } from "next";
+import type { Viewport } from "next";
 
 export const metadata: Metadata = {
   title: "AutoSystem - Gestão para Oficinas",

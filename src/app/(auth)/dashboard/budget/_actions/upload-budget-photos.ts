@@ -2,9 +2,9 @@
 
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
+import { revalidatePath } from "next/cache";
 import { getSession } from "@/lib/getSession";
 import { prisma } from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
 
 export async function uploadBudgetPhotos(formData: FormData) {
   try {
@@ -33,7 +33,13 @@ export async function uploadBudgetPhotos(formData: FormData) {
     const uploadedUrls: string[] = [];
 
     // Caminho: storage/[slug]/[budgetId]/imgs/
-    const uploadDir = join(process.cwd(), "storage", organization.slug, budgetId, "imgs");
+    const uploadDir = join(
+      process.cwd(),
+      "storage",
+      organization.slug,
+      budgetId,
+      "imgs",
+    );
     await mkdir(uploadDir, { recursive: true });
 
     for (const file of files) {

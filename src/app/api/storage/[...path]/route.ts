@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   req: Request,
-  { params }: { params: { path: string[] } }
+  { params }: { params: { path: string[] } },
 ) {
   try {
     const pathParts = (await params).path;
@@ -14,7 +14,12 @@ export async function GET(
 
     // Determina o Content-Type básico
     const ext = filePath.split(".").pop()?.toLowerCase();
-    const contentType = ext === "png" ? "image/png" : ext === "svg" ? "image/svg+xml" : "image/jpeg";
+    const contentType =
+      ext === "png"
+        ? "image/png"
+        : ext === "svg"
+          ? "image/svg+xml"
+          : "image/jpeg";
 
     return new NextResponse(file, {
       headers: {
@@ -23,6 +28,9 @@ export async function GET(
       },
     });
   } catch (error) {
-    return NextResponse.json({ error: "Arquivo não encontrado" }, { status: 404 });
+    return NextResponse.json(
+      { error: "Arquivo não encontrado" },
+      { status: 404 },
+    );
   }
 }

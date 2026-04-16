@@ -1,7 +1,7 @@
 import { checkPermission } from "@/utils/permissions/check-permission";
-import { getVehicles } from "./_data-access/get-vehicles";
-import { VehicleList } from "./_components/vehicle-list";
 import { getCustomers } from "../customer/_data-access/get-customers";
+import { VehicleList } from "./_components/vehicle-list";
+import { getVehicles } from "./_data-access/get-vehicles";
 
 export default async function VehiclePage() {
   await checkPermission("/dashboard/vehicle");

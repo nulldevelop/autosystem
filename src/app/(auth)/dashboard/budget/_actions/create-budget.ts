@@ -14,14 +14,16 @@ const createBudgetSchema = z.object({
   kilometers: z.number().optional().default(0),
   fuelLevel: z.string().optional().default("50"),
   checklist: z.any().optional(),
-  items: z.array(
-    z.object({
-      productId: z.string(),
-      productName: z.string().optional(),
-      quantity: z.number().min(1),
-      unitPrice: z.number().min(0),
-    })
-  ).min(1),
+  items: z
+    .array(
+      z.object({
+        productId: z.string(),
+        productName: z.string().optional(),
+        quantity: z.number().min(1),
+        unitPrice: z.number().min(0),
+      }),
+    )
+    .min(1),
 });
 
 export async function createBudget(input: any) {
@@ -42,22 +44,35 @@ export async function createBudget(input: any) {
       return { success: false, message: "Limite do plano atingido." };
     }
 
-    const { 
-      customerId, vehicleId, profitMargin, items, 
-      kilometers, fuelLevel, checklist, observacoes: rawObs 
+    const {
+      customerId,
+      vehicleId,
+      profitMargin,
+      items,
+      kilometers,
+      fuelLevel,
+      checklist,
+      observacoes: rawObs,
     } = validation.data;
 
-    const subtotal = items.reduce((acc, item) => acc + (item.quantity * item.unitPrice), 0);
+    const subtotal = items.reduce(
+      (acc, item) => acc + item.quantity * item.unitPrice,
+      0,
+    );
     const laborValue = subtotal * (profitMargin / 100);
     const finalAmount = subtotal + laborValue;
 
     const customItemsText = items
-      .filter(item => item.productId.startsWith("custom-"))
-      .map(item => `${item.productName} (${item.quantity}x ${item.unitPrice})`)
+      .filter((item) => item.productId.startsWith("custom-"))
+      .map(
+        (item) => `${item.productName} (${item.quantity}x ${item.unitPrice})`,
+      )
       .join(", ");
 
-    const observacoes = customItemsText 
-      ? (rawObs ? `${rawObs}\n\nCustom: ${customItemsText}` : `Custom: ${customItemsText}`)
+    const observacoes = customItemsText
+      ? rawObs
+        ? `${rawObs}\n\nCustom: ${customItemsText}`
+        : `Custom: ${customItemsText}`
       : rawObs;
 
     const budget = await prisma.$transaction(async (tx) => {
@@ -80,7 +95,7 @@ export async function createBudget(input: any) {
       for (const item of items) {
         let pId = item.productId;
         const isCustom = pId.startsWith("custom-");
-        
+
         if (isCustom) {
           // Itens customizados criam um produto genérico
           const cp = await tx.product.create({
@@ -111,9 +126,16 @@ export async function createBudget(input: any) {
 
     revalidatePath("/dashboard/budget");
     revalidatePath("/dashboard/product"); // Atualizar lista de produtos
-    return { success: true, message: "Orçamento criado e estoque atualizado!", budgetId: budget.id };
+    return {
+      success: true,
+      message: "Orçamento criado e estoque atualizado!",
+      budgetId: budget.id,
+    };
   } catch (error: any) {
     console.error("Erro ao criar orçamento e baixar estoque:", error);
-    return { success: false, message: error.message || "Erro interno no servidor." };
+    return {
+      success: false,
+      message: error.message || "Erro interno no servidor.",
+    };
   }
 }

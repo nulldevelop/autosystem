@@ -1,7 +1,7 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { prisma } from "@/lib/prisma";
 
 export async function deleteCustomer(customerId: string) {
   try {
@@ -12,10 +12,10 @@ export async function deleteCustomer(customerId: string) {
         _count: {
           select: {
             budgets: true,
-            serviceOrders: true
-          }
-        }
-      }
+            serviceOrders: true,
+          },
+        },
+      },
     });
 
     if (!customer) {
@@ -23,9 +23,10 @@ export async function deleteCustomer(customerId: string) {
     }
 
     if (customer._count.budgets > 0 || customer._count.serviceOrders > 0) {
-      return { 
-        success: false, 
-        message: "Não é possível excluir um cliente com histórico de orçamentos ou ordens de serviço." 
+      return {
+        success: false,
+        message:
+          "Não é possível excluir um cliente com histórico de orçamentos ou ordens de serviço.",
       };
     }
 
@@ -34,10 +35,13 @@ export async function deleteCustomer(customerId: string) {
     });
 
     revalidatePath("/dashboard/customer");
-    
+
     return { success: true, message: "Cliente removido com sucesso!" };
   } catch (error) {
     console.error("Erro ao excluir cliente:", error);
-    return { success: false, message: "Erro interno ao tentar excluir o cliente." };
+    return {
+      success: false,
+      message: "Erro interno ao tentar excluir o cliente.",
+    };
   }
 }

@@ -1,13 +1,17 @@
-import { prisma } from "@/lib/prisma";
-import { notFound } from "next/navigation";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { SignatureForm } from "./_components/signature-form";
-import { Card, CardContent } from "@/components/ui/card";
+import { Car, ClipboardCheck, FileText, User, Wrench } from "lucide-react";
+import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
-import { ClipboardCheck, Car, User, Wrench, FileText } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { prisma } from "@/lib/prisma";
+import { SignatureForm } from "./_components/signature-form";
 
-export default async function ServiceOrderSignPage({ params }: { params: { id: string } }) {
+export default async function ServiceOrderSignPage({
+  params,
+}: {
+  params: { id: string };
+}) {
   const serviceOrder = await prisma.serviceOrder.findUnique({
     where: { id: (await params).id },
     include: {
@@ -41,7 +45,10 @@ export default async function ServiceOrderSignPage({ params }: { params: { id: s
             O.S. <span className="text-emerald-500">Assinada</span>
           </h1>
           <p className="text-white/40 text-xs font-black uppercase tracking-widest mb-6">
-            Esta Ordem de Serviço foi validada em {format(new Date(signedAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
+            Esta Ordem de Serviço foi validada em{" "}
+            {format(new Date(signedAt), "dd/MM/yyyy 'às' HH:mm", {
+              locale: ptBR,
+            })}
           </p>
           <Badge className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20 px-4 py-1">
             STATUS: EM EXECUÇÃO
@@ -56,10 +63,12 @@ export default async function ServiceOrderSignPage({ params }: { params: { id: s
       <div className="max-w-4xl mx-auto space-y-8">
         <div className="flex flex-col items-center text-center gap-2">
           <h1 className="text-4xl font-black italic uppercase tracking-tighter">
-            Assinatura de <span className="text-emerald-500">Ordem de Serviço</span>
+            Assinatura de{" "}
+            <span className="text-emerald-500">Ordem de Serviço</span>
           </h1>
           <p className="text-white/40 text-[10px] font-black uppercase tracking-[0.3em]">
-            {serviceOrder.organization?.name} • O.S. #{serviceOrder.id.substring(0, 8)}
+            {serviceOrder.organization?.name} • O.S. #
+            {serviceOrder.id.substring(0, 8)}
           </p>
         </div>
 
@@ -70,8 +79,12 @@ export default async function ServiceOrderSignPage({ params }: { params: { id: s
                 <User className="size-5" />
               </div>
               <div>
-                <p className="text-[10px] font-black uppercase text-white/40">Cliente</p>
-                <p className="text-sm font-bold">{serviceOrder.customer.name}</p>
+                <p className="text-[10px] font-black uppercase text-white/40">
+                  Cliente
+                </p>
+                <p className="text-sm font-bold">
+                  {serviceOrder.customer.name}
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -81,8 +94,12 @@ export default async function ServiceOrderSignPage({ params }: { params: { id: s
                 <Car className="size-5" />
               </div>
               <div>
-                <p className="text-[10px] font-black uppercase text-white/40">Veículo</p>
-                <p className="text-sm font-bold">{serviceOrder.vehicle.marca} {serviceOrder.vehicle.model}</p>
+                <p className="text-[10px] font-black uppercase text-white/40">
+                  Veículo
+                </p>
+                <p className="text-sm font-bold">
+                  {serviceOrder.vehicle.marca} {serviceOrder.vehicle.model}
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -92,9 +109,14 @@ export default async function ServiceOrderSignPage({ params }: { params: { id: s
                 <FileText className="size-5" />
               </div>
               <div>
-                <p className="text-[10px] font-black uppercase text-white/40">Total OS</p>
+                <p className="text-[10px] font-black uppercase text-white/40">
+                  Total OS
+                </p>
                 <p className="text-sm font-bold text-emerald-500">
-                  {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(serviceOrder.totalAmount)}
+                  {new Intl.NumberFormat("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  }).format(serviceOrder.totalAmount)}
                 </p>
               </div>
             </CardContent>
@@ -102,7 +124,9 @@ export default async function ServiceOrderSignPage({ params }: { params: { id: s
         </div>
 
         <div className="space-y-4">
-          <h3 className="text-[10px] font-black uppercase text-emerald-500 tracking-widest">Serviços Autorizados</h3>
+          <h3 className="text-[10px] font-black uppercase text-emerald-500 tracking-widest">
+            Serviços Autorizados
+          </h3>
           <div className="rounded-3xl border border-white/5 bg-white/[0.01] overflow-hidden">
             <table className="w-full text-left text-sm">
               <thead>
@@ -118,7 +142,10 @@ export default async function ServiceOrderSignPage({ params }: { params: { id: s
                     <td className="p-4 font-bold">{item.product.name}</td>
                     <td className="p-4 text-white/40">{item.quantity}</td>
                     <td className="p-4 text-right font-black text-emerald-500">
-                      {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(item.quantity * item.unitPrice)}
+                      {new Intl.NumberFormat("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      }).format(item.quantity * item.unitPrice)}
                     </td>
                   </tr>
                 ))}

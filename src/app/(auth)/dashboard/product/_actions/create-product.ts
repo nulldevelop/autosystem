@@ -8,7 +8,9 @@ import { prisma } from "@/lib/prisma";
 const createProductSchema = z.object({
   name: z.string().min(1, "O nome do produto é obrigatório."),
   price: z.number().nonnegative("O preço deve ser um número positivo."),
-  costPrice: z.number().nonnegative("O preço de custo deve ser um número positivo."),
+  costPrice: z
+    .number()
+    .nonnegative("O preço de custo deve ser um número positivo."),
   sku: z.string().min(1, "O SKU é obrigatório."),
   category: z.string().optional(),
   unit: z.string().default("UN"),
@@ -61,13 +63,16 @@ export async function createProduct(
       data: {
         ...data,
         organizationId: session.session.activeOrganizationId,
-        movements: data.stockQuantity > 0 ? {
-          create: {
-            type: "IN",
-            quantity: data.stockQuantity,
-            reason: "Estoque inicial",
-          }
-        } : undefined
+        movements:
+          data.stockQuantity > 0
+            ? {
+                create: {
+                  type: "IN",
+                  quantity: data.stockQuantity,
+                  reason: "Estoque inicial",
+                },
+              }
+            : undefined,
       },
     });
 

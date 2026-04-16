@@ -1,10 +1,14 @@
 "use server";
 
-import { z } from "zod";
-import { prisma } from "@/lib/prisma";
-import { getSession } from "@/lib/getSession";
 import { revalidatePath } from "next/cache";
-import { TransactionType, TransactionCategory, TransactionStatus } from "@/generated/prisma/client";
+import { z } from "zod";
+import {
+  TransactionCategory,
+  TransactionStatus,
+  TransactionType,
+} from "@/generated/prisma/client";
+import { getSession } from "@/lib/getSession";
+import { prisma } from "@/lib/prisma";
 
 const createTransactionSchema = z.object({
   description: z.string().min(3, "Descrição é obrigatória"),
@@ -16,7 +20,9 @@ const createTransactionSchema = z.object({
   paymentMethod: z.string().optional(),
 });
 
-export async function createTransaction(input: z.infer<typeof createTransactionSchema>) {
+export async function createTransaction(
+  input: z.infer<typeof createTransactionSchema>,
+) {
   try {
     const session = await getSession();
     const orgId = session?.session.activeOrganizationId;
@@ -43,6 +49,9 @@ export async function createTransaction(input: z.infer<typeof createTransactionS
     return { success: true, message: "Transação lançada com sucesso!" };
   } catch (error) {
     console.error("Erro ao criar transação:", error);
-    return { success: false, message: "Erro ao processar o lançamento financeiro." };
+    return {
+      success: false,
+      message: "Erro ao processar o lançamento financeiro.",
+    };
   }
 }

@@ -9,14 +9,18 @@ const updateProductSchema = z.object({
   id: z.string().uuid(),
   name: z.string().min(1, "O nome do produto é obrigatório."),
   price: z.number().nonnegative("O preço deve ser um número positivo."),
-  costPrice: z.number().nonnegative("O preço de custo deve ser um número positivo."),
+  costPrice: z
+    .number()
+    .nonnegative("O preço de custo deve ser um número positivo."),
   sku: z.string().min(1, "O SKU é obrigatório."),
   category: z.string().optional(),
   unit: z.string().default("UN"),
   minStock: z.number().int().default(0),
 });
 
-export async function updateProduct(input: z.infer<typeof updateProductSchema>) {
+export async function updateProduct(
+  input: z.infer<typeof updateProductSchema>,
+) {
   try {
     const session = await getSession();
     if (!session?.user || !session.session.activeOrganizationId) {
@@ -26,9 +30,9 @@ export async function updateProduct(input: z.infer<typeof updateProductSchema>) 
     const { id, ...data } = updateProductSchema.parse(input);
 
     await prisma.product.update({
-      where: { 
+      where: {
         id,
-        organizationId: session.session.activeOrganizationId 
+        organizationId: session.session.activeOrganizationId,
       },
       data,
     });

@@ -1,4 +1,3 @@
-
 import { checkPermission } from "@/utils/permissions/check-permission";
 import { ServiceOrderList } from "./_components/service-order-list";
 import { getServiceOrders } from "./_data-access/get-service-orders";

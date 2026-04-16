@@ -2,12 +2,12 @@
 
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
+import type { Plan } from "@/generated/prisma/client";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { stripe } from "@/utils/stripe";
 import { subscriptionPlans } from "@/utils/plans/subscription-plans";
-import type { Plan } from "@/generated/prisma/client";
 import type { PlanSlug } from "@/utils/plans/types";
+import { stripe } from "@/utils/stripe";
 
 export async function POST(request: Request) {
   try {
@@ -16,10 +16,7 @@ export async function POST(request: Request) {
     });
 
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: "Não autenticado" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
     }
 
     const body = await request.json();
@@ -28,7 +25,7 @@ export async function POST(request: Request) {
     if (!planSlug || !billingInterval) {
       return NextResponse.json(
         { error: "Plano e intervalo de cobrança são obrigatórios" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -36,7 +33,7 @@ export async function POST(request: Request) {
     if (!plan) {
       return NextResponse.json(
         { error: "Plano não encontrado" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -48,7 +45,7 @@ export async function POST(request: Request) {
     if (!priceId) {
       return NextResponse.json(
         { error: "Price ID não configurado para este plano" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -111,8 +108,7 @@ export async function POST(request: Request) {
     console.error("Erro ao criar checkout:", error);
     return NextResponse.json(
       { error: "Erro ao criar sessão de checkout" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
-

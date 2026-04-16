@@ -9,6 +9,7 @@ import {
 import { getSession } from "@/lib/getSession";
 import { AppSidebar } from "./dashboard/_components/app-sidebar";
 import { HeaderUserMenu } from "./dashboard/_components/header-user-menu";
+import { MobileDock } from "./dashboard/_components/mobile-dock";
 
 export default async function AuthLayout({
   children,
@@ -54,11 +55,13 @@ export default async function AuthLayout({
           </div>
         </header>
 
-        <main className="flex-1 p-6 relative min-h-[calc(100vh-4rem)]">
+        <main className="flex-1 p-4 md:p-6 pb-24 lg:pb-6 relative min-h-[calc(100vh-4rem)]">
           <div className="absolute top-0 left-1/4 w-1/2 h-1/2 bg-primary/5 blur-[120px] pointer-events-none rounded-full" />
           <div className="absolute bottom-0 right-1/4 w-1/3 h-1/3 bg-secondary/5 blur-[100px] pointer-events-none rounded-full" />
           <div className="relative z-10 mx-auto w-full">{children}</div>
         </main>
+
+        <MobileDock />
       </SidebarInset>
     </SidebarProvider>
   );

@@ -1,5 +1,16 @@
 "use client";
 
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import {
+  AlertTriangle,
+  ArrowDownToLine,
+  FileText,
+  Loader2,
+  Package,
+  Table as TableIcon,
+} from "lucide-react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -7,19 +18,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { 
-  FileText, 
-  AlertTriangle, 
-  Package, 
-  ArrowDownToLine, 
-  Loader2,
-  Table as TableIcon
-} from "lucide-react";
-import { useState } from "react";
-import { PDFDownloadLink } from "@react-pdf/renderer";
-import { InventoryReportPDF } from "./inventory-report-pdf";
 import type { Product } from "@/generated/prisma/client";
+import { InventoryReportPDF } from "./inventory-report-pdf";
 
 interface ReportSelectionModalProps {
   open: boolean;
@@ -49,11 +49,12 @@ export function ReportSelectionModal({
     {
       id: "low-stock",
       title: "Alerta de Baixo Estoque",
-      description: "Somente itens que atingiram ou estão abaixo do estoque mínimo.",
+      description:
+        "Somente itens que atingiram ou estão abaixo do estoque mínimo.",
       icon: AlertTriangle,
       color: "text-yellow-500",
       bgColor: "bg-yellow-500/10",
-      data: products.filter(p => p.stockQuantity <= p.minStock),
+      data: products.filter((p) => p.stockQuantity <= p.minStock),
     },
     {
       id: "out-of-stock",
@@ -62,7 +63,7 @@ export function ReportSelectionModal({
       icon: FileText,
       color: "text-red-500",
       bgColor: "bg-red-500/10",
-      data: products.filter(p => p.stockQuantity === 0),
+      data: products.filter((p) => p.stockQuantity === 0),
     },
   ];
 

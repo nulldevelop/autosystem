@@ -24,4 +24,6 @@ export async function getBudgetDetails(budgetId: string) {
   return budget;
 }
 
-export type BudgetDetails = NonNullable<Awaited<ReturnType<typeof getBudgetDetails>>>;
+export type BudgetDetails = NonNullable<
+  Awaited<ReturnType<typeof getBudgetDetails>>
+>;

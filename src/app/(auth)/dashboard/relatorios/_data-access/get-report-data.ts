@@ -1,8 +1,15 @@
 "use server";
 
+import {
+  endOfDay,
+  endOfMonth,
+  format,
+  startOfDay,
+  startOfMonth,
+  subMonths,
+} from "date-fns";
 import { getSession } from "@/lib/getSession";
 import { prisma } from "@/lib/prisma";
-import { startOfMonth, endOfMonth, subMonths, startOfDay, endOfDay, format } from "date-fns";
 
 export async function getReportData(startDate?: Date, endDate?: Date) {
   const session = await getSession();
@@ -61,34 +68,46 @@ export async function getReportData(startDate?: Date, endDate?: Date) {
   const totalCost = transactions.reduce((acc, t) => acc + t.costAmount, 0);
   const totalNet = transactions.reduce((acc, t) => acc + t.netAmount, 0);
 
-  const completedOS = serviceOrders.filter((os) => os.status === "completed").length;
+  const completedOS = serviceOrders.filter(
+    (os) => os.status === "completed",
+  ).length;
   const averageTicket = completedOS > 0 ? totalRevenue / completedOS : 0;
 
   const approvedBudgets = budgets.filter((b) => b.status === "aproved").length;
   const totalBudgets = budgets.length;
-  const conversionRate = totalBudgets > 0 ? (approvedBudgets / totalBudgets) * 100 : 0;
+  const conversionRate =
+    totalBudgets > 0 ? (approvedBudgets / totalBudgets) * 100 : 0;
 
   // Revenue by Category
-  const revenueByCategory = transactions.reduce((acc: Record<string, number>, t) => {
-    const category = t.category || "OTHER";
-    acc[category] = (acc[category] || 0) + t.amount;
-    return acc;
-  }, {});
+  const revenueByCategory = transactions.reduce(
+    (acc: Record<string, number>, t) => {
+      const category = t.category || "OTHER";
+      acc[category] = (acc[category] || 0) + t.amount;
+      return acc;
+    },
+    {},
+  );
 
   // Revenue by Payment Method
-  const revenueByPaymentMethod = transactions.reduce((acc: Record<string, number>, t) => {
-    const method = t.paymentMethod || "N/A";
-    acc[method] = (acc[method] || 0) + t.amount;
-    return acc;
-  }, {});
+  const revenueByPaymentMethod = transactions.reduce(
+    (acc: Record<string, number>, t) => {
+      const method = t.paymentMethod || "N/A";
+      acc[method] = (acc[method] || 0) + t.amount;
+      return acc;
+    },
+    {},
+  );
 
   // Revenue Over Time (Daily)
-  const revenueOverTime = transactions.reduce((acc: Record<string, number>, t) => {
-    if (!t.paymentDate) return acc;
-    const day = format(t.paymentDate, "yyyy-MM-dd");
-    acc[day] = (acc[day] || 0) + t.amount;
-    return acc;
-  }, {});
+  const revenueOverTime = transactions.reduce(
+    (acc: Record<string, number>, t) => {
+      if (!t.paymentDate) return acc;
+      const day = format(t.paymentDate, "yyyy-MM-dd");
+      acc[day] = (acc[day] || 0) + t.amount;
+      return acc;
+    },
+    {},
+  );
 
   return {
     metrics: {
@@ -102,7 +121,10 @@ export async function getReportData(startDate?: Date, endDate?: Date) {
     },
     revenueByCategory,
     revenueByPaymentMethod,
-    revenueOverTime: Object.entries(revenueOverTime).map(([date, amount]) => ({ date, amount })),
+    revenueOverTime: Object.entries(revenueOverTime).map(([date, amount]) => ({
+      date,
+      amount,
+    })),
     period: { start, end },
   };
 }

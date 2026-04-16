@@ -22,7 +22,9 @@ export async function getCurrentSubscription() {
     return null;
   }
 
-  const planInfo = subscriptionPlans.find(p => p.slug === user.subscription?.plan);
+  const planInfo = subscriptionPlans.find(
+    (p) => p.slug === user.subscription?.plan,
+  );
 
   return {
     ...user.subscription,

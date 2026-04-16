@@ -12,8 +12,8 @@ export async function getServiceOrderDetails(id: string) {
       vehicle: true,
       budget: {
         include: {
-          photos: true
-        }
+          photos: true,
+        },
       },
       items: {
         include: {
@@ -27,4 +27,6 @@ export async function getServiceOrderDetails(id: string) {
   return serviceOrder;
 }
 
-export type ServiceOrderDetails = NonNullable<Awaited<ReturnType<typeof getServiceOrderDetails>>>;
+export type ServiceOrderDetails = NonNullable<
+  Awaited<ReturnType<typeof getServiceOrderDetails>>
+>;
