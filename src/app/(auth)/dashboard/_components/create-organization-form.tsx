@@ -66,7 +66,7 @@ const formSchema = z.object({
   cnpj: z
     .string()
     .min(14, { message: "O CNPJ deve ter pelo menos 14 caracteres." }),
-  plan: z.string().default("TRIAL"),
+  plan: z.string(),
 });
 
 type Step = 1 | 2 | 3 | 4;

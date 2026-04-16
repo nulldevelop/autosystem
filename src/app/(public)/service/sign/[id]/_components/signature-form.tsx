@@ -6,7 +6,7 @@ import SignatureCanvas from "react-signature-canvas";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { signServiceOrder } from "../_actions/sign-service-order";
+import { signServiceOrder } from "../../_actions/sign-service-order";
 
 export function SignatureForm({ serviceOrderId }: { serviceOrderId: string }) {
   const sigCanvas = useRef<SignatureCanvas>(null);

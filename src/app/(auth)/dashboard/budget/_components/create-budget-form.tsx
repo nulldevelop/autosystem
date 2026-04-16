@@ -68,8 +68,8 @@ const formSchema = z.object({
   vehicleId: z.string().min(1, "Selecione um veículo."),
   observacoes: z.string().optional(),
   profitMargin: z.number().min(0, "A margem de lucro não pode ser negativa."),
-  kilometers: z.number().default(0),
-  fuelLevel: z.string().default("50"),
+  kilometers: z.number(),
+  fuelLevel: z.string(),
   checklist: z.any().optional(),
   items: z
     .array(
@@ -447,10 +447,12 @@ export function CreateBudgetForm({
                             onValueChange={field.onChange}
                             value={field.value}
                             type="veículo"
-                            disabled={!customerId}
                           >
                             <FormControl>
-                              <ComboboxTrigger className="bg-white/5 border-white/5 h-12 text-white" />
+                              <ComboboxTrigger 
+                                className="bg-white/5 border-white/5 h-12 text-white" 
+                                disabled={!customerId} 
+                              />
                             </FormControl>
                             <ComboboxContent className="bg-zinc-900 border-white/10">
                               <ComboboxInput placeholder="Pesquisar..." />

@@ -148,7 +148,7 @@ export async function DashboardStats() {
               <div className="flex items-center gap-2 relative z-10">
                 <Link href={stat.action.href} className="flex-1">
                   <Button
-                    variant="tech"
+                    variant="outline"
                     className="w-full justify-start h-8 px-3"
                   >
                     {stat.action.label}

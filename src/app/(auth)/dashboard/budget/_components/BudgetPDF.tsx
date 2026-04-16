@@ -400,7 +400,7 @@ export function BudgetPDF({ budget }: BudgetPDFProps) {
               </View>
             ) : (
               <View style={{ height: 40, justifyContent: "center" }}>
-                <Text style={{ fontSize: 7, color: "#CBD5E1", italic: true }}>
+                <Text style={{ fontSize: 7, color: "#CBD5E1", fontStyle: "italic" }}>
                   Aguardando Assinatura Digital
                 </Text>
               </View>

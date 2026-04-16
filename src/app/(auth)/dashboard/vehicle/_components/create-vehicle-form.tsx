@@ -34,14 +34,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import type { Customer } from "@/generated/prisma/client";
 import { createVehicle } from "../_actions/create-vehicle";
 
 const CAR_BRANDS = [
@@ -84,7 +76,7 @@ const formSchema = z.object({
 interface CreateVehicleFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  customers: Customer[];
+  customers: { id: string; name: string }[];
 }
 
 export function CreateVehicleForm({
