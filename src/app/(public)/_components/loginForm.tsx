@@ -78,7 +78,7 @@ export function LoginForm() {
       if (data) {
         toast.success("Login realizado com sucesso");
         router.push("/dashboard");
-        router.refresh(); // Atualiza os dados do servidor
+        router.refresh();
       }
     } catch (err) {
       console.error("Erro no login:", err);

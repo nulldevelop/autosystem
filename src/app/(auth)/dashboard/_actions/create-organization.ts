@@ -70,33 +70,52 @@ export async function createOrganization(
     const { name, slug, logo, address, phone, cnpj } = validationResult.data;
 
     const headersList = await headers();
+    const session = await auth.api.getSession({ headers: headersList });
 
-    // Criar organização usando Better Auth
-    const data = await auth.api.createOrganization({
-      body: {
+    if (!session?.user) {
+      return {
+        success: false,
+        message: "Você precisa estar autenticado para criar uma oficina.",
+      };
+    }
+
+    // Criar organização
+    const org = await prisma.organization.create({
+      data: {
+        id: crypto.randomUUID(),
         name,
         slug,
         address,
         phone,
         cnpj,
-        logo: logo || undefined,
-        keepCurrentActiveOrganization: true,
+        logo: logo || null,
       },
-      headers: headersList,
     });
 
-    if (!data) {
-      return {
-        success: false,
-        message: "Erro ao criar a oficina. Tente novamente.",
-      };
+    // Criar membership para o usuário
+    await prisma.member.create({
+      data: {
+        id: crypto.randomUUID(),
+        organizationId: org.id,
+        userId: session.user.id,
+        role: "owner",
+        createdAt: new Date(),
+      },
+    });
+
+    // Atualizar a sessão com o activeOrganizationId
+    if (session.session?.id) {
+      await prisma.session.update({
+        where: { id: session.session.id },
+        data: { activeOrganizationId: org.id },
+      });
     }
 
     revalidatePath("/dashboard");
     return {
       success: true,
       message: "Oficina criada com sucesso!",
-      organizationId: data.id,
+      organizationId: org.id,
     };
     // biome-ignore lint/suspicious/noExplicitAny: error is dynamic
   } catch (error: any) {

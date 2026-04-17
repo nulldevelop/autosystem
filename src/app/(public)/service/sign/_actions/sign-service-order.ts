@@ -8,19 +8,37 @@ export async function signServiceOrder(
   signatureData: string,
 ) {
   try {
-    const _serviceOrder = await prisma.serviceOrder.update({
+    const serviceOrder = await prisma.serviceOrder.update({
       where: { id: serviceOrderId },
       data: {
         signature: signatureData,
         signedAt: new Date(),
-        status: "in_progress", // Move to in_progress when signed
+        status: "in_progress",
+      },
+      include: {
+        customer: true,
+        vehicle: true,
+        organization: true,
+      },
+    });
+
+    await prisma.notification.create({
+      data: {
+        id: crypto.randomUUID(),
+        type: "SERVICE_ORDER_SIGNED",
+        title: "O.S. Assinada!",
+        message: `${serviceOrder.customer?.name || "Cliente"} assinou a ordem de serviço para ${serviceOrder.vehicle?.marca} ${serviceOrder.vehicle?.model}.`,
+        organizationId: serviceOrder.organizationId!,
+        serviceOrderId: serviceOrder.id,
+        customerId: serviceOrder.customerId,
       },
     });
 
     revalidatePath(`/dashboard/service/${serviceOrderId}`);
     revalidatePath(`/service/sign/${serviceOrderId}`);
+    revalidatePath("/dashboard/notifications");
 
-    return { success: true, message: "Ordem de serviço assinada com sucesso!" };
+    return { success: true, message: "Ordem de serviço assinado com sucesso!" };
   } catch (error) {
     console.error("Erro ao assinar O.S.:", error);
     return { success: false, message: "Erro ao salvar assinatura." };

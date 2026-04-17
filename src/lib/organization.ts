@@ -46,9 +46,14 @@ export async function getActiveOrganizationId(): Promise<string | null> {
 }
 
 export async function setActiveOrganization(organizationId: string) {
-  await auth.api.setActiveOrganization({
-    headers: await headers(),
-    body: { organizationId },
+  const session = await getServerSession();
+  if (!session) {
+    throw new OrganizationError("UNAUTHORIZED");
+  }
+
+  await prisma.session.update({
+    where: { id: session.session.id },
+    data: { activeOrganizationId: organizationId },
   });
 }
 

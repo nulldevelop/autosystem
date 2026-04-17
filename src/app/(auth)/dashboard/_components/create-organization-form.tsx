@@ -159,11 +159,6 @@ export function CreateOrganizationForm({
           await updateOrganizationLogo(result.organizationId, uploadData.url);
       }
 
-      // AÇÃO CHAVE: Define a organização como ativa na sessão do Better Auth
-      await authClient.organization.setActive({
-        organizationId: result.organizationId,
-      });
-
       toast.success("Sua oficina está pronta!");
 
       // Sincroniza a sessão do cliente e redireciona

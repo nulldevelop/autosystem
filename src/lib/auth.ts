@@ -13,19 +13,6 @@ export const auth = betterAuth({
     enabled: true,
   },
 
-  session: {
-    expiresIn: 60 * 60 * 24 * 7,
-    updateAge: 60 * 60 * 24,
-    schema: {
-      fields: {
-        activeOrganizationId: {
-          type: "string",
-          required: false,
-        },
-      },
-    },
-  },
-
   plugins: [
     organization({
       allowUserToCreateOrganization: true,
@@ -49,20 +36,6 @@ export const auth = betterAuth({
         before: async (session) => {
           const org = await getActiveOrganization(session.userId);
           if (org) {
-            return {
-              data: {
-                ...session,
-                activeOrganizationId: org.id,
-              },
-            };
-          }
-          return { data: session };
-        },
-      },
-      update: {
-        before: async (session) => {
-          const org = await getActiveOrganization(session.userId);
-          if (org && !session.activeOrganizationId) {
             return {
               data: {
                 ...session,

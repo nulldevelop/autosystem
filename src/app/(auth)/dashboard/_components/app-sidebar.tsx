@@ -1,6 +1,7 @@
 import { addDays, isAfter } from "date-fns";
 import {
   BarChart3,
+  Bell,
   Car,
   CreditCard,
   LayoutDashboard,
@@ -24,6 +25,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { getSession } from "@/lib/getSession";
+import { prisma } from "@/lib/prisma";
 import { planRoutes, trialRoutes } from "@/utils/permissions/plan-features";
 import { TRIAL_DAYS } from "@/utils/permissions/trial-limits";
 import { getBudgetsCount } from "../_data-access/get-budgets-count";
@@ -53,6 +55,7 @@ const _iconMap: Record<string, any> = {
   Car,
   CreditCard,
   Settings,
+  Bell,
 };
 
 export async function AppSidebar({
@@ -61,6 +64,17 @@ export async function AppSidebar({
   const session = await getSession();
   const orgId = session?.session?.activeOrganizationId || "";
   let allowedRoutes: string[] = [];
+
+  let unreadNotifications = 0;
+  try {
+    if (orgId && typeof orgId === "string" && orgId.length > 0) {
+      unreadNotifications = await prisma.notification.count({
+        where: { organizationId: orgId, read: false },
+      });
+    }
+  } catch {
+    unreadNotifications = 0;
+  }
 
   const [
     subscription,
@@ -130,6 +144,13 @@ export async function AppSidebar({
     },
   ].filter((item) => allowedRoutes.includes(item.url));
 
+  const notificationsItem: MenuItem = {
+    title: "Notificações",
+    url: "/dashboard/notifications",
+    iconName: "Bell",
+    badge: unreadNotifications > 0 ? unreadNotifications : undefined,
+  };
+
   const menuGroups = [
     {
       title: "Overview",
@@ -140,6 +161,7 @@ export async function AppSidebar({
           url: "/dashboard/relatorios",
           iconName: "BarChart3",
         },
+        notificationsItem,
       ],
     },
     {

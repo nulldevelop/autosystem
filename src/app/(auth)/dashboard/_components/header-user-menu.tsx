@@ -68,7 +68,6 @@ export function HeaderUserMenu({
         </DropdownMenuItem>
         <DropdownMenuSeparator className="bg-white/5" />
         <DropdownMenuItem className="rounded-xl focus:bg-red-500/10 focus:text-red-500 cursor-pointer p-3 text-sm gap-2 font-bold transition-colors">
-          <LogOut size={16} />
           <LogoutButton />
         </DropdownMenuItem>
       </DropdownMenuContent>

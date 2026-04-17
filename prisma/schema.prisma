@@ -94,6 +94,7 @@ model Organization {
   products      Product[]
   serviceOrders ServiceOrder[]
   transactions  Transaction[]
+  notifications Notification[]
 
   @@map("organization")
 }
@@ -144,6 +145,7 @@ model Customer {
   organization   Organization?  @relation(fields: [organizationId], references: [id])
   organizationId String?
   serviceOrders  ServiceOrder[]
+  notifications Notification[]
 
   @@index([organizationId])
   @@map("customer")
@@ -208,6 +210,7 @@ model Budget {
   organization   Organization? @relation(fields: [organizationId], references: [id])
   organizationId String?
   serviceOrder   ServiceOrder?
+  notifications  Notification[]
 
   @@index([organizationId])
   @@map("budget")
@@ -316,6 +319,7 @@ model ServiceOrder {
   organizationId String?
 
   transaction    Transaction?
+  notifications  Notification[]
 
   @@index([organizationId])
   @@map("service_order")
@@ -403,4 +407,39 @@ model Subscription {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum NotificationType {
+  BUDGET_SIGNED
+  SERVICE_ORDER_SIGNED
+  BUDGET_APPROVED
+  SERVICE_ORDER_COMPLETED
+  NEW_CUSTOMER
+  NEW_BUDGET
+}
+
+model Notification {
+  id             String           @id @default(uuid())
+  type           NotificationType
+  title          String
+  message        String
+  read           Boolean          @default(false)
+  
+  organizationId String
+  organization   Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  
+  budgetId       String?
+  budget         Budget?          @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+  
+  serviceOrderId String?
+  serviceOrder   ServiceOrder?    @relation(fields: [serviceOrderId], references: [id], onDelete: Cascade)
+  
+  customerId     String?
+  customer       Customer?         @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  
+  createdAt      DateTime         @default(now())
+
+  @@index([organizationId, read])
+  @@index([createdAt])
+  @@map("notification")
 }

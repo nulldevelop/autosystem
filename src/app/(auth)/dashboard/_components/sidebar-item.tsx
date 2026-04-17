@@ -2,6 +2,7 @@
 
 import {
   BarChart3,
+  Bell,
   Car,
   CreditCard,
   LayoutDashboard,
@@ -27,6 +28,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Car,
   CreditCard,
   Settings,
+  Bell,
 };
 
 interface SidebarItemProps {
