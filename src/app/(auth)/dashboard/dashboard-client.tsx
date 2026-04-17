@@ -12,22 +12,22 @@ export default function DashboardClient({
   children: React.ReactNode;
 }) {
   const { data: session, isPending: isSessionPending } = useSession();
-  const { data: activeOrg, isPending: isActiveOrgPending } =
-    authClient.organization.useActiveOrganization();
   const [isCreateOrgModalOpen, setCreateOrgModalOpen] = useState(false);
   const searchParams = useSearchParams();
   const error = searchParams.get("error");
 
   useEffect(() => {
-    if (isSessionPending || isActiveOrgPending) return;
+    if (isSessionPending) return;
 
     // Só abre o modal se houver sessão válida (logado) e não tiver organização ativa
-    if (session && !activeOrg) {
+    const hasActiveOrg = session?.session?.activeOrganizationId;
+
+    if (session && !hasActiveOrg) {
       setCreateOrgModalOpen(true);
-    } else if (activeOrg) {
+    } else if (hasActiveOrg) {
       setCreateOrgModalOpen(false);
     }
-  }, [session, activeOrg, isSessionPending, isActiveOrgPending]);
+  }, [session, isSessionPending]);
 
   useEffect(() => {
     if (error === "unauthorized") {
