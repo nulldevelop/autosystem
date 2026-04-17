@@ -44,7 +44,8 @@ export async function GET(
     });
   } catch (error) {
     console.error("ERRO CRÍTICO NA GERAÇÃO DE PDF:", error);
-    const errorMessage = error instanceof Error ? error.message : "Erro desconhecido";
+    const errorMessage =
+      error instanceof Error ? error.message : "Erro desconhecido";
     return new NextResponse(`Erro ao gerar PDF: ${errorMessage}`, {
       status: 500,
       headers: { "Content-Type": "text/plain" },

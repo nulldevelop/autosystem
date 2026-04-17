@@ -7,9 +7,11 @@ import { getFinancialData } from "./_data-access/get-transactions";
 
 export default async function FinanceiroPage() {
   const session = await getSession();
-  
+
   if (!session?.user?.id) {
-    return <div>Você precisa estar logado para acessar os dados financeiros.</div>;
+    return (
+      <div>Você precisa estar logado para acessar os dados financeiros.</div>
+    );
   }
 
   const [data, organization] = await Promise.all([

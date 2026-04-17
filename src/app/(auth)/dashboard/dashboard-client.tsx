@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { useSession } from "@/lib/auth-client";
+import { authClient, useSession } from "@/lib/auth-client";
 import { CreateOrganizationForm } from "./_components/create-organization-form";
 
 export default function DashboardClient({
@@ -11,19 +11,23 @@ export default function DashboardClient({
 }: {
   children: React.ReactNode;
 }) {
-  const { data: session } = useSession();
+  const { data: session, isPending: isSessionPending } = useSession();
+  const { data: activeOrg, isPending: isActiveOrgPending } =
+    authClient.organization.useActiveOrganization();
   const [isCreateOrgModalOpen, setCreateOrgModalOpen] = useState(false);
   const searchParams = useSearchParams();
   const error = searchParams.get("error");
 
   useEffect(() => {
-    // Só abre o modal se não houver organização ativa e não estivermos carregando a sessão
-    if (session && !session.session?.activeOrganizationId) {
+    if (isSessionPending || isActiveOrgPending) return;
+
+    // Só abre o modal se houver sessão válida (logado) e não tiver organização ativa
+    if (session && !activeOrg) {
       setCreateOrgModalOpen(true);
-    } else if (session?.session?.activeOrganizationId) {
+    } else if (activeOrg) {
       setCreateOrgModalOpen(false);
     }
-  }, [session]);
+  }, [session, activeOrg, isSessionPending, isActiveOrgPending]);
 
   useEffect(() => {
     if (error === "unauthorized") {
