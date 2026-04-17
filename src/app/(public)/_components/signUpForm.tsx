@@ -64,8 +64,8 @@ export function SignUpForm() {
           toast.error(result.error.message);
         }
       } else {
-        toast.success(result.message);
-        router.push("/dashboard");
+        toast.success(result.message + "Agora faça login para continuar.");
+        router.push("/auth");
         router.refresh();
       }
     });
