@@ -46,7 +46,7 @@ interface PDFFooterProps {
 }
 
 export function PDFFooter({ documentId }: PDFFooterProps) {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL as string;
   const systemLogoUrl = `${baseUrl.replace(/\/$/, "")}/images/logo.png`;
 
   return (

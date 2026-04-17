@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { PlusSquare, Share, X } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { X, Share, PlusSquare } from "lucide-react";
 
 export function PWAInstallPrompt() {
   const [isIOS, setIsIOS] = useState(false);

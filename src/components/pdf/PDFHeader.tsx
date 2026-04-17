@@ -154,7 +154,7 @@ export function PDFHeader({
   documentDate = new Date(),
   layout = "portrait",
 }: PDFHeaderProps) {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL as string;
 
   const getFullUrl = (path: string | null | undefined) => {
     if (!path) return null;
