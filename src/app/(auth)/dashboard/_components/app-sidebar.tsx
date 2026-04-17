@@ -59,6 +59,7 @@ export async function AppSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
   const session = await getSession();
+  const orgId = session?.session?.activeOrganizationId || "";
   let allowedRoutes: string[] = [];
 
   const [
@@ -70,11 +71,11 @@ export async function AppSidebar({
     serviceOrdersCount,
   ] = await Promise.all([
     session?.user?.id ? getSubscription(session.user.id) : null,
-    getCustomersCount(),
-    getVehiclesCount(),
-    getBudgetsCount(),
-    getProductsCount(),
-    getServiceOrdersCount(),
+    getCustomersCount(orgId),
+    getVehiclesCount(orgId),
+    getBudgetsCount(orgId),
+    getProductsCount(orgId),
+    getServiceOrdersCount(orgId),
   ]);
 
   if (session) {

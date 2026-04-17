@@ -1,20 +1,11 @@
 "use server";
 
-import { getSession } from "@/lib/getSession";
 import { prisma } from "@/lib/prisma";
 
-export async function getServiceOrdersCount() {
-  const session = await getSession();
+export async function getServiceOrdersCount(orgId: string) {
+  if (!orgId) return 0;
 
-  if (!session?.user || !session.session.activeOrganizationId) {
-    return 0;
-  }
-
-  const count = await prisma.serviceOrder.count({
-    where: {
-      organizationId: session.session.activeOrganizationId,
-    },
+  return prisma.serviceOrder.count({
+    where: { organizationId: orgId },
   });
-
-  return count;
 }

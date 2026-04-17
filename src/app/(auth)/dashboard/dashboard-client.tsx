@@ -3,31 +3,25 @@ import { motion } from "framer-motion";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { authClient, useSession } from "@/lib/auth-client";
 import { CreateOrganizationForm } from "./_components/create-organization-form";
 
 export default function DashboardClient({
   children,
+  hasOrg,
 }: {
-  children: React.ReactNode;
+  children?: React.ReactNode;
+  hasOrg?: boolean;
 }) {
-  const { data: session, isPending: isSessionPending } = useSession();
-  const [isCreateOrgModalOpen, setCreateOrgModalOpen] = useState(false);
+  const [isCreateOrgModalOpen, setCreateOrgModalOpen] = useState(!hasOrg);
   const searchParams = useSearchParams();
+  const forceCreate = searchParams.get("createOrg");
   const error = searchParams.get("error");
 
   useEffect(() => {
-    if (isSessionPending) return;
-
-    // Só abre o modal se houver sessão válida (logado) e não tiver organização ativa
-    const hasActiveOrg = session?.session?.activeOrganizationId;
-
-    if (session && !hasActiveOrg) {
+    if (forceCreate === "true" || !hasOrg) {
       setCreateOrgModalOpen(true);
-    } else if (hasActiveOrg) {
-      setCreateOrgModalOpen(false);
     }
-  }, [session, isSessionPending]);
+  }, [forceCreate, hasOrg]);
 
   useEffect(() => {
     if (error === "unauthorized") {
@@ -37,7 +31,6 @@ export default function DashboardClient({
 
   return (
     <>
-      {/* --- HERO SECTION --- */}
       <section className="relative z-10 pt-5 pb-5">
         <div className="mx-auto px-6">
           <motion.div

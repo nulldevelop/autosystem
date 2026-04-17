@@ -25,6 +25,7 @@ import { getServiceOrdersCount } from "../service/_data-access/get-service-order
 
 export async function DashboardStats() {
   const session = await getSession();
+  const orgId = session?.session?.activeOrganizationId || "";
 
   // 1. Buscas em paralelo (Counts + Assinatura)
   const [
@@ -35,11 +36,11 @@ export async function DashboardStats() {
     serviceOrdersCount,
     subscription,
   ] = await Promise.all([
-    getCustomersCount(),
-    getVehiclesCount(),
-    getBudgetsCount(),
-    getProductsCount(),
-    getServiceOrdersCount(),
+    getCustomersCount(orgId),
+    getVehiclesCount(orgId),
+    getBudgetsCount(orgId),
+    getProductsCount(orgId),
+    getServiceOrdersCount(orgId),
     session?.user?.id ? getSubscription(session.user.id) : null,
   ]);
 

@@ -1,6 +1,7 @@
 "use client";
 
-import { ChevronDown, LogOut, Settings, User } from "lucide-react";
+import { ChevronDown, LogOut, Plus, Settings, User } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { LogoutButton } from "@/app/(auth)/dashboard/_components/logout-button";
 import {
   DropdownMenu,
@@ -11,11 +12,22 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-// biome-ignore lint/suspicious/noExplicitAny: Session type is dynamic from auth
-export function HeaderUserMenu({ session }: { session: any }) {
+export function HeaderUserMenu({
+  session,
+  hasOrg,
+}: {
+  session: any;
+  hasOrg?: boolean;
+}) {
+  const router = useRouter();
+
   if (!session) return null;
 
   const initials = session.user.name?.substring(0, 2).toUpperCase() || "AD";
+
+  const handleCreateOrg = () => {
+    router.push("/dashboard?createOrg=true");
+  };
 
   return (
     <DropdownMenu>
@@ -40,6 +52,14 @@ export function HeaderUserMenu({ session }: { session: any }) {
           Minha Conta
         </DropdownMenuLabel>
         <DropdownMenuSeparator className="bg-white/5" />
+        {!hasOrg && (
+          <DropdownMenuItem
+            onClick={handleCreateOrg}
+            className="rounded-xl focus:bg-primary/10 cursor-pointer p-3 text-sm gap-2 font-medium text-primary"
+          >
+            <Plus size={16} /> Criar Oficina
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem className="rounded-xl focus:bg-white/5 cursor-pointer p-3 text-sm gap-2 font-medium">
           <User size={16} className="text-primary" /> Perfil
         </DropdownMenuItem>

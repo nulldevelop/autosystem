@@ -1,32 +1,17 @@
 "use server";
 
-import { getSession } from "@/lib/getSession";
 import { prisma } from "@/lib/prisma";
 
-export async function getProductsCount() {
-  const session = await getSession();
+export async function getProductsCount(orgId: string) {
+  if (!orgId) return 0;
 
-  if (!session?.user || !session.session.activeOrganizationId) {
-    return 0;
-  }
-
-  const count = await prisma.product.count({
+  return prisma.product.count({
     where: {
-      organizationId: session.session.activeOrganizationId,
+      organizationId: orgId,
       NOT: [
-        {
-          sku: {
-            startsWith: "CUSTOM-",
-          },
-        },
-        {
-          sku: {
-            startsWith: "GENERIC-CUSTOM-",
-          },
-        },
+        { sku: { startsWith: "CUSTOM-" } },
+        { sku: { startsWith: "GENERIC-CUSTOM-" } },
       ],
     },
   });
-
-  return count;
 }

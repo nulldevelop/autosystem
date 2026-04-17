@@ -1,20 +1,11 @@
 "use server";
 
-import { getSession } from "@/lib/getSession";
 import { prisma } from "@/lib/prisma";
 
-export async function getBudgetsCount() {
-  const session = await getSession();
+export async function getBudgetsCount(orgId: string) {
+  if (!orgId) return 0;
 
-  if (!session?.user) {
-    throw new Error("Usuário não autenticado ou organização não selecionada.");
-  }
-
-  const count = await prisma.budget.count({
-    where: {
-      organizationId: session.session.activeOrganizationId,
-    },
+  return prisma.budget.count({
+    where: { organizationId: orgId },
   });
-
-  return count;
 }

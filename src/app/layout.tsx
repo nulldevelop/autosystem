@@ -1,6 +1,7 @@
 import "@/styles/globals.css";
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
+import { ThemeProvider } from "next-themes";
 import { Toaster } from "sonner";
 
 const inter = Inter({
@@ -51,7 +52,14 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${poppins.variable} font-sans antialiased text-white bg-[#0a0a0a]`}
       >
-        {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
         <Toaster richColors duration={2000} position="top-right" />
       </body>
     </html>
