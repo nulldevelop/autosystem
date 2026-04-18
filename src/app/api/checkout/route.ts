@@ -81,7 +81,7 @@ export async function POST(request: Request) {
     }
 
     // Criar checkout session
-    const origin = request.headers.get("origin") || "http://localhost:3000";
+    const origin = process.env.NEXT_PUBLIC_APP_URL || request.headers.get("origin") || "http://localhost:3000";
     const checkoutSession = await stripe.checkout.sessions.create({
       customer: customerId,
       allow_promotion_codes: true,

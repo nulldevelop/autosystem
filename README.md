@@ -66,7 +66,7 @@ Inicie o servidor de desenvolvimento:
 ```bash
 npm run dev
 ```
-O projeto estará disponível em `http://localhost:3000`.
+O projeto estará disponível em `https://autosystem.nulldev.com.br`.
 
 ### Variáveis de Ambiente
 
@@ -76,13 +76,14 @@ Crie um arquivo `.env` na raiz do projeto com as seguintes chaves (exemplo):
 DATABASE_URL="postgresql://user:password@localhost:5432/autosystem"
 
 # Stripe
-STRIPE_API_KEY="sk_test_.."
+STRIPE_SECRET_KEY="sk_test_.."
 STRIPE_WEBHOOK_SECRET="whsec_..."
 NEXT_PUBLIC_STRIPE_PUBLIC_KEY="pk_test_..."
 
 # Better-Auth
 BETTER_AUTH_SECRET="seu_secret_aqui"
-BETTER_AUTH_URL="http://localhost:3000"
+BETTER_AUTH_URL="https://autosystem.nulldev.com.br"
+NEXT_PUBLIC_APP_URL="https://autosystem.nulldev.com.br"
 ```
 
 ## 🧪 Testes

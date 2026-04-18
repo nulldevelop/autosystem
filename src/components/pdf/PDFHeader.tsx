@@ -158,7 +158,7 @@ export function PDFHeader({
 
   const getFullUrl = (path: string | null | undefined) => {
     if (!path) return null;
-    if (path.startsWith("http")) return path;
+    if (path.startsWith("https")) return path;
     return `${baseUrl.replace(/\/$/, "")}/${path.replace(/^\//, "")}`;
   };
 
