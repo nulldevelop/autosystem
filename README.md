@@ -76,7 +76,7 @@ Crie um arquivo `.env` na raiz do projeto com as seguintes chaves (exemplo):
 DATABASE_URL="postgresql://user:password@localhost:5432/autosystem"
 
 # Stripe
-STRIPE_API_KEY="sk_test_..."
+STRIPE_API_KEY="sk_test_.."
 STRIPE_WEBHOOK_SECRET="whsec_..."
 NEXT_PUBLIC_STRIPE_PUBLIC_KEY="pk_test_..."
 
