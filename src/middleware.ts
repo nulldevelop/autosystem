@@ -11,6 +11,14 @@ export default async function middleware(request: NextRequest) {
     });
   } catch (error) {
     console.error("Middleware session check failed:", error);
+    console.log("Cookies:", JSON.stringify(request.cookies.getAll()));
+    if (error instanceof Error) {
+      console.error("Error name:", error.name);
+      console.error("Error message:", error.message);
+      console.error("Error stack:", error.stack);
+    } else {
+      console.error("Raw error:", JSON.stringify(error));
+    }
     // Fallback: check if session cookie exists as a hint
     const hasSessionCookie = request.cookies.getAll().some(c => c.name.includes("session_token"));
     if (hasSessionCookie) {
