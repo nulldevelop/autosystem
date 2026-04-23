@@ -1,29 +1,34 @@
+import { auth } from "@/lib/auth";
 import { type NextRequest, NextResponse } from "next/server";
 
 export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // 1. Obter a sessão via fetch nativo
-  const sessionResponse = await fetch(
-    `${request.nextUrl.origin}/api/auth/get-session`,
-    {
-      headers: {
-        cookie: request.headers.get("cookie") || "",
-      },
-    },
-  );
-
-  const session = await sessionResponse.json();
+  let session = null;
+  try {
+    session = await auth.api.getSession({
+      headers: request.headers,
+    });
+  } catch (error) {
+    console.error("Middleware session check failed:", error);
+    // Fallback: check if session cookie exists as a hint
+    const hasSessionCookie = request.cookies.getAll().some(c => c.name.includes("session_token"));
+    if (hasSessionCookie) {
+      // If we have a cookie but DB check failed, we might want to allow it 
+      // and let the Server Component handle the real check (which has more context/retries)
+      return NextResponse.next();
+    }
+  }
 
   const isAuthPage = pathname.startsWith("/auth");
   const isDashboardPage = pathname.startsWith("/dashboard");
 
-  // 2. Se não houver sessão e tentar acessar dashboard, vai para login
+  // 1. Se não houver sessão e tentar acessar dashboard, vai para login
   if (!session && isDashboardPage) {
     return NextResponse.redirect(new URL("/auth", request.url));
   }
 
-  // 3. Se houver sessão (session.user existe) e tentar acessar login, vai para dashboard
+  // 2. Se houver sessão (session.user existe) e tentar acessar login, vai para dashboard
   if (session?.user && isAuthPage) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
