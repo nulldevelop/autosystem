@@ -2,29 +2,26 @@ import { type NextRequest, NextResponse } from "next/server";
 
 export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-
-  // 1. Obter a sessão via fetch nativo
-  const sessionResponse = await fetch(
-    `${request.nextUrl.origin}/api/auth/get-session`,
-    {
-      headers: {
-        cookie: request.headers.get("cookie") || "",
-      },
-    },
+  const allCookies = request.cookies.getAll();
+  const hasSessionCookie = allCookies.some(
+    (c) =>
+      c.name.includes("auth_session") ||
+      c.name.includes("session_token") ||
+      c.name.includes("better-auth.session"),
   );
-
-  const session = await sessionResponse.json();
 
   const isAuthPage = pathname.startsWith("/auth");
   const isDashboardPage = pathname.startsWith("/dashboard");
 
-  // 2. Se não houver sessão e tentar acessar dashboard, vai para login
-  if (!session && isDashboardPage) {
+  // 1. Se não houver cookie de sessão e tentar acessar dashboard, vai para login
+  if (!hasSessionCookie && isDashboardPage) {
     return NextResponse.redirect(new URL("/auth", request.url));
   }
 
-  // 3. Se houver sessão (session.user existe) e tentar acessar login, vai para dashboard
-  if (session?.user && isAuthPage) {
+  // 2. Se houver cookie de sessão e tentar acessar login, vai para dashboard
+  // Nota: Deixamos o usuário entrar no /auth se ele quiser explicitamente,
+  // ou podemos redirecionar. Aqui manteremos o redirecionamento para dashboard se logado.
+  if (hasSessionCookie && isAuthPage) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
@@ -32,9 +29,5 @@ export default async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    // Proteger todas as rotas de dashboard e a página de auth
-    "/dashboard/:path*",
-    "/auth/:path*",
-  ],
+  matcher: ["/dashboard/:path*", "/auth/:path*"],
 };
