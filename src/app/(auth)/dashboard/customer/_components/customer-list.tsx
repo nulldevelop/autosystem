@@ -39,6 +39,7 @@ import { Input } from "@/components/ui/input";
 import type { Customer } from "@/generated/prisma/client";
 import { deleteCustomer } from "../_actions/delete-customer";
 import { CreateCustomerForm } from "./create-customer-form";
+import { EditCustomerForm } from "./edit-customer-form";
 import { CustomerStats } from "./customer-stats";
 
 interface CustomerListProps {
@@ -48,6 +49,8 @@ interface CustomerListProps {
 export function CustomerList({ customers }: CustomerListProps) {
   const [isCreateCustomerModalOpen, setCreateCustomerModalOpen] =
     useState(false);
+  const [isEditCustomerModalOpen, setEditCustomerModalOpen] = useState(false);
+  const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
 
@@ -77,6 +80,11 @@ export function CustomerList({ customers }: CustomerListProps) {
     } finally {
       setIsDeleting(null);
     }
+  };
+
+  const handleEdit = (customer: Customer) => {
+    setEditingCustomer(customer);
+    setEditCustomerModalOpen(true);
   };
 
   const openWhatsApp = (phone: string | null, name: string) => {
@@ -174,7 +182,10 @@ export function CustomerList({ customers }: CustomerListProps) {
                           <Send className="size-4 mr-2" />
                           WhatsApp
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="focus:bg-white/10 cursor-pointer">
+                        <DropdownMenuItem 
+                          className="focus:bg-white/10 cursor-pointer"
+                          onClick={() => handleEdit(customer)}
+                        >
                           <Pencil className="size-4 mr-2" />
                           Editar
                         </DropdownMenuItem>
@@ -278,6 +289,7 @@ export function CustomerList({ customers }: CustomerListProps) {
                           variant="outline"
                           size="sm"
                           className="h-9 px-4 text-[10px] font-black uppercase border-white/5 bg-white/5 hover:border-white/20 transition-all gap-2"
+                          onClick={() => handleEdit(customer)}
                         >
                           <Pencil className="size-3.5" />
                           Editar
@@ -362,6 +374,12 @@ export function CustomerList({ customers }: CustomerListProps) {
       <CreateCustomerForm
         open={isCreateCustomerModalOpen}
         onOpenChange={setCreateCustomerModalOpen}
+      />
+
+      <EditCustomerForm
+        customer={editingCustomer}
+        open={isEditCustomerModalOpen}
+        onOpenChange={setEditCustomerModalOpen}
       />
     </div>
   );

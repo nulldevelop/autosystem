@@ -10,10 +10,12 @@ import { SignatureForm } from "./_components/signature-form";
 export default async function BudgetSignPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
+  const { id } = await params;
+
   const budget = await prisma.budget.findUnique({
-    where: { id: (await params).id },
+    where: { id },
     include: {
       customer: true,
       vehicle: true,
@@ -26,7 +28,7 @@ export default async function BudgetSignPage({
     },
   });
 
-  if (!budget) {
+  if (!budget || !budget.customer || !budget.vehicle) {
     notFound();
   }
 
@@ -62,7 +64,7 @@ export default async function BudgetSignPage({
             Aprovação de <span className="text-primary">Orçamento</span>
           </h1>
           <p className="text-white/40 text-[10px] font-black uppercase tracking-[0.3em]">
-            {budget.organization?.name} • ID: {budget.id.substring(0, 8)}
+            {budget.organization?.name || "AutoSystem"} • ID: {budget.id.substring(0, 8)}
           </p>
         </div>
 

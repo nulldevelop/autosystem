@@ -10,10 +10,12 @@ import { SignatureForm } from "./_components/signature-form";
 export default async function ServiceOrderSignPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
+  const { id } = await params;
+
   const serviceOrder = await prisma.serviceOrder.findUnique({
-    where: { id: (await params).id },
+    where: { id },
     include: {
       customer: true,
       vehicle: true,
@@ -26,7 +28,7 @@ export default async function ServiceOrderSignPage({
     },
   });
 
-  if (!serviceOrder) {
+  if (!serviceOrder || !serviceOrder.customer || !serviceOrder.vehicle) {
     notFound();
   }
 
@@ -67,7 +69,7 @@ export default async function ServiceOrderSignPage({
             <span className="text-emerald-500">Ordem de Serviço</span>
           </h1>
           <p className="text-white/40 text-[10px] font-black uppercase tracking-[0.3em]">
-            {serviceOrder.organization?.name} • O.S. #
+            {serviceOrder.organization?.name || "AutoSystem"} • O.S. #
             {serviceOrder.id.substring(0, 8)}
           </p>
         </div>
