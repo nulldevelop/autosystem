@@ -76,12 +76,16 @@ export async function POST(request: Request) {
         },
         update: {
           stripeCustomerId: customerId,
+          plan: planSlug as Plan,
         },
       });
     }
 
     // Criar checkout session
-    const origin = process.env.NEXT_PUBLIC_APP_URL || request.headers.get("origin") || "http://localhost:3000";
+    const origin =
+      process.env.NEXT_PUBLIC_APP_URL ||
+      request.headers.get("origin") ||
+      "http://localhost:3000";
     const checkoutSession = await stripe.checkout.sessions.create({
       customer: customerId,
       allow_promotion_codes: true,
@@ -93,6 +97,12 @@ export async function POST(request: Request) {
         },
       ],
       mode: "subscription",
+      subscription_data: {
+        metadata: {
+          userId: session.user.id,
+          planSlug: planSlug,
+        },
+      },
       success_url: `${origin}/dashboard/plans/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/dashboard/plans`,
       metadata: {
