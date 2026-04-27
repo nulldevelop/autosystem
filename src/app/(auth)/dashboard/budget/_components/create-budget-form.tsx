@@ -239,7 +239,7 @@ export function CreateBudgetForm({
       setPhotos([]);
       setPhotoPreviews([]);
     }
-  }, [open, form, refreshData, photoPreviews]);
+  }, [open, form, refreshData]);
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
