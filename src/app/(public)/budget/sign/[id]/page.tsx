@@ -64,7 +64,8 @@ export default async function BudgetSignPage({
             Aprovação de <span className="text-primary">Orçamento</span>
           </h1>
           <p className="text-white/40 text-[10px] font-black uppercase tracking-[0.3em]">
-            {budget.organization?.name || "AutoSystem"} • ID: {budget.id.substring(0, 8)}
+            {budget.organization?.name || "AutoSystem"} • ID:{" "}
+            {budget.id.substring(0, 8)}
           </p>
         </div>
 

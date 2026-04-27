@@ -77,9 +77,10 @@ export function EditCustomerForm({
         name: customer.name,
         email: customer.email,
         phone: customer.phone ? formatPhone(customer.phone) : "",
-        document: customer.documentType === "CPF" 
-          ? formatCpf(customer.document) 
-          : formatCnpj(customer.document),
+        document:
+          customer.documentType === "CPF"
+            ? formatCpf(customer.document)
+            : formatCnpj(customer.document),
         address: customer.address || "",
       });
     }
@@ -87,14 +88,14 @@ export function EditCustomerForm({
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!customer) return;
-    
+
     setIsLoading(true);
     const rawDocument =
       values.document.length > 14
         ? extractCnpj(values.document)
         : extractCpf(values.document);
     const documentType = values.document.length > 14 ? "CNPJ" : "CPF";
-    
+
     try {
       const result = await updateCustomer({
         id: customer.id,

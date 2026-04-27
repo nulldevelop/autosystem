@@ -8,7 +8,7 @@ export default async function CustomerPage() {
 
   return (
     <div className="p-6">
-      <CustomerList customers={customers} />
+      <CustomerList customers={customers.customers} />
     </div>
   );
 }

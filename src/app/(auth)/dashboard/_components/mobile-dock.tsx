@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { CreateBudgetModal } from "./create-budget-modal";
 import { CreateCustomerModal } from "./create-customer-modal";
@@ -206,7 +207,8 @@ export function MobileDock() {
               <Settings className="size-5" />
             </Link>
 
-            <button
+            <Button
+              variant="ghost"
               type="button"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className={cn(
@@ -221,13 +223,15 @@ export function MobileDock() {
               ) : (
                 <Menu className="size-5" />
               )}
-            </button>
+            </Button>
           </div>
         </div>
       </div>
 
       {isMenuOpen && (
         <>
+          {/* biome-ignore lint/a11y/noStaticElementInteractions: Backdrop overlay */}
+          {/* biome-ignore lint/a11y/useKeyWithClickEvents: Backdrop overlay */}
           <div
             className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
             onClick={() => setIsMenuOpen(false)}
@@ -259,13 +263,14 @@ export function MobileDock() {
                   })}
                 </div>
 
-                <button
+                <Button
+                  variant="ghost"
                   type="button"
                   onClick={() => setIsMenuOpen(false)}
                   className="w-full py-2 text-[10px] font-black uppercase tracking-widest text-white/30 hover:text-white/50 transition-colors"
                 >
                   Fechar
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -273,10 +278,14 @@ export function MobileDock() {
       )}
 
       {isNewOpen && (
-        <div
-          className="fixed inset-0 z-30 lg:hidden"
-          onClick={() => setIsNewOpen(false)}
-        />
+        <>
+          {/* biome-ignore lint/a11y/noStaticElementInteractions: Backdrop overlay */}
+          {/* biome-ignore lint/a11y/useKeyWithClickEvents: Backdrop overlay */}
+          <div
+            className="fixed inset-0 z-30 lg:hidden"
+            onClick={() => setIsNewOpen(false)}
+          />
+        </>
       )}
 
       <CreateBudgetModal

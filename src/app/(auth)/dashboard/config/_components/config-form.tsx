@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import {
   updateOrganizationData,
@@ -240,30 +241,29 @@ export function ConfigForm({ organization }: ConfigFormProps) {
               <p className="text-sm text-white/40 mb-4">
                 Envie uma imagem quadrada (PNG ou JPG)
               </p>
-              <label>
-                <input
-                  id="logo-input"
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleLogoChange}
-                  disabled={isUploading}
-                />
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  className="bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20"
-                  disabled={isUploading}
-                  onClick={() => {
-                    const input = document.getElementById("logo-input");
-                    input?.click();
-                  }}
-                >
-                  <Upload className="w-4 h-4 mr-2" />
-                  {logo ? "Alterar" : "Enviar"} Logo
-                </Button>
-              </label>
+              <Label>
+                  <input
+                    id="logo-input"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleLogoChange}
+                    disabled={isUploading}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="bg-white/5 border-white/10 text-white hover:bg-white/10"
+                    disabled={isUploading}
+                    onClick={() => {
+                      document.getElementById("logo-input")?.click();
+                    }}
+                  >
+                    <Upload className="w-4 h-4 mr-2" />
+                    {logo ? "Alterar" : "Enviar"} Logo
+                  </Button>
+                </Label>
             </div>
           </div>
         </div>
@@ -285,9 +285,9 @@ export function ConfigForm({ organization }: ConfigFormProps) {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="space-y-2 md:col-span-2 lg:col-span-2">
-              <label className="text-[10px] font-black uppercase text-white/40 tracking-widest">
+              <Label className="text-[10px] font-black uppercase text-white/40 tracking-widest">
                 Nome da Oficina
-              </label>
+              </Label>
               <Input
                 {...form.register("name")}
                 placeholder="Ex: Precision Motors"
@@ -301,9 +301,9 @@ export function ConfigForm({ organization }: ConfigFormProps) {
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase text-white/40 tracking-widest">
+              <Label className="text-[10px] font-black uppercase text-white/40 tracking-widest">
                 CNPJ
-              </label>
+              </Label>
               <Input
                 {...form.register("cnpj")}
                 placeholder="00.000.000/0001-00"
@@ -317,9 +317,9 @@ export function ConfigForm({ organization }: ConfigFormProps) {
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase text-white/40 tracking-widest">
+              <Label className="text-[10px] font-black uppercase text-white/40 tracking-widest">
                 WhatsApp
-              </label>
+              </Label>
               <Input
                 {...form.register("phone")}
                 placeholder="(11) 99999-9999"
@@ -351,9 +351,9 @@ export function ConfigForm({ organization }: ConfigFormProps) {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6">
             <div className="space-y-2 lg:col-span-3">
-              <label className="text-[10px] font-black uppercase text-white/40 tracking-widest">
+              <Label className="text-[10px] font-black uppercase text-white/40 tracking-widest">
                 CEP
-              </label>
+              </Label>
               <Input
                 {...form.register("cep")}
                 placeholder="00000-000"
@@ -368,9 +368,9 @@ export function ConfigForm({ organization }: ConfigFormProps) {
             </div>
 
             <div className="space-y-2 lg:col-span-6">
-              <label className="text-[10px] font-black uppercase text-white/40 tracking-widest">
+              <Label className="text-[10px] font-black uppercase text-white/40 tracking-widest">
                 Rua
-              </label>
+              </Label>
               <Input
                 {...form.register("street")}
                 placeholder="Rua/Avenida"
@@ -384,9 +384,9 @@ export function ConfigForm({ organization }: ConfigFormProps) {
             </div>
 
             <div className="space-y-2 lg:col-span-3">
-              <label className="text-[10px] font-black uppercase text-white/40 tracking-widest">
+              <Label className="text-[10px] font-black uppercase text-white/40 tracking-widest">
                 Número
-              </label>
+              </Label>
               <Input
                 {...form.register("number")}
                 placeholder="123"
@@ -400,9 +400,9 @@ export function ConfigForm({ organization }: ConfigFormProps) {
             </div>
 
             <div className="space-y-2 lg:col-span-4">
-              <label className="text-[10px] font-black uppercase text-white/40 tracking-widest">
+              <Label className="text-[10px] font-black uppercase text-white/40 tracking-widest">
                 Bairro
-              </label>
+              </Label>
               <Input
                 {...form.register("neighborhood")}
                 placeholder="Centro"
@@ -416,9 +416,9 @@ export function ConfigForm({ organization }: ConfigFormProps) {
             </div>
 
             <div className="space-y-2 lg:col-span-5">
-              <label className="text-[10px] font-black uppercase text-white/40 tracking-widest">
+              <Label className="text-[10px] font-black uppercase text-white/40 tracking-widest">
                 Cidade
-              </label>
+              </Label>
               <Input
                 {...form.register("city")}
                 placeholder="São Paulo"
@@ -432,9 +432,9 @@ export function ConfigForm({ organization }: ConfigFormProps) {
             </div>
 
             <div className="space-y-2 lg:col-span-3">
-              <label className="text-[10px] font-black uppercase text-white/40 tracking-widest">
+              <Label className="text-[10px] font-black uppercase text-white/40 tracking-widest">
                 Estado
-              </label>
+              </Label>
               <Input
                 {...form.register("state")}
                 placeholder="SP"

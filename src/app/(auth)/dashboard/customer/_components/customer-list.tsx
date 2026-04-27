@@ -39,8 +39,8 @@ import { Input } from "@/components/ui/input";
 import type { Customer } from "@/generated/prisma/client";
 import { deleteCustomer } from "../_actions/delete-customer";
 import { CreateCustomerForm } from "./create-customer-form";
-import { EditCustomerForm } from "./edit-customer-form";
 import { CustomerStats } from "./customer-stats";
+import { EditCustomerForm } from "./edit-customer-form";
 
 interface CustomerListProps {
   customers: Customer[];
@@ -182,7 +182,7 @@ export function CustomerList({ customers }: CustomerListProps) {
                           <Send className="size-4 mr-2" />
                           WhatsApp
                         </DropdownMenuItem>
-                        <DropdownMenuItem 
+                        <DropdownMenuItem
                           className="focus:bg-white/10 cursor-pointer"
                           onClick={() => handleEdit(customer)}
                         >

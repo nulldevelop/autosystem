@@ -189,11 +189,17 @@ interface BudgetPDFProps {
 }
 
 export function BudgetPDF({ budget }: BudgetPDFProps) {
+  type ExtendedBudget = BudgetWithRelations & {
+    itemsAmount?: number;
+    laborValue?: number;
+  };
+  const extendedBudget = budget as ExtendedBudget;
+
   const subtotal =
-    (budget as any).itemsAmount ||
+    extendedBudget.itemsAmount ||
     budget.items.reduce((acc, item) => acc + item.quantity * item.unitPrice, 0);
   const marginValue =
-    (budget as any).laborValue || budget.totalAmount - subtotal;
+    extendedBudget.laborValue || budget.totalAmount - subtotal;
 
   return (
     <Document>
@@ -301,8 +307,8 @@ export function BudgetPDF({ budget }: BudgetPDFProps) {
                 Subtotal
               </Text>
             </View>
-            {budget.items.map((item, index) => (
-              <View key={index} style={styles.tableRow} wrap={false}>
+            {budget.items.map((item) => (
+              <View key={item.id || item.productId} style={styles.tableRow} wrap={false}>
                 <Text
                   style={[styles.tableCell, { flex: 4, fontWeight: "bold" }]}
                 >
@@ -391,7 +397,7 @@ export function BudgetPDF({ budget }: BudgetPDFProps) {
                 />
                 <Text style={{ fontSize: 6, color: "#94A3B8", marginTop: 4 }}>
                   IP: {budget.id.substring(0, 12)} • Data:{" "}
-                  {format(new Date(budget.signedAt!), "dd/MM/yyyy HH:mm")}
+                  {budget.signedAt ? format(new Date(budget.signedAt), "dd/MM/yyyy HH:mm") : ""}
                 </Text>
               </View>
             ) : (

@@ -117,7 +117,7 @@ export function CreateOrganizationForm({
   };
 
   const nextStep = async () => {
-    const fieldsByStep: Record<number, any[]> = {
+    const fieldsByStep: Record<number, (keyof z.infer<typeof formSchema>)[]> = {
       1: ["name", "slug", "cnpj"],
       2: ["cep", "street", "number", "neighborhood", "city", "state", "phone"],
       3: ["logo"],

@@ -16,7 +16,7 @@ export default async function ProductPage() {
 
   return (
     <div className="">
-      <ProductList products={products} organization={organization} />
+      <ProductList products={products.products} organization={organization} />
     </div>
   );
 }

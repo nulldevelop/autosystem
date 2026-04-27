@@ -45,7 +45,7 @@ import { PDFDownloadButton } from "./PDFDownloadButton";
 
 const STATUS_CONFIG: Record<
   Status,
-  { label: string; color: string; icon: any }
+  { label: string; color: string; icon: React.ElementType }
 > = {
   pending: {
     label: "Pendente",
@@ -247,6 +247,7 @@ ${window.location.origin}/budget/sign/${budget.id}`;
             </button>
             {(["pending", "aproved", "rejected"] as Status[]).map((s) => (
               <button
+                type="button"
                 key={s}
                 onClick={() => setStatusFilter(s)}
                 className={cn(

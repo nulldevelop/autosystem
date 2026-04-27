@@ -71,9 +71,9 @@ export function BudgetStats({ budgets }: BudgetStatsProps) {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-      {items.map((item, index) => (
+      {items.map((item) => (
         <Card
-          key={index}
+          key={item.label}
           className={cn(
             "p-5 bg-zinc-950/50 border-white/5 backdrop-blur-sm group hover:border-white/10 transition-all duration-300",
             "relative overflow-hidden",

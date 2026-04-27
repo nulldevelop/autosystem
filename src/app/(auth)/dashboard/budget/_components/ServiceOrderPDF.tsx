@@ -208,12 +208,18 @@ export function ServiceOrderPDF({ budget }: ServiceOrderPDFProps) {
   const serviceOrder = budget.serviceOrder;
   const items = budget.items || [];
 
+  type ExtendedEntity = {
+    laborValue?: number;
+    itemsAmount?: number;
+    totalAmount?: number;
+  };
+  const extSO = serviceOrder as typeof serviceOrder & ExtendedEntity;
+  const extBudget = budget as typeof budget & ExtendedEntity;
+
   // Totais vindos do banco de dados (persistidos na criação/aprovação)
-  const laborTotal =
-    (serviceOrder as any)?.laborValue || (budget as any)?.laborValue || 0;
-  const partsTotal =
-    (serviceOrder as any)?.itemsAmount || (budget as any)?.itemsAmount || 0;
-  const totalAmount = (serviceOrder as any)?.totalAmount || budget.totalAmount;
+  const laborTotal = extSO?.laborValue || extBudget?.laborValue || 0;
+  const partsTotal = extSO?.itemsAmount || extBudget?.itemsAmount || 0;
+  const totalAmount = extSO?.totalAmount || budget.totalAmount;
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("pt-BR", {
@@ -308,8 +314,8 @@ export function ServiceOrderPDF({ budget }: ServiceOrderPDFProps) {
                 Total
               </Text>
             </View>
-            {items.map((item: any, index: number) => (
-              <View key={index} style={styles.tableRow} wrap={false}>
+            {items.map((item) => (
+              <View key={item.id || item.productId} style={styles.tableRow} wrap={false}>
                 <Text
                   style={[styles.tableCell, { flex: 4, fontWeight: "bold" }]}
                 >
@@ -388,7 +394,7 @@ export function ServiceOrderPDF({ budget }: ServiceOrderPDFProps) {
                 />
                 <Text style={{ fontSize: 6, color: "#94A3B8", marginTop: 4 }}>
                   IP: {serviceOrder.id.substring(0, 12)} • Data:{" "}
-                  {format(new Date(serviceOrder.signedAt!), "dd/MM/yyyy HH:mm")}
+                  {serviceOrder.signedAt ? format(new Date(serviceOrder.signedAt), "dd/MM/yyyy HH:mm") : ""}
                 </Text>
               </View>
             ) : (

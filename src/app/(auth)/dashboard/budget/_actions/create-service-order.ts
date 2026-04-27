@@ -5,7 +5,6 @@ import { z } from "zod";
 import { getSession } from "@/lib/getSession";
 import { prisma } from "@/lib/prisma";
 import { canPermission } from "@/utils/permissions/canPermission";
-import { getBudgetDetails } from "../_data-access/get-budget-details";
 
 const createServiceOrderSchema = z.object({
   budgetId: z.string().uuid({
@@ -46,22 +45,25 @@ export async function createServiceOrder(
     const { budgetId } = validationResult.data;
 
     const budget = await prisma.budget.findFirst({
-      where: { 
+      where: {
         id: budgetId,
-        organizationId: orgId
+        organizationId: orgId,
       },
       include: {
         items: {
           include: {
-            product: true
-          }
+            product: true,
+          },
         },
-        customer: true
-      }
+        customer: true,
+      },
     });
 
     if (!budget) {
-      return { success: false, message: "Orçamento não encontrado ou acesso negado." };
+      return {
+        success: false,
+        message: "Orçamento não encontrado ou acesso negado.",
+      };
     }
 
     const existingServiceOrder = await prisma.serviceOrder.findUnique({

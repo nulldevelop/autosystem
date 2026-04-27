@@ -218,13 +218,13 @@ export function CreateBudgetForm({
 
   const refreshData = useCallback(async () => {
     const [c, v, p] = await Promise.all([
-      getCustomers(),
+      getCustomers(1, 100), // Aumentado para o combobox inicial
       getVehicles(),
-      getProducts(),
+      getProducts(1, 100), // Aumentado para o combobox inicial
     ]);
-    setCustomers(c);
-    setVehicles(v);
-    setProducts(p);
+    setCustomers(c.customers || []);
+    setVehicles(v || []);
+    setProducts(p.products || []);
   }, []);
 
   useEffect(() => {
@@ -232,10 +232,14 @@ export function CreateBudgetForm({
     else {
       setCurrentStep(1);
       form.reset();
+      // Limpar previews para evitar memory leak
+      for (const url of photoPreviews) {
+        URL.revokeObjectURL(url);
+      }
       setPhotos([]);
       setPhotoPreviews([]);
     }
-  }, [open, form, refreshData]);
+  }, [open, form, refreshData, photoPreviews]);
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -302,7 +306,9 @@ export function CreateBudgetForm({
       if (photos.length > 0) {
         const fd = new FormData();
         fd.append("budgetId", res.budgetId);
-        photos.forEach((f) => fd.append("files", f));
+        for (const f of photos) {
+          fd.append("files", f);
+        }
         await uploadBudgetPhotos(fd);
       }
       toast.success("Orçamento criado!");
@@ -577,19 +583,28 @@ export function CreateBudgetForm({
                       </div>
                     </div>
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-                      {photoPreviews.map((u, i) => (
+                      {photoPreviews.map((u) => (
                         <div
-                          key={i}
+                          key={u}
                           className="group relative aspect-square rounded-2xl overflow-hidden border border-white/10"
                         >
-                          <img src={u} className="w-full h-full object-cover" />
+                          {/* biome-ignore lint/performance/noImgElement: Using local blob URLs */}
+                          <img
+                            src={u}
+                            alt="Preview"
+                            className="w-full h-full object-cover"
+                          />
                           <button
                             type="button"
                             onClick={() => {
-                              setPhotos((p) => p.filter((_, idx) => idx !== i));
-                              setPhotoPreviews((p) =>
-                                p.filter((_, idx) => idx !== i),
+                              const index = photoPreviews.indexOf(u);
+                              setPhotos((p) =>
+                                p.filter((_, idx) => idx !== index),
                               );
+                              setPhotoPreviews((p) =>
+                                p.filter((url) => url !== u),
+                              );
+                              URL.revokeObjectURL(u);
                             }}
                             className="absolute top-2 right-2 p-1.5 rounded-lg bg-red-500 text-white opacity-0 group-hover:opacity-100 transition-opacity"
                           >

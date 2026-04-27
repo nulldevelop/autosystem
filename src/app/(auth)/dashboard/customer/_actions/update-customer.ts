@@ -82,7 +82,8 @@ export async function updateCustomer(
     if (!customer) {
       return {
         success: false,
-        message: "Cliente não encontrado ou você não tem permissão para editá-lo.",
+        message:
+          "Cliente não encontrado ou você não tem permissão para editá-lo.",
       };
     }
 

@@ -10,7 +10,7 @@ export default async function VehiclePage() {
 
   return (
     <div className="p-6">
-      <VehicleList vehicles={vehicles} customers={customers} />
+      <VehicleList vehicles={vehicles} customers={customers.customers} />
     </div>
   );
 }

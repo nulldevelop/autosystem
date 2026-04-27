@@ -7,6 +7,7 @@ import {
   TrendingUp,
   Users,
 } from "lucide-react";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/getSession";
 import { prisma } from "@/lib/prisma";
@@ -226,7 +227,7 @@ export default async function DashboardPage() {
                 Ações Rápidas
               </h2>
               <div className="space-y-2">
-                <a
+                <Link
                   href="/dashboard/budget"
                   className="flex items-center justify-between p-3 rounded-xl bg-primary/10 border border-primary/20 hover:bg-primary/20 transition-colors group"
                 >
@@ -234,8 +235,8 @@ export default async function DashboardPage() {
                     Novo Orçamento
                   </span>
                   <ArrowRight className="w-4 h-4 text-primary group-hover:translate-x-1 transition-transform" />
-                </a>
-                <a
+                </Link>
+                <Link
                   href="/dashboard/customer"
                   className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors group"
                 >
@@ -243,8 +244,8 @@ export default async function DashboardPage() {
                     Novo Cliente
                   </span>
                   <ArrowRight className="w-4 h-4 text-white/40 group-hover:translate-x-1 transition-transform" />
-                </a>
-                <a
+                </Link>
+                <Link
                   href="/dashboard/vehicle"
                   className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors group"
                 >
@@ -252,7 +253,7 @@ export default async function DashboardPage() {
                     Ver Veículos
                   </span>
                   <ArrowRight className="w-4 h-4 text-white/40 group-hover:translate-x-1 transition-transform" />
-                </a>
+                </Link>
               </div>
             </div>
           </div>

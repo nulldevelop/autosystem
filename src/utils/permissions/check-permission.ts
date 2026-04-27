@@ -1,6 +1,6 @@
 import { addDays, isAfter } from "date-fns";
 import { redirect } from "next/navigation";
-import { getSubscription } from "@/app/(auth)/dashboard/_data-access/get-subscriptio";
+import { getSubscription } from "@/app/(auth)/dashboard/_data-access/get-subscription";
 import type { Plan } from "@/generated/prisma/client";
 import { getSession } from "@/lib/getSession";
 import { planRoutes } from "./plan-features";

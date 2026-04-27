@@ -30,7 +30,7 @@ import { planRoutes, trialRoutes } from "@/utils/permissions/plan-features";
 import { TRIAL_DAYS } from "@/utils/permissions/trial-limits";
 import { getBudgetsCount } from "../_data-access/get-budgets-count";
 import { getCustomersCount } from "../_data-access/get-customers-count";
-import { getSubscription } from "../_data-access/get-subscriptio";
+import { getSubscription } from "../_data-access/get-subscription";
 import { getVehiclesCount } from "../_data-access/get-vehicles-count";
 import { getProductsCount } from "../product/_data-access/get-products-count";
 import { getServiceOrdersCount } from "../service/_data-access/get-service-orders-count";
@@ -85,9 +85,9 @@ export async function AppSidebar({
     serviceOrdersCount,
   ] = await Promise.all([
     session?.user?.id ? getSubscription(session.user.id) : null,
-    getCustomersCount(orgId),
+    getCustomersCount(),
     getVehiclesCount(orgId),
-    getBudgetsCount(orgId),
+    getBudgetsCount(),
     getProductsCount(orgId),
     getServiceOrdersCount(orgId),
   ]);

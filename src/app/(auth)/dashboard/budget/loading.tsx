@@ -14,7 +14,7 @@ export default function BudgetLoading() {
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {[...Array(6)].map((_, i) => (
-          <Card key={i} className="border-white/5 bg-black/20">
+          <Card key={`loading-card-${i}`} className="border-white/5 bg-black/20">
             <CardHeader className="pb-4">
               <div className="flex justify-between items-center mb-2">
                 <Skeleton className="h-3 w-20 bg-white/5" />

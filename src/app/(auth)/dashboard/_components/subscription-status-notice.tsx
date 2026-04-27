@@ -7,7 +7,7 @@ import {
   TRIAL_DAYS,
   TRIAL_SERVICES_LIMIT,
 } from "@/utils/permissions/trial-limits";
-import { getSubscription } from "../_data-access/get-subscriptio";
+import { getSubscription } from "../_data-access/get-subscription";
 
 export async function SubscriptionStatusNotice() {
   const session = await getSession();

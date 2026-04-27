@@ -11,11 +11,11 @@ const prismaClientSingleton = () => {
     password: process.env.DATABASE_PASSWORD,
     database: process.env.DATABASE_NAME,
     connectionLimit: 10, // Reduzido de 20 para 10 para maior compatibilidade com o servidor
-    idleTimeout: 20,    // Reduzido para liberar conexões mais rápido
-    connectTimeout: 5,  // Timeout curto para falhar rápido e não segurar o pool
+    idleTimeout: 20, // Reduzido para liberar conexões mais rápido
+    connectTimeout: 5, // Timeout curto para falhar rápido e não segurar o pool
   });
-  
-  return new PrismaClient({ 
+
+  return new PrismaClient({
     adapter,
     log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
   });
@@ -27,7 +27,7 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClientSingleton | undefined;
 };
 
-// Garantir que a instância seja única globalmente, inclusive em produção, 
+// Garantir que a instância seja única globalmente, inclusive em produção,
 // para evitar vazamento de conexões em ambientes de deploy específicos.
 export const prisma = globalForPrisma.prisma ?? prismaClientSingleton();
 

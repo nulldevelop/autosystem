@@ -17,34 +17,22 @@ export async function getBudgets(page = 1, pageSize = 10) {
       where: {
         organizationId: session.session.activeOrganizationId,
       },
+      include: {
+        customer: true,
+        vehicle: true,
+        organization: true,
+        serviceOrder: true,
+        items: {
+          include: {
+            product: true,
+          },
+        },
+      },
       orderBy: {
         createdAt: "desc",
       },
       skip,
       take: pageSize,
-      select: {
-        id: true,
-        totalAmount: true,
-        status: true,
-        createdAt: true,
-        customer: {
-          select: {
-            name: true,
-          },
-        },
-        vehicle: {
-          select: {
-            marca: true,
-            model: true,
-            licensePlate: true,
-          },
-        },
-        serviceOrder: {
-          select: {
-            id: true,
-          },
-        },
-      },
     }),
     prisma.budget.count({
       where: {

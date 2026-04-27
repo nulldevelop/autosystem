@@ -44,7 +44,6 @@ function calculateBudgetTotals(items: BudgetItem[], profitMargin: number) {
   return { subtotal, laborValue, finalAmount };
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: Generic input from form
 export async function createBudget(input: z.infer<typeof createBudgetSchema>) {
   try {
     const session = await getSession();

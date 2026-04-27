@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, LogOut, Plus, Settings, User } from "lucide-react";
+import { ChevronDown, Plus, Settings, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { LogoutButton } from "@/app/(auth)/dashboard/_components/logout-button";
 import {
@@ -16,6 +16,7 @@ export function HeaderUserMenu({
   session,
   hasOrg,
 }: {
+  // biome-ignore lint/suspicious/noExplicitAny: Session from better-auth
   session: any;
   hasOrg?: boolean;
 }) {

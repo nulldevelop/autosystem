@@ -163,7 +163,9 @@ export function PDFHeader({
   };
 
   const orgLogoUrl = getFullUrl(organization?.logo);
-  const systemLogoUrl = baseUrl ? `${baseUrl.replace(/\/$/, "")}/images/logo.png` : null;
+  const systemLogoUrl = baseUrl
+    ? `${baseUrl.replace(/\/$/, "")}/images/logo.png`
+    : null;
 
   const formatNA = (value: string | null | undefined) => {
     return value && value !== "N/A" ? value : "Não informado";
@@ -212,10 +214,7 @@ export function PDFHeader({
       <View style={styles.headerContainerPortrait}>
         <View style={styles.brandContainer}>
           {finalLogoUrl && (
-            <Image
-              src={finalLogoUrl}
-              style={styles.logoPortrait}
-            />
+            <Image src={finalLogoUrl} style={styles.logoPortrait} />
           )}
           <View>
             <Text style={styles.brandName}>

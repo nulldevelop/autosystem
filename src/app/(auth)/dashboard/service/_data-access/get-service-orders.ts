@@ -17,26 +17,29 @@ export async function getServiceOrders(page = 1, pageSize = 10) {
       where: {
         organizationId: session.session.activeOrganizationId,
       },
+      include: {
+        customer: true,
+        vehicle: true,
+        organization: true,
+        budget: {
+          include: {
+            customer: true,
+            vehicle: true,
+            organization: true,
+            serviceOrder: true,
+            items: {
+              include: {
+                product: true,
+              },
+            },
+          },
+        },
+      },
       orderBy: {
         createdAt: "desc",
       },
       skip,
       take: pageSize,
-      select: {
-        id: true,
-        status: true,
-        totalAmount: true,
-        createdAt: true,
-        customer: {
-          select: { name: true },
-        },
-        vehicle: {
-          select: { marca: true, model: true, licensePlate: true },
-        },
-        budget: {
-          select: { id: true },
-        },
-      },
     }),
     prisma.serviceOrder.count({
       where: { organizationId: session.session.activeOrganizationId },

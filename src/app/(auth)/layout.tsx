@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { PWAInstallPrompt } from "@/components/pwa-install-prompt";
 import { Logo } from "@/components/ui/logo";
 import {
   SidebarInset,
@@ -10,7 +11,6 @@ import { getSession } from "@/lib/getSession";
 import { AppSidebar } from "./dashboard/_components/app-sidebar";
 import { HeaderUserMenu } from "./dashboard/_components/header-user-menu";
 import { MobileDock } from "./dashboard/_components/mobile-dock";
-import { PWAInstallPrompt } from "@/components/pwa-install-prompt";
 
 export default async function AuthLayout({
   children,

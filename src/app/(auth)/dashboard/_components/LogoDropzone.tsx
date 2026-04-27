@@ -82,6 +82,7 @@ export function LogoDropzone({
   };
 
   return (
+    // biome-ignore lint/a11y/noStaticElementInteractions: Dropzone needs a div container
     <div
       className={cn(
         "relative group flex flex-col items-center justify-center w-full h-40 border-2 border-dashed rounded-xl transition-all duration-300",

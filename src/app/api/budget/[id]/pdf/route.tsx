@@ -45,11 +45,14 @@ export async function GET(
     const errorMessage =
       error instanceof Error ? error.message : "Erro desconhecido";
     const errorStack = error instanceof Error ? error.stack : "";
-    
+
     // Retornar o erro detalhado para facilitar o debug se necessário
-    return new NextResponse(`Erro ao gerar PDF: ${errorMessage}\n${errorStack}`, {
-      status: 500,
-      headers: { "Content-Type": "text/plain" },
-    });
+    return new NextResponse(
+      `Erro ao gerar PDF: ${errorMessage}\n${errorStack}`,
+      {
+        status: 500,
+        headers: { "Content-Type": "text/plain" },
+      },
+    );
   }
 }

@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import { join, normalize } from "node:path";
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/getSession";
+import { prisma } from "@/lib/prisma";
 
 export async function GET(
   _req: Request,
@@ -14,6 +15,20 @@ export async function GET(
     }
 
     const pathParts = (await params).path;
+    const orgSlug = pathParts[0];
+
+    // Valida se o usuário pertence à organização do slug solicitado
+    const membership = await prisma.member.findFirst({
+      where: {
+        userId: session.user.id,
+        organization: { slug: orgSlug },
+      },
+    });
+
+    if (!membership) {
+      return NextResponse.json({ error: "Acesso negado" }, { status: 403 });
+    }
+
     // Normaliza o caminho para evitar Path Traversal (escape com ..)
     const safePath = normalize(join(...pathParts)).replace(
       /^(\.\.(\/|\\))+/,

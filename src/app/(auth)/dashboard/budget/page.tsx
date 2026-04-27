@@ -8,7 +8,7 @@ export default async function BudgetPage() {
 
   return (
     <div className="p-6">
-      <BudgetList budgets={budgets} />
+      <BudgetList budgets={budgets.budgets} />
     </div>
   );
 }

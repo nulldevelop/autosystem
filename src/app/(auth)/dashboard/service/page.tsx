@@ -8,7 +8,7 @@ export default async function ServiceOrderPage() {
 
   return (
     <div className="p-6">
-      <ServiceOrderList serviceOrders={serviceOrders} />
+      <ServiceOrderList serviceOrders={serviceOrders.serviceOrders} />
     </div>
   );
 }
