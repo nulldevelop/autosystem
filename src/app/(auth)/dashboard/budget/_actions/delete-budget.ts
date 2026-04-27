@@ -1,13 +1,24 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { getSession } from "@/lib/getSession";
 import { prisma } from "@/lib/prisma";
 
 export async function deleteBudget(budgetId: string) {
   try {
-    // Verifica se o orçamento existe e se não tem uma OS vinculada
-    const budget = await prisma.budget.findUnique({
-      where: { id: budgetId },
+    const session = await getSession();
+    const orgId = session?.session.activeOrganizationId;
+
+    if (!orgId) {
+      return { success: false, message: "Não autorizado." };
+    }
+
+    // Verifica se o orçamento existe e se pertence à organização ativa
+    const budget = await prisma.budget.findFirst({
+      where: {
+        id: budgetId,
+        organizationId: orgId,
+      },
       include: { serviceOrder: true },
     });
 

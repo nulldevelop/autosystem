@@ -32,8 +32,6 @@ export async function POST(request: Request) {
     );
   }
 
-  console.log(`Processing Stripe event: ${event.type}`);
-
   try {
     switch (event.type) {
       case "checkout.session.completed": {
@@ -57,9 +55,6 @@ export async function POST(request: Request) {
 
           const periodEnd = subscription.items.data[0]?.current_period_end;
 
-          console.log(`Activating subscription for user ${userId}, plan ${planSlug}`);
-
-          // Atualizar ou criar subscription no banco
           await prisma.subscription.upsert({
             where: { userId },
             create: {
@@ -89,23 +84,15 @@ export async function POST(request: Request) {
       }
 
       case "customer.subscription.updated":
-      case "customer.subscription.created": {
+      case "customer.subscription.deleted": {
         const subscription = event.data.object as Stripe.Subscription;
-
-        const customerId = subscription.customer as string;
-        const planSlug = subscription.metadata?.planSlug as Plan;
-        const userId = subscription.metadata?.userId;
-
-        console.log(`Subscription ${event.type === 'customer.subscription.created' ? 'created' : 'updated'} for customer ${customerId}`);
+        const status =
+          event.type === "customer.subscription.deleted"
+            ? "canceled"
+            : subscription.status;
 
         const dbSubscription = await prisma.subscription.findFirst({
-          where: { 
-            OR: [
-              { stripeCustomerId: customerId },
-              { stripeSubscriptionId: subscription.id },
-              { userId: userId || 'none' }
-            ]
-          },
+          where: { stripeSubscriptionId: subscription.id },
         });
 
         if (dbSubscription) {
@@ -114,66 +101,12 @@ export async function POST(request: Request) {
           await prisma.subscription.update({
             where: { id: dbSubscription.id },
             data: {
-              plan: planSlug || dbSubscription.plan,
-              status: subscription.status === "active" ? "active" : subscription.status,
-              stripePriceId: subscription.items.data[0]?.price.id,
+              status: status === "active" ? "active" : status,
               stripeCurrentPeriodEnd: periodEnd
                 ? new Date(periodEnd * 1000)
                 : undefined,
-              stripeSubscriptionId: subscription.id,
             },
           });
-          
-          console.log(`Updated subscription ${dbSubscription.id} in DB. Status: ${subscription.status}`);
-        } else if (userId && planSlug) {
-           // Fallback if record doesn't exist yet but we have enough info
-           const periodEnd = subscription.items.data[0]?.current_period_end;
-           await prisma.subscription.upsert({
-             where: { userId },
-             create: {
-                userId,
-                plan: planSlug,
-                status: subscription.status === "active" ? "active" : subscription.status,
-                stripeCustomerId: customerId,
-                stripeSubscriptionId: subscription.id,
-                stripePriceId: subscription.items.data[0]?.price.id,
-                stripeCurrentPeriodEnd: periodEnd ? new Date(periodEnd * 1000) : undefined,
-             },
-             update: {
-                plan: planSlug,
-                status: subscription.status === "active" ? "active" : subscription.status,
-                stripeCustomerId: customerId,
-                stripeSubscriptionId: subscription.id,
-                stripePriceId: subscription.items.data[0]?.price.id,
-                stripeCurrentPeriodEnd: periodEnd ? new Date(periodEnd * 1000) : undefined,
-             }
-           });
-           console.log(`Created subscription for user ${userId} via fallback in ${event.type}`);
-        }
-        break;
-      }
-
-      case "customer.subscription.deleted": {
-        const subscription = event.data.object as Stripe.Subscription;
-
-        const customerId = subscription.customer as string;
-        const dbSubscription = await prisma.subscription.findFirst({
-          where: { 
-            OR: [
-              { stripeCustomerId: customerId },
-              { stripeSubscriptionId: subscription.id }
-            ]
-          },
-        });
-
-        if (dbSubscription) {
-          await prisma.subscription.update({
-            where: { id: dbSubscription.id },
-            data: {
-              status: "canceled",
-            },
-          });
-          console.log(`Subscription ${dbSubscription.id} marked as canceled in DB`);
         }
         break;
       }

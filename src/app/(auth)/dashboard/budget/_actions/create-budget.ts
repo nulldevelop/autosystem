@@ -26,6 +26,24 @@ const createBudgetSchema = z.object({
     .min(1),
 });
 
+interface BudgetItem {
+  productId: string;
+  productName?: string;
+  quantity: number;
+  unitPrice: number;
+}
+
+function calculateBudgetTotals(items: BudgetItem[], profitMargin: number) {
+  const subtotal = items.reduce(
+    (acc, item) => acc + item.quantity * item.unitPrice,
+    0,
+  );
+  const laborValue = subtotal * (profitMargin / 100);
+  const finalAmount = subtotal + laborValue;
+
+  return { subtotal, laborValue, finalAmount };
+}
+
 // biome-ignore lint/suspicious/noExplicitAny: Generic input from form
 export async function createBudget(input: z.infer<typeof createBudgetSchema>) {
   try {
@@ -55,22 +73,35 @@ export async function createBudget(input: z.infer<typeof createBudgetSchema>) {
 
     // VALIDAR PROPRIEDADE (Anti-IDOR)
     const [customerExists, vehicleExists] = await Promise.all([
-      prisma.customer.findFirst({ where: { id: customerId, organizationId: orgId } }),
-      prisma.vehicle.findFirst({ where: { id: vehicleId, organizationId: orgId } }),
+      prisma.customer.findFirst({
+        where: { id: customerId, organizationId: orgId },
+      }),
+      prisma.vehicle.findFirst({
+        where: { id: vehicleId, organizationId: orgId },
+      }),
     ]);
 
     if (!customerExists || !vehicleExists) {
-      return { success: false, message: "Cliente ou Veículo não encontrado nesta organização." };
+      return {
+        success: false,
+        message: "Cliente ou Veículo não encontrado nesta organização.",
+      };
     }
 
     const permission = await canPermission({ type: "budget" });
+    if (!permission.hasPermission) {
+      return {
+        success: false,
+        message: permission.expired
+          ? "Sua assinatura expirou."
+          : "Limite do plano atingido.",
+      };
+    }
 
-    const subtotal = items.reduce(
-      (acc, item) => acc + item.quantity * item.unitPrice,
-      0,
+    const { subtotal, laborValue, finalAmount } = calculateBudgetTotals(
+      items,
+      profitMargin,
     );
-    const laborValue = subtotal * (profitMargin / 100);
-    const finalAmount = subtotal + laborValue;
 
     const customItemsText = items
       .filter((item) => item.productId.startsWith("custom-"))
@@ -135,18 +166,21 @@ export async function createBudget(input: z.infer<typeof createBudgetSchema>) {
     });
 
     revalidatePath("/dashboard/budget");
-    revalidatePath("/dashboard/product"); // Atualizar lista de produtos
+    revalidatePath("/dashboard/product");
     return {
       success: true,
-      message: "Orçamento criado e estoque atualizado!",
+      message: "Orçamento criado com sucesso!",
       budgetId: budget.id,
     };
-    // biome-ignore lint/suspicious/noExplicitAny: error is dynamic
-  } catch (error: any) {
-    console.error("Erro ao criar orçamento e baixar estoque:", error);
+  } catch (error: unknown) {
+    console.error("Erro ao criar orçamento:", error);
+
+    let message = "Erro interno no servidor.";
+    if (error instanceof Error) message = error.message;
+
     return {
       success: false,
-      message: error.message || "Erro interno no servidor.",
+      message,
     };
   }
 }

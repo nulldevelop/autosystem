@@ -9,62 +9,36 @@ export async function getFinancialData() {
 
   if (!orgId) return null;
 
-  const transactions = await prisma.transaction.findMany({
-    where: { organizationId: orgId },
-    orderBy: { createdAt: "desc" },
-    include: {
-      serviceOrder: {
-        include: {
-          customer: true,
-          vehicle: true,
-        },
-      },
-    },
-  });
+  // Realiza agregações diretamente no banco de dados para melhor performance
+  const [transactions, incomeStats, expenseStats, receivableStats] =
+    await Promise.all([
+      prisma.transaction.findMany({
+        where: { organizationId: orgId },
+        orderBy: { createdAt: "desc" },
+        take: 50, // Limite para evitar payload excessivo
+      }),
+      prisma.transaction.aggregate({
+        where: { organizationId: orgId, type: "INCOME", status: "PAID" },
+        _sum: { amount: true, costAmount: true, netAmount: true },
+      }),
+      prisma.transaction.aggregate({
+        where: { organizationId: orgId, type: "EXPENSE", status: "PAID" },
+        _sum: { amount: true },
+      }),
+      prisma.transaction.aggregate({
+        where: { organizationId: orgId, type: "INCOME", status: "PENDING" },
+        _sum: { amount: true },
+      }),
+    ]);
 
   const stats = {
-    totalBalance: transactions
-      .filter((t) => t.status === "PAID")
-      .reduce(
-        (acc, t) => acc + (t.type === "INCOME" ? t.amount : -t.amount),
-        0,
-      ),
-
-    pendingReceivable: transactions
-      .filter((t) => t.type === "INCOME" && t.status === "PENDING")
-      .reduce((acc, t) => acc + t.amount, 0),
-
-    monthlyExpenses: transactions
-      .filter(
-        (t) =>
-          t.type === "EXPENSE" &&
-          (t.status === "PAID" || t.status === "PENDING"),
-      )
-      .reduce((acc, t) => acc + t.amount, 0),
-
-    totalGross: transactions
-      .filter(
-        (t) =>
-          t.type === "INCOME" &&
-          (t.status === "PAID" || t.status === "PENDING"),
-      )
-      .reduce((acc, t) => acc + t.amount, 0),
-
-    totalPartsCost: transactions
-      .filter(
-        (t) =>
-          t.type === "INCOME" &&
-          (t.status === "PAID" || t.status === "PENDING"),
-      )
-      .reduce((acc, t) => acc + t.costAmount, 0),
-
-    totalNet: transactions
-      .filter(
-        (t) =>
-          t.type === "INCOME" &&
-          (t.status === "PAID" || t.status === "PENDING"),
-      )
-      .reduce((acc, t) => acc + t.netAmount, 0),
+    totalBalance:
+      (incomeStats._sum.amount || 0) - (expenseStats._sum.amount || 0),
+    pendingReceivable: receivableStats._sum.amount || 0,
+    monthlyExpenses: expenseStats._sum.amount || 0,
+    totalGross: incomeStats._sum.amount || 0,
+    totalPartsCost: incomeStats._sum.costAmount || 0,
+    totalNet: incomeStats._sum.netAmount || 0,
   };
 
   return { transactions, stats };

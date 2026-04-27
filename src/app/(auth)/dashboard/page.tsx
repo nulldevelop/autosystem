@@ -12,25 +12,18 @@ import { getSession } from "@/lib/getSession";
 import { prisma } from "@/lib/prisma";
 import DashboardClient from "./dashboard-client";
 
-async function syncOrganizationToSession(sessionId: string, userId: string) {
-  const memberships = await prisma.member.findMany({
-    where: { userId },
-    orderBy: { createdAt: "asc" },
-    take: 1,
-  });
+function formatCurrency(value: number) {
+  return new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  }).format(value);
+}
 
-  if (memberships.length > 0) {
-    const currentSession = await prisma.session.findUnique({
-      where: { id: sessionId },
-    });
-
-    if (currentSession && !currentSession.activeOrganizationId) {
-      await prisma.session.update({
-        where: { id: sessionId },
-        data: { activeOrganizationId: memberships[0].organizationId },
-      });
-    }
-  }
+function getGreeting() {
+  const hour = new Date().getHours();
+  if (hour < 12) return "Bom dia";
+  if (hour < 18) return "Boa tarde";
+  return "Boa noite";
 }
 
 async function getHasOrg(userId: string): Promise<boolean> {
@@ -41,36 +34,31 @@ async function getHasOrg(userId: string): Promise<boolean> {
 }
 
 async function getOrgStats(orgId: string) {
-  const [
+  const [org, totalCustomers, budgetsStats, recentBudgets, totalBudgetsCount] =
+    await Promise.all([
+      prisma.organization.findUnique({ where: { id: orgId } }),
+      prisma.customer.count({ where: { organizationId: orgId } }),
+      prisma.budget.aggregate({
+        where: { organizationId: orgId, status: "aproved" },
+        _sum: { totalAmount: true },
+        _count: { _all: true },
+      }),
+      prisma.budget.findMany({
+        where: { organizationId: orgId, status: "pending" },
+        include: { customer: true, vehicle: true },
+        orderBy: { createdAt: "desc" },
+        take: 5,
+      }),
+      prisma.budget.count({ where: { organizationId: orgId } }),
+    ]);
+
+  return {
     org,
     totalCustomers,
-    budgetsStats,
-    recentBudgets,
-    totalBudgetsCount
-  ] = await Promise.all([
-    prisma.organization.findUnique({ where: { id: orgId } }),
-    prisma.customer.count({ where: { organizationId: orgId } }),
-    prisma.budget.aggregate({
-      where: { organizationId: orgId, status: "aproved" },
-      _sum: { totalAmount: true },
-      _count: { _all: true }
-    }),
-    prisma.budget.findMany({
-      where: { organizationId: orgId, status: "pending" },
-      include: { customer: true, vehicle: true },
-      orderBy: { createdAt: "desc" },
-      take: 5,
-    }),
-    prisma.budget.count({ where: { organizationId: orgId } })
-  ]);
-
-  return { 
-    org, 
-    totalCustomers, 
     approvedAmount: budgetsStats._sum.totalAmount || 0,
     approvedCount: budgetsStats._count._all || 0,
     recentBudgets,
-    totalBudgetsCount
+    totalBudgetsCount,
   };
 }
 
@@ -81,6 +69,7 @@ export default async function DashboardPage() {
     redirect("/auth");
   }
 
+  const hasOrg = await getHasOrg(session.user.id);
   const orgId = session.session.activeOrganizationId;
   const stats = orgId ? await getOrgStats(orgId) : null;
 
@@ -101,10 +90,10 @@ export default async function DashboardPage() {
             <h1 className="text-4xl md:text-5xl font-black text-white mt-1 tracking-tight">
               {session.user.name?.split(" ")[0] || "Usuário"}
             </h1>
-            {orgData?.org && (
+            {stats?.org && (
               <p className="text-white/40 mt-2 flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                {orgData.org.name}
+                {stats.org.name}
               </p>
             )}
           </div>
@@ -121,9 +110,7 @@ export default async function DashboardPage() {
                 <FileText className="w-5 h-5 text-primary/60" />
               </div>
               <p className="text-4xl font-black text-white">{totalBudgets}</p>
-              <p className="text-xs text-white/40 mt-1">
-                {pendingBudgets.length} pendentes
-              </p>
+              <p className="text-xs text-white/40 mt-1">Total registrado</p>
             </div>
           </div>
 
@@ -151,7 +138,7 @@ export default async function DashboardPage() {
                 <TrendingUp className="w-5 h-5 text-green-400/60" />
               </div>
               <p className="text-4xl font-black text-white">
-                {approvedBudgets.length}
+                {stats?.approvedCount || 0}
               </p>
               <p className="text-xs text-white/40 mt-1">Orçamentos</p>
             </div>
@@ -182,7 +169,7 @@ export default async function DashboardPage() {
                 Orçamentos Pendentes
               </h2>
               <span className="text-xs font-medium text-white/40">
-                {pendingBudgets.length} aguardando resposta
+                {pendingBudgets.length} mais recentes
               </span>
             </div>
             <div className="divide-y divide-white/5">
@@ -267,16 +254,6 @@ export default async function DashboardPage() {
                   <ArrowRight className="w-4 h-4 text-white/40 group-hover:translate-x-1 transition-transform" />
                 </a>
               </div>
-            </div>
-
-            <div className="rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 p-5">
-              <h2 className="text-sm font-bold text-white/60 uppercase tracking-wider mb-3">
-                Dica do Dia
-              </h2>
-              <p className="text-white/80 text-sm leading-relaxed">
-                Acompanhe seus orçamentos pendentes diariamente. Clientes que
-                recebem respostas rápidas têm maior taxa de aprovação.
-              </p>
             </div>
           </div>
         </div>

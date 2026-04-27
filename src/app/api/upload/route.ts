@@ -1,45 +1,35 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/getSession";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
-  const session = await auth.api.getSession({
-    headers: req.headers,
-  });
+  const session = await getSession();
 
-  if (!session) {
+  if (!session?.user || !session.session.activeOrganizationId) {
     return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
   }
+
+  const orgId = session.session.activeOrganizationId;
 
   try {
     const formData = await req.formData();
     const file = formData.get("file") as File;
-    const organizationId = session.session.activeOrganizationId;
+    const budgetId = formData.get("budgetId") as string;
 
-    if (!file || !organizationId) {
-      return NextResponse.json(
-        { error: "Arquivo ou Sessão inválida" },
-        { status: 400 },
-      );
+    if (!file) {
+      return NextResponse.json({ error: "Arquivo ausente" }, { status: 400 });
     }
 
-    const organization = await prisma.organization.findFirst({
-      where: { 
-        id: organizationId,
-        members: {
-          some: {
-            userId: session.user.id
-          }
-        }
-      },
+    const organization = await prisma.organization.findUnique({
+      where: { id: orgId },
       select: { slug: true },
     });
 
     if (!organization) {
       return NextResponse.json(
-        { error: "Organização não encontrada" },
+        { error: "Org não encontrada" },
         { status: 404 },
       );
     }
@@ -47,23 +37,36 @@ export async function POST(req: Request) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Caminho: storage/[slug]/imgs/[filename]
     const uploadDir = join(process.cwd(), "storage", organization.slug, "imgs");
     await mkdir(uploadDir, { recursive: true });
 
     const fileName = `${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
     const filePath = join(uploadDir, fileName);
-
-    await writeFile(filePath, buffer);
-
-    // Retorna o caminho relativo para ser salvo no banco de dados
     const publicPath = `/api/storage/${organization.slug}/imgs/${fileName}`;
 
-    return NextResponse.json({ url: publicPath });
+    // Operação Atômica: Salva no Banco e no Disco
+    await prisma.$transaction(async (tx) => {
+      if (budgetId) {
+        // Valida se o orçamento pertence à organização
+        const budget = await tx.budget.findFirst({
+          where: { id: budgetId, organizationId: orgId },
+        });
+
+        if (!budget) throw new Error("Orçamento inválido");
+
+        await tx.budgetPhoto.create({
+          data: { budgetId, url: publicPath },
+        });
+      }
+
+      await writeFile(filePath, buffer);
+    });
+
+    return NextResponse.json({ url: publicPath, success: true });
   } catch (error) {
-    console.error("Erro no upload:", error);
+    console.error("Erro no upload atômico:", error);
     return NextResponse.json(
-      { error: "Falha ao salvar o arquivo" },
+      { error: "Falha ao processar upload" },
       { status: 500 },
     );
   }

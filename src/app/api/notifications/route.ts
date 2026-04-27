@@ -26,7 +26,10 @@ export async function PATCH(request: Request) {
       });
     } else if (notificationId) {
       await prisma.notification.update({
-        where: { id: notificationId },
+        where: {
+          id: notificationId,
+          organizationId: session.session.activeOrganizationId,
+        },
         data: { read: true },
       });
     }
