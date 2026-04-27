@@ -244,28 +244,25 @@ export function BudgetPDF({ budget }: BudgetPDFProps) {
           <Text style={styles.sectionTitle}>Anamnese de Entrada</Text>
           <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
             <View style={styles.technicalBadge}>
-              <Text>KM: {budget.kilometers || 0}</Text>
+              <Text>KM: {budget.kilometers ?? 0}</Text>
             </View>
             <View style={styles.technicalBadge}>
-              <Text>Combustível: {budget.fuelLevel}%</Text>
+              <Text>Combustível: {budget.fuelLevel || 0}%</Text>
             </View>
-            {budget.checklist ? (
-              Object.entries(budget.checklist as Record<string, boolean>).map(
-                ([key, value]) =>
-                  value ? (
-                    <View
-                      key={key}
-                      style={[
-                        styles.technicalBadge,
-                        { backgroundColor: "#F1F5F9", color: "#475569" },
-                      ]}
-                    >
-                      <Text>{key.replace("_", " ").toUpperCase()}</Text>
-                    </View>
-                  ) : (
-                    <View key={key} />
-                  ),
-              )
+            {budget.checklist && typeof budget.checklist === "object" ? (
+              Object.entries(budget.checklist as Record<string, boolean>)
+                .filter(([_, value]) => !!value)
+                .map(([key]) => (
+                  <View
+                    key={key}
+                    style={[
+                      styles.technicalBadge,
+                      { backgroundColor: "#F1F5F9", color: "#475569" },
+                    ]}
+                  >
+                    <Text>{key.replace("_", " ").toUpperCase()}</Text>
+                  </View>
+                ))
             ) : (
               <View />
             )}

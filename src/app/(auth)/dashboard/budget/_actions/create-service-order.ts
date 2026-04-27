@@ -45,6 +45,25 @@ export async function createServiceOrder(
 
     const { budgetId } = validationResult.data;
 
+    const budget = await prisma.budget.findFirst({
+      where: { 
+        id: budgetId,
+        organizationId: orgId
+      },
+      include: {
+        items: {
+          include: {
+            product: true
+          }
+        },
+        customer: true
+      }
+    });
+
+    if (!budget) {
+      return { success: false, message: "Orçamento não encontrado ou acesso negado." };
+    }
+
     const existingServiceOrder = await prisma.serviceOrder.findUnique({
       where: { budgetId },
     });
@@ -68,12 +87,6 @@ export async function createServiceOrder(
       };
     }
 
-    const budget = await getBudgetDetails(budgetId);
-
-    if (!budget) {
-      return { success: false, message: "Orçamento não encontrado." };
-    }
-
     const result = await prisma.$transaction(async (tx) => {
       // 1. Aprovar o orçamento
       await tx.budget.update({
@@ -87,10 +100,8 @@ export async function createServiceOrder(
           budgetId,
           customerId: budget.customerId,
           vehicleId: budget.vehicleId,
-          // biome-ignore lint/suspicious/noExplicitAny: budget relation type is partial
-          itemsAmount: (budget as any).itemsAmount || 0,
-          // biome-ignore lint/suspicious/noExplicitAny: budget relation type is partial
-          laborValue: (budget as any).laborValue || 0,
+          itemsAmount: budget.itemsAmount || 0,
+          laborValue: budget.laborValue || 0,
           totalAmount: budget.totalAmount,
           observacoes: budget.observacoes,
           organizationId: orgId,

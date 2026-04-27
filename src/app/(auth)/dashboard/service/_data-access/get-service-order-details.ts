@@ -1,11 +1,19 @@
 "use server";
 
+import { getSession } from "@/lib/getSession";
 import { prisma } from "@/lib/prisma";
 
 export async function getServiceOrderDetails(id: string) {
-  const serviceOrder = await prisma.serviceOrder.findUnique({
+  const session = await getSession();
+
+  if (!session?.user || !session.session.activeOrganizationId) {
+    return null;
+  }
+
+  const serviceOrder = await prisma.serviceOrder.findFirst({
     where: {
       id,
+      organizationId: session.session.activeOrganizationId,
     },
     include: {
       customer: true,

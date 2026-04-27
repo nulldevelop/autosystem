@@ -154,16 +154,16 @@ export function PDFHeader({
   documentDate = new Date(),
   layout = "portrait",
 }: PDFHeaderProps) {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL as string;
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "";
 
   const getFullUrl = (path: string | null | undefined) => {
-    if (!path) return null;
-    if (path.startsWith("https")) return path;
+    if (!path || !baseUrl) return null;
+    if (path.startsWith("http")) return path;
     return `${baseUrl.replace(/\/$/, "")}/${path.replace(/^\//, "")}`;
   };
 
   const orgLogoUrl = getFullUrl(organization?.logo);
-  const systemLogoUrl = `${baseUrl.replace(/\/$/, "")}/images/logo.png`;
+  const systemLogoUrl = baseUrl ? `${baseUrl.replace(/\/$/, "")}/images/logo.png` : null;
 
   const formatNA = (value: string | null | undefined) => {
     return value && value !== "N/A" ? value : "Não informado";
@@ -173,7 +173,9 @@ export function PDFHeader({
     return (
       <View style={styles.headerLandscape}>
         <View style={styles.logoSectionLandscape}>
-          <Image src={systemLogoUrl} style={styles.systemLogoLandscape} />
+          {systemLogoUrl && (
+            <Image src={systemLogoUrl} style={styles.systemLogoLandscape} />
+          )}
           {orgLogoUrl ? (
             <Image src={orgLogoUrl} style={styles.orgLogoLandscape} />
           ) : (
@@ -203,14 +205,18 @@ export function PDFHeader({
     );
   }
 
+  const finalLogoUrl = orgLogoUrl || systemLogoUrl;
+
   return (
     <View>
       <View style={styles.headerContainerPortrait}>
         <View style={styles.brandContainer}>
-          <Image
-            src={orgLogoUrl || systemLogoUrl}
-            style={styles.logoPortrait}
-          />
+          {finalLogoUrl && (
+            <Image
+              src={finalLogoUrl}
+              style={styles.logoPortrait}
+            />
+          )}
           <View>
             <Text style={styles.brandName}>
               {organization?.name || "AUTO SYSTEM"}

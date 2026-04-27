@@ -26,8 +26,8 @@ const createBudgetSchema = z.object({
     .min(1),
 });
 
-// biome-ignore lint/suspicious/noExplicitAny: generic input payload
-export async function createBudget(input: any) {
+// biome-ignore lint/suspicious/noExplicitAny: Generic input from form
+export async function createBudget(input: z.infer<typeof createBudgetSchema>) {
   try {
     const session = await getSession();
 
@@ -35,14 +35,11 @@ export async function createBudget(input: any) {
       return { success: false, message: "Não autenticado." };
     }
 
+    const orgId = session.session.activeOrganizationId;
+
     const validation = createBudgetSchema.safeParse(input);
     if (!validation.success) {
       return { success: false, message: "Dados inválidos." };
-    }
-
-    const permission = await canPermission({ type: "budget" });
-    if (!permission.hasPermission) {
-      return { success: false, message: "Limite do plano atingido." };
     }
 
     const {
@@ -55,6 +52,18 @@ export async function createBudget(input: any) {
       checklist,
       observacoes: rawObs,
     } = validation.data;
+
+    // VALIDAR PROPRIEDADE (Anti-IDOR)
+    const [customerExists, vehicleExists] = await Promise.all([
+      prisma.customer.findFirst({ where: { id: customerId, organizationId: orgId } }),
+      prisma.vehicle.findFirst({ where: { id: vehicleId, organizationId: orgId } }),
+    ]);
+
+    if (!customerExists || !vehicleExists) {
+      return { success: false, message: "Cliente ou Veículo não encontrado nesta organização." };
+    }
+
+    const permission = await canPermission({ type: "budget" });
 
     const subtotal = items.reduce(
       (acc, item) => acc + item.quantity * item.unitPrice,

@@ -40,36 +40,38 @@ async function getHasOrg(userId: string): Promise<boolean> {
   return !!membership;
 }
 
-async function getOrgData(orgId: string) {
-  const [org, customers, budgets, recentBudgets] = await Promise.all([
+async function getOrgStats(orgId: string) {
+  const [
+    org,
+    totalCustomers,
+    budgetsStats,
+    recentBudgets,
+    totalBudgetsCount
+  ] = await Promise.all([
     prisma.organization.findUnique({ where: { id: orgId } }),
     prisma.customer.count({ where: { organizationId: orgId } }),
-    prisma.budget.findMany({
-      where: { organizationId: orgId },
-      include: { customer: true, vehicle: true },
-      orderBy: { createdAt: "desc" },
+    prisma.budget.aggregate({
+      where: { organizationId: orgId, status: "aproved" },
+      _sum: { totalAmount: true },
+      _count: { _all: true }
     }),
     prisma.budget.findMany({
-      where: { organizationId: orgId },
+      where: { organizationId: orgId, status: "pending" },
+      include: { customer: true, vehicle: true },
       orderBy: { createdAt: "desc" },
       take: 5,
     }),
+    prisma.budget.count({ where: { organizationId: orgId } })
   ]);
-  return { org, customers, budgets, recentBudgets };
-}
 
-function formatCurrency(value: number) {
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(value);
-}
-
-function getGreeting() {
-  const hour = new Date().getHours();
-  if (hour < 12) return "Bom dia";
-  if (hour < 18) return "Boa tarde";
-  return "Boa noite";
+  return { 
+    org, 
+    totalCustomers, 
+    approvedAmount: budgetsStats._sum.totalAmount || 0,
+    approvedCount: budgetsStats._count._all || 0,
+    recentBudgets,
+    totalBudgetsCount
+  };
 }
 
 export default async function DashboardPage() {
@@ -79,25 +81,13 @@ export default async function DashboardPage() {
     redirect("/auth");
   }
 
-  if (session?.session?.id) {
-    await syncOrganizationToSession(session.session.id, session.user.id);
-  }
-
-  const hasOrg = await getHasOrg(session.user.id);
-
   const orgId = session.session.activeOrganizationId;
-  const orgData = orgId ? await getOrgData(orgId) : null;
+  const stats = orgId ? await getOrgStats(orgId) : null;
 
-  const pendingBudgets =
-    orgData?.budgets.filter((b) => b.status === "pending") || [];
-  const approvedBudgets =
-    orgData?.budgets.filter((b) => b.status === "aproved") || [];
-  const totalRevenue = approvedBudgets.reduce(
-    (sum, b) => sum + b.totalAmount,
-    0,
-  );
-  const totalCustomers = orgData?.customers || 0;
-  const totalBudgets = orgData?.budgets.length || 0;
+  const totalRevenue = stats?.approvedAmount || 0;
+  const totalCustomers = stats?.totalCustomers || 0;
+  const totalBudgets = stats?.totalBudgetsCount || 0;
+  const pendingBudgets = stats?.recentBudgets || [];
 
   return (
     <DashboardClient hasOrg={hasOrg}>

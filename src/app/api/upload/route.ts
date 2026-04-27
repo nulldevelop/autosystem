@@ -16,17 +16,24 @@ export async function POST(req: Request) {
   try {
     const formData = await req.formData();
     const file = formData.get("file") as File;
-    const organizationId = formData.get("organizationId") as string;
+    const organizationId = session.session.activeOrganizationId;
 
     if (!file || !organizationId) {
       return NextResponse.json(
-        { error: "Arquivo ou ID da organização ausente" },
+        { error: "Arquivo ou Sessão inválida" },
         { status: 400 },
       );
     }
 
-    const organization = await prisma.organization.findUnique({
-      where: { id: organizationId },
+    const organization = await prisma.organization.findFirst({
+      where: { 
+        id: organizationId,
+        members: {
+          some: {
+            userId: session.user.id
+          }
+        }
+      },
       select: { slug: true },
     });
 

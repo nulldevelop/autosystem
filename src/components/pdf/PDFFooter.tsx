@@ -46,13 +46,13 @@ interface PDFFooterProps {
 }
 
 export function PDFFooter({ documentId }: PDFFooterProps) {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL as string;
-  const systemLogoUrl = `${baseUrl.replace(/\/$/, "")}/images/logo.png`;
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "";
+  const systemLogoUrl = baseUrl ? `${baseUrl.replace(/\/$/, "")}/images/logo.png` : null;
 
   return (
     <View style={styles.footer} fixed>
       <View style={styles.footerRow}>
-        <Image src={systemLogoUrl} style={styles.footerLogo} />
+        {systemLogoUrl && <Image src={systemLogoUrl} style={styles.footerLogo} />}
         <View style={styles.footerAuthContainer}>
           <Text style={[styles.footerText, styles.authHighlight]}>
             AUTENTICIDADE DIGITAL AUTOSYSTEM
