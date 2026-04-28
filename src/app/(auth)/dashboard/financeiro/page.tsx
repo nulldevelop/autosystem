@@ -2,10 +2,12 @@ import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getActiveOrganization } from "@/lib/getActiveOrganization";
 import { getSession } from "@/lib/getSession";
+import { checkPermission } from "@/utils/permissions/check-permission";
 import { FinanceiroClient } from "./_components/financeiro-client";
 import { getFinancialData } from "./_data-access/get-transactions";
 
 export default async function FinanceiroPage() {
+  await checkPermission("/dashboard/financeiro");
   const session = await getSession();
 
   if (!session?.user?.id) {

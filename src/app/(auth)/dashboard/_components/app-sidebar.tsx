@@ -120,11 +120,6 @@ export async function AppSidebar({
       badge: serviceOrdersCount > 0 ? serviceOrdersCount : undefined,
     },
     {
-      title: "Financeiro",
-      url: "/dashboard/financeiro",
-      iconName: "TrendingUp",
-    },
-    {
       title: "Estoque",
       url: "/dashboard/product",
       iconName: "Package",
@@ -160,6 +155,11 @@ export async function AppSidebar({
           title: "Relatórios",
           url: "/dashboard/relatorios",
           iconName: "BarChart3",
+        },
+        {
+          title: "Financeiro",
+          url: "/dashboard/financeiro",
+          iconName: "TrendingUp",
         },
         notificationsItem,
       ],

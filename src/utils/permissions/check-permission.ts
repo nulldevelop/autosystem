@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { getSubscription } from "@/app/(auth)/dashboard/_data-access/get-subscription";
 import type { Plan } from "@/generated/prisma/client";
 import { getSession } from "@/lib/getSession";
-import { planRoutes } from "./plan-features";
+import { planRoutes, trialRoutes } from "./plan-features";
 import { TRIAL_DAYS } from "./trial-limits";
 
 export async function checkPermission(page: string) {
@@ -27,17 +27,14 @@ export async function checkPermission(page: string) {
       allowedRoutes = [];
     } else {
       userPlan = "TRIAL";
-      allowedRoutes = [
-        "/dashboard/budget",
-        "/dashboard/service",
-        "/dashboard/customer",
-        "/dashboard/vehicle",
-        "/dashboard/product",
-      ];
+      allowedRoutes = trialRoutes;
     }
   }
 
-  if (!allowedRoutes.includes(page)) {
+  // Rotas que todos podem acessar no dashboard
+  const publicDashboardRoutes = ["/dashboard", "/dashboard/config", "/dashboard/plans", "/dashboard/notifications"];
+
+  if (!allowedRoutes.includes(page) && !publicDashboardRoutes.includes(page)) {
     return redirect("/dashboard?error=unauthorized");
   }
 }

@@ -35,32 +35,44 @@ async function getHasOrg(userId: string): Promise<boolean> {
 }
 
 async function getOrgStats(orgId: string) {
-  const [org, totalCustomers, budgetsStats, recentBudgets, totalBudgetsCount] =
-    await Promise.all([
-      prisma.organization.findUnique({ where: { id: orgId } }),
-      prisma.customer.count({ where: { organizationId: orgId } }),
-      prisma.budget.aggregate({
-        where: { organizationId: orgId, status: "aproved" },
-        _sum: { totalAmount: true },
-        _count: { _all: true },
-      }),
-      prisma.budget.findMany({
-        where: { organizationId: orgId, status: "pending" },
-        include: { customer: true, vehicle: true },
-        orderBy: { createdAt: "desc" },
-        take: 5,
-      }),
-      prisma.budget.count({ where: { organizationId: orgId } }),
-    ]);
+  try {
+    const [org, totalCustomers, budgetsStats, recentBudgets, totalBudgetsCount] =
+      await Promise.all([
+        prisma.organization.findUnique({ where: { id: orgId } }),
+        prisma.customer.count({ where: { organizationId: orgId } }),
+        prisma.budget.aggregate({
+          where: { organizationId: orgId, status: "aproved" },
+          _sum: { totalAmount: true },
+          _count: { _all: true },
+        }),
+        prisma.budget.findMany({
+          where: { organizationId: orgId, status: "pending" },
+          include: { customer: true, vehicle: true },
+          orderBy: { createdAt: "desc" },
+          take: 5,
+        }),
+        prisma.budget.count({ where: { organizationId: orgId } }),
+      ]);
 
-  return {
-    org,
-    totalCustomers,
-    approvedAmount: budgetsStats._sum.totalAmount || 0,
-    approvedCount: budgetsStats._count._all || 0,
-    recentBudgets,
-    totalBudgetsCount,
-  };
+    return {
+      org,
+      totalCustomers,
+      approvedAmount: budgetsStats._sum.totalAmount || 0,
+      approvedCount: budgetsStats._count._all || 0,
+      recentBudgets,
+      totalBudgetsCount,
+    };
+  } catch (error) {
+    console.error("Erro ao buscar estatísticas do dashboard:", error);
+    return {
+      org: null,
+      totalCustomers: 0,
+      approvedAmount: 0,
+      approvedCount: 0,
+      recentBudgets: [],
+      totalBudgetsCount: 0,
+    };
+  }
 }
 
 export default async function DashboardPage() {

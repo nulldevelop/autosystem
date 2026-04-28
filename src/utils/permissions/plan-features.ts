@@ -15,6 +15,7 @@ export const planRoutes: Record<Plan, string[]> = {
     "/dashboard/customer",
     "/dashboard/vehicle",
     "/dashboard/product", // Unlocks Stock module
+    "/dashboard/financeiro", // Added Financeiro to PLUS plan
     "/dashboard/relatorios",
   ],
   PROFESSIONAL: [
