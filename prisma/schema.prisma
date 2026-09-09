@@ -1,10 +1,10 @@
 generator client {
-  provider        = "prisma-client"
-  output          = "../src/generated/prisma"
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
 }
 
 model User {
@@ -145,7 +145,7 @@ model Customer {
   organization   Organization?  @relation(fields: [organizationId], references: [id])
   organizationId String?
   serviceOrders  ServiceOrder[]
-  notifications Notification[]
+  notifications  Notification[]
 
   @@index([organizationId])
   @@map("customer")
@@ -190,24 +190,24 @@ model Budget {
 
   items BudgetItem[]
 
-  itemsAmount    Float         @default(0)
-  laborValue     Float         @default(0)
-  totalAmount    Float
-  status         Status        @default(pending)
-  observacoes    String?       @db.Text
+  itemsAmount Float   @default(0)
+  laborValue  Float   @default(0)
+  totalAmount Float
+  status      Status  @default(pending)
+  observacoes String? @db.Text
 
-  kilometers     Int?
-  fuelLevel      String?
-  checklist      Json?
+  kilometers Int?
+  fuelLevel  String?
+  checklist  Json?
 
-  signature      String?       @db.Text
-  signedAt       DateTime?
+  signature String?   @db.Text
+  signedAt  DateTime?
 
-  photos         BudgetPhoto[]
+  photos BudgetPhoto[]
 
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
-  organization   Organization? @relation(fields: [organizationId], references: [id])
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  organization   Organization?  @relation(fields: [organizationId], references: [id])
   organizationId String?
   serviceOrder   ServiceOrder?
   notifications  Notification[]
@@ -228,16 +228,16 @@ model BudgetPhoto {
 }
 
 model Product {
-  id            String   @id @default(uuid())
-  name          String
-  sku           String   @unique
-  category      String?  @default("Geral")
-  unit          String   @default("UN")
+  id       String  @id @default(uuid())
+  name     String
+  sku      String  @unique
+  category String? @default("Geral")
+  unit     String  @default("UN")
 
   price         Float
-  costPrice     Float    @default(0)
-  stockQuantity Int      @default(0)
-  minStock      Int      @default(0)
+  costPrice     Float @default(0)
+  stockQuantity Int   @default(0)
+  minStock      Int   @default(0)
 
   budgets       BudgetItem[]
   serviceOrders ServiceOrderItem[]
@@ -259,13 +259,13 @@ enum MovementType {
 }
 
 model ProductMovement {
-  id        String   @id @default(uuid())
+  id        String  @id @default(uuid())
   productId String
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
-  type      MovementType
-  quantity  Int
-  reason    String?
+  type     MovementType
+  quantity Int
+  reason   String?
 
   createdAt DateTime @default(now())
 
@@ -304,22 +304,22 @@ model ServiceOrder {
 
   items ServiceOrderItem[]
 
-  itemsAmount    Float              @default(0)
-  laborValue     Float              @default(0)
-  totalAmount    Float
-  status         ServiceOrderStatus @default(open)
-  observacoes    String?            @db.Text
-  
-  signature      String?            @db.Text
-  signedAt       DateTime?
+  itemsAmount Float              @default(0)
+  laborValue  Float              @default(0)
+  totalAmount Float
+  status      ServiceOrderStatus @default(open)
+  observacoes String?            @db.Text
 
-  createdAt      DateTime           @default(now())
-  updatedAt      DateTime           @updatedAt
-  organization   Organization?      @relation(fields: [organizationId], references: [id])
+  signature String?   @db.Text
+  signedAt  DateTime?
+
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  organization   Organization? @relation(fields: [organizationId], references: [id])
   organizationId String?
 
-  transaction    Transaction?
-  notifications  Notification[]
+  transaction   Transaction?
+  notifications Notification[]
 
   @@index([organizationId])
   @@map("service_order")
@@ -358,28 +358,28 @@ enum TransactionCategory {
 }
 
 model Transaction {
-  id             String              @id @default(uuid())
-  description    String
-  amount         Float               // Valor Bruto (Total)
-  costAmount     Float               @default(0) // Valor das Peças (Custo)
-  netAmount      Float               // Valor Limpo (Amount - Cost)
+  id          String @id @default(uuid())
+  description String
+  amount      Float // Valor Bruto (Total)
+  costAmount  Float  @default(0) // Valor das Peças (Custo)
+  netAmount   Float // Valor Limpo (Amount - Cost)
 
-  type           TransactionType
-  status         TransactionStatus   @default(PENDING)
-  category       TransactionCategory @default(OTHER)
+  type     TransactionType
+  status   TransactionStatus   @default(PENDING)
+  category TransactionCategory @default(OTHER)
 
-  dueDate        DateTime
-  paymentDate    DateTime?
-  paymentMethod  String?             // PIX, Dinheiro, Cartão
+  dueDate       DateTime
+  paymentDate   DateTime?
+  paymentMethod String? // PIX, Dinheiro, Cartão
 
-  serviceOrderId String?             @unique
-  serviceOrder   ServiceOrder?       @relation(fields: [serviceOrderId], references: [id])
+  serviceOrderId String?       @unique
+  serviceOrder   ServiceOrder? @relation(fields: [serviceOrderId], references: [id])
 
   organizationId String?
-  organization   Organization?       @relation(fields: [organizationId], references: [id])
+  organization   Organization? @relation(fields: [organizationId], references: [id])
 
-  createdAt      DateTime            @default(now())
-  updatedAt      DateTime            @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([organizationId])
   @@map("transaction")
@@ -392,18 +392,18 @@ enum Plan {
 }
 
 model Subscription {
-  id                        String    @id @default(uuid())
-  userId                    String    @unique
-  user                      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  plan                      Plan      @default(BASIC)
-  status                    String?
+  plan   Plan    @default(BASIC)
+  status String?
 
-  stripeCustomerId          String?   @unique @map("stripe_customer_id")
-  stripeSubscriptionId      String?   @unique @map("stripe_subscription_id")
-  stripePriceId             String?   @map("stripe_price_id")
-  stripeCurrentPeriodEnd    DateTime? @map("stripe_current_period_end")
-  trialEndsAt               DateTime? @map("trial_ends_at")
+  stripeCustomerId       String?   @unique @map("stripe_customer_id")
+  stripeSubscriptionId   String?   @unique @map("stripe_subscription_id")
+  stripePriceId          String?   @map("stripe_price_id")
+  stripeCurrentPeriodEnd DateTime? @map("stripe_current_period_end")
+  trialEndsAt            DateTime? @map("trial_ends_at")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -419,25 +419,25 @@ enum NotificationType {
 }
 
 model Notification {
-  id             String           @id @default(uuid())
-  type           NotificationType
-  title          String
-  message        String
-  read           Boolean          @default(false)
-  
+  id      String           @id @default(uuid())
+  type    NotificationType
+  title   String
+  message String
+  read    Boolean          @default(false)
+
   organizationId String
-  organization   Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  
-  budgetId       String?
-  budget         Budget?          @relation(fields: [budgetId], references: [id], onDelete: Cascade)
-  
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  budgetId String?
+  budget   Budget? @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+
   serviceOrderId String?
-  serviceOrder   ServiceOrder?    @relation(fields: [serviceOrderId], references: [id], onDelete: Cascade)
-  
-  customerId     String?
-  customer       Customer?         @relation(fields: [customerId], references: [id], onDelete: SetNull)
-  
-  createdAt      DateTime         @default(now())
+  serviceOrder   ServiceOrder? @relation(fields: [serviceOrderId], references: [id], onDelete: Cascade)
+
+  customerId String?
+  customer   Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
 
   @@index([organizationId, read])
   @@index([createdAt])

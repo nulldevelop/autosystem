@@ -6,7 +6,7 @@ import { getActiveOrganization } from "./getActiveOrganization";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
-    provider: "mysql",
+    provider: "postgresql",
   }),
 
   emailAndPassword: {
