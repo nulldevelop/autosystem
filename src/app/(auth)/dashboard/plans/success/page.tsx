@@ -8,7 +8,7 @@ export default function SuccessPage() {
     <div className="flex flex-col items-center justify-center min-h-[80svh] px-4">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent -z-10" />
 
-      <Card className="w-full max-w-2xl border-white/5 bg-zinc-950/50 backdrop-blur-xl relative overflow-hidden">
+      <Card className="w-full max-w-2xl border-border bg-card relative overflow-hidden">
         {/* Efeito de brilho de fundo */}
         <div className="absolute -top-24 -right-24 size-48 bg-primary/20 blur-[100px] rounded-full" />
 
@@ -18,11 +18,11 @@ export default function SuccessPage() {
           </div>
 
           <div className="space-y-4 mb-10">
-            <h1 className="text-4xl md:text-5xl font-black italic uppercase tracking-tighter text-white">
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground">
               Seja Bem-vindo ao <br />
               <span className="text-primary">Nível Profissional</span>
             </h1>
-            <p className="text-white/40 text-[10px] font-black uppercase tracking-[0.4em]">
+            <p className="text-muted-foreground text-xs font-bold">
               Sua assinatura foi processada com sucesso
             </p>
           </div>
@@ -35,10 +35,10 @@ export default function SuccessPage() {
             ].map((item, i) => (
               <div
                 key={i}
-                className="p-4 rounded-2xl bg-white/[0.02] border border-white/5 flex flex-col items-center gap-2"
+                className="p-4 rounded-2xl bg-muted/50 border border-border flex flex-col items-center gap-2"
               >
                 <item.icon className="size-5 text-primary" />
-                <span className="text-[10px] font-black uppercase tracking-widest text-white/60">
+                <span className="text-xs font-bold text-muted-foreground">
                   {item.label}
                 </span>
               </div>
@@ -48,7 +48,7 @@ export default function SuccessPage() {
           <div className="flex flex-col sm:flex-row gap-4 w-full">
             <Button
               asChild
-              className="flex-1 glow-primary h-14 font-black uppercase italic tracking-tighter text-lg"
+              className="flex-1 h-14 font-bold tracking-tight text-lg"
             >
               <Link
                 href="/dashboard"
@@ -59,7 +59,7 @@ export default function SuccessPage() {
             </Button>
           </div>
 
-          <p className="mt-8 text-white/20 text-[9px] font-black uppercase tracking-widest">
+          <p className="mt-8 text-muted-foreground text-xs font-bold">
             ID da Transação:{" "}
             {Math.random().toString(36).substring(7).toUpperCase()}
           </p>

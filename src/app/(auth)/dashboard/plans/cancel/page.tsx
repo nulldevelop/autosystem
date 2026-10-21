@@ -13,7 +13,7 @@ export default function CancelPage() {
     <div className="flex flex-col items-center justify-center min-h-[80svh] px-4">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-secondary/10 via-transparent to-transparent -z-10" />
 
-      <Card className="w-full max-w-2xl border-white/5 bg-zinc-950/50 backdrop-blur-xl relative overflow-hidden">
+      <Card className="w-full max-w-2xl border-border bg-card relative overflow-hidden">
         <div className="absolute -top-24 -right-24 size-48 bg-secondary/20 blur-[100px] rounded-full" />
 
         <CardContent className="p-8 md:p-12 flex flex-col items-center text-center">
@@ -22,36 +22,36 @@ export default function CancelPage() {
           </div>
 
           <div className="space-y-4 mb-10">
-            <h1 className="text-4xl md:text-5xl font-black italic uppercase tracking-tighter text-white">
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground">
               Ocorreu um <span className="text-secondary">Imprevisto?</span>
             </h1>
-            <p className="text-white/40 text-[10px] font-black uppercase tracking-[0.3em]">
+            <p className="text-muted-foreground text-xs font-bold">
               Sua assinatura não foi concluída
             </p>
           </div>
 
-          <p className="text-white/60 text-sm mb-10 max-w-md leading-relaxed">
+          <p className="text-muted-foreground text-sm mb-10 max-w-md leading-relaxed">
             Percebemos que você não finalizou seu plano. Se teve algum problema
             técnico ou tem alguma dúvida, nossa equipe está pronta para te
             ajudar agora.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full mb-10 text-left">
-            <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/5 group hover:border-primary/20 transition-colors">
+            <div className="p-5 rounded-2xl bg-muted/50 border border-border group hover:border-primary/20 transition-colors">
               <Headphones className="size-6 text-primary mb-3" />
-              <h4 className="text-xs font-black uppercase text-white mb-1">
+              <h4 className="text-xs font-bold text-foreground mb-1">
                 Suporte Técnico
               </h4>
-              <p className="text-[10px] text-white/40 font-bold uppercase">
+              <p className="text-xs text-muted-foreground font-bold ">
                 Fale com um especialista
               </p>
             </div>
-            <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/5 group hover:border-secondary/20 transition-colors">
+            <div className="p-5 rounded-2xl bg-muted/50 border border-border group hover:border-secondary/20 transition-colors">
               <MessageSquare className="size-6 text-secondary mb-3" />
-              <h4 className="text-xs font-black uppercase text-white mb-1">
+              <h4 className="text-xs font-bold text-foreground mb-1">
                 Tirar Dúvidas
               </h4>
-              <p className="text-[10px] text-white/40 font-bold uppercase">
+              <p className="text-xs text-muted-foreground font-bold ">
                 WhatsApp de Atendimento
               </p>
             </div>
@@ -61,7 +61,7 @@ export default function CancelPage() {
             <Button
               asChild
               variant="outline"
-              className="flex-1 h-14 border-white/10 hover:bg-white/5 font-black uppercase italic tracking-tighter"
+              className="flex-1 h-14 border-border hover:bg-muted/50 font-bold tracking-tight"
             >
               <Link
                 href="/dashboard/plans"
@@ -72,7 +72,7 @@ export default function CancelPage() {
             </Button>
             <Button
               asChild
-              className="flex-1 bg-secondary text-white hover:bg-secondary/90 h-14 font-black uppercase italic tracking-tighter shadow-lg shadow-secondary/10"
+              className="flex-1 bg-secondary text-foreground hover:bg-secondary/90 h-14 font-bold tracking-tight shadow-lg shadow-secondary/10"
             >
               <Link
                 href="https://wa.me/seu-numero"

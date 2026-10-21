@@ -194,30 +194,30 @@ export function ConfigForm({ organization }: ConfigFormProps) {
 
   return (
     <div className="w-full">
-      <div className="bg-[#0a0a0a] border border-white/5 rounded-2xl p-8 space-y-10 max-w-5xl mx-auto">
-        <div className="space-y-6">
-          <div className="flex items-center gap-3 pb-4 border-b border-white/5">
-            <div className="size-10 rounded-xl bg-primary/10 flex items-center justify-center">
+      <div className="space-y-6">
+        <section className="space-y-5 rounded-xl border bg-card p-5 sm:p-6">
+          <div className="flex items-center gap-3 border-b pb-4">
+            <div className="flex size-10 items-center justify-center rounded-lg bg-primary/12">
               <ImageIcon className="size-5 text-primary" />
             </div>
             <div>
-              <h2 className="text-lg font-black italic uppercase tracking-tighter text-white">
+              <h2 className="text-base font-semibold">
                 Identidade Visual
               </h2>
-              <p className="text-xs text-white/40 font-medium">
+              <p className="text-sm text-muted-foreground">
                 Personalize a aparência da sua oficina
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-8 p-6 bg-white/[0.02] rounded-xl border border-white/5">
+          <div className="flex items-center gap-8 p-6 bg-muted/50 rounded-xl border border-border">
             <div className="relative group">
               <div
                 className={cn(
-                  "w-32 h-32 rounded-2xl overflow-hidden bg-white/5 border-2 border-dashed flex items-center justify-center transition-all",
+                  "w-32 h-32 rounded-2xl overflow-hidden bg-muted/50 border-2 border-dashed flex items-center justify-center transition-all",
                   logo
                     ? "border-transparent"
-                    : "border-white/10 group-hover:border-primary/50",
+                    : "border-border group-hover:border-primary/50",
                 )}
               >
                 {logo ? (
@@ -227,18 +227,18 @@ export function ConfigForm({ organization }: ConfigFormProps) {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <Upload className="w-12 h-12 text-white/20" />
+                  <Upload className="w-12 h-12 text-muted-foreground" />
                 )}
               </div>
               {isUploading && (
-                <div className="absolute inset-0 bg-black/60 rounded-2xl flex items-center justify-center">
+                <div className="absolute inset-0 bg-card rounded-2xl flex items-center justify-center">
                   <Loader2 className="size-8 text-primary animate-spin" />
                 </div>
               )}
             </div>
             <div className="flex-1">
-              <h3 className="font-bold text-white mb-1">Logo da Empresa</h3>
-              <p className="text-sm text-white/40 mb-4">
+              <h3 className="font-bold text-foreground mb-1">Logo da Empresa</h3>
+              <p className="text-sm text-muted-foreground mb-4">
                 Envie uma imagem quadrada (PNG ou JPG)
               </p>
               <Label>
@@ -254,7 +254,7 @@ export function ConfigForm({ organization }: ConfigFormProps) {
                     type="button"
                     variant="outline"
                     size="sm"
-                    className="bg-white/5 border-white/10 text-white hover:bg-white/10"
+                    className="bg-muted/50 border-border text-foreground hover:bg-muted"
                     disabled={isUploading}
                     onClick={() => {
                       document.getElementById("logo-input")?.click();
@@ -266,18 +266,18 @@ export function ConfigForm({ organization }: ConfigFormProps) {
                 </Label>
             </div>
           </div>
-        </div>
+        </section>
 
-        <div className="space-y-6">
-          <div className="flex items-center gap-3 pb-4 border-b border-white/5">
-            <div className="size-10 rounded-xl bg-primary/10 flex items-center justify-center">
+        <section className="space-y-5 rounded-xl border bg-card p-5 sm:p-6">
+          <div className="flex items-center gap-3 border-b pb-4">
+            <div className="flex size-10 items-center justify-center rounded-lg bg-primary/12">
               <Save className="size-5 text-primary" />
             </div>
             <div>
-              <h2 className="text-lg font-black italic uppercase tracking-tighter text-white">
+              <h2 className="text-base font-semibold">
                 Informações da Empresa
               </h2>
-              <p className="text-xs text-white/40 font-medium">
+              <p className="text-sm text-muted-foreground">
                 Dados cadastrais da sua oficina
               </p>
             </div>
@@ -285,13 +285,13 @@ export function ConfigForm({ organization }: ConfigFormProps) {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="space-y-2 md:col-span-2 lg:col-span-2">
-              <Label className="text-[10px] font-black uppercase text-white/40 tracking-widest">
+              <Label>
                 Nome da Oficina
               </Label>
               <Input
                 {...form.register("name")}
                 placeholder="Ex: Precision Motors"
-                className="bg-white/5 border-white/10 h-12 text-white placeholder:text-white/20 focus:border-primary focus:ring-primary/20"
+                
               />
               {form.formState.errors.name && (
                 <p className="text-xs text-destructive">
@@ -301,13 +301,13 @@ export function ConfigForm({ organization }: ConfigFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label className="text-[10px] font-black uppercase text-white/40 tracking-widest">
+              <Label>
                 CNPJ
               </Label>
               <Input
                 {...form.register("cnpj")}
                 placeholder="00.000.000/0001-00"
-                className="bg-white/5 border-white/10 h-12 text-white placeholder:text-white/20 focus:border-primary focus:ring-primary/20"
+                
               />
               {form.formState.errors.cnpj && (
                 <p className="text-xs text-destructive">
@@ -317,13 +317,13 @@ export function ConfigForm({ organization }: ConfigFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label className="text-[10px] font-black uppercase text-white/40 tracking-widest">
+              <Label>
                 WhatsApp
               </Label>
               <Input
                 {...form.register("phone")}
                 placeholder="(11) 99999-9999"
-                className="bg-white/5 border-white/10 h-12 text-white placeholder:text-white/20 focus:border-primary focus:ring-primary/20"
+                
               />
               {form.formState.errors.phone && (
                 <p className="text-xs text-destructive">
@@ -332,18 +332,18 @@ export function ConfigForm({ organization }: ConfigFormProps) {
               )}
             </div>
           </div>
-        </div>
+        </section>
 
-        <div className="space-y-6">
-          <div className="flex items-center gap-3 pb-4 border-b border-white/5">
-            <div className="size-10 rounded-xl bg-primary/10 flex items-center justify-center">
+        <section className="space-y-5 rounded-xl border bg-card p-5 sm:p-6">
+          <div className="flex items-center gap-3 border-b pb-4">
+            <div className="flex size-10 items-center justify-center rounded-lg bg-primary/12">
               <MapPin className="size-5 text-primary" />
             </div>
             <div>
-              <h2 className="text-lg font-black italic uppercase tracking-tighter text-white">
+              <h2 className="text-base font-semibold">
                 Endereço
               </h2>
-              <p className="text-xs text-white/40 font-medium">
+              <p className="text-sm text-muted-foreground">
                 Localização da sua oficina
               </p>
             </div>
@@ -351,13 +351,13 @@ export function ConfigForm({ organization }: ConfigFormProps) {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6">
             <div className="space-y-2 lg:col-span-3">
-              <Label className="text-[10px] font-black uppercase text-white/40 tracking-widest">
+              <Label>
                 CEP
               </Label>
               <Input
                 {...form.register("cep")}
                 placeholder="00000-000"
-                className="bg-white/5 border-white/10 h-12 text-white placeholder:text-white/20 focus:border-primary focus:ring-primary/20"
+                
                 onChange={(e) => handleCepChange(e.target.value)}
               />
               {form.formState.errors.cep && (
@@ -368,13 +368,13 @@ export function ConfigForm({ organization }: ConfigFormProps) {
             </div>
 
             <div className="space-y-2 lg:col-span-6">
-              <Label className="text-[10px] font-black uppercase text-white/40 tracking-widest">
+              <Label>
                 Rua
               </Label>
               <Input
                 {...form.register("street")}
                 placeholder="Rua/Avenida"
-                className="bg-white/5 border-white/10 h-12 text-white placeholder:text-white/20 focus:border-primary focus:ring-primary/20"
+                
               />
               {form.formState.errors.street && (
                 <p className="text-xs text-destructive">
@@ -384,13 +384,13 @@ export function ConfigForm({ organization }: ConfigFormProps) {
             </div>
 
             <div className="space-y-2 lg:col-span-3">
-              <Label className="text-[10px] font-black uppercase text-white/40 tracking-widest">
+              <Label>
                 Número
               </Label>
               <Input
                 {...form.register("number")}
                 placeholder="123"
-                className="bg-white/5 border-white/10 h-12 text-white placeholder:text-white/20 focus:border-primary focus:ring-primary/20"
+                
               />
               {form.formState.errors.number && (
                 <p className="text-xs text-destructive">
@@ -400,13 +400,13 @@ export function ConfigForm({ organization }: ConfigFormProps) {
             </div>
 
             <div className="space-y-2 lg:col-span-4">
-              <Label className="text-[10px] font-black uppercase text-white/40 tracking-widest">
+              <Label>
                 Bairro
               </Label>
               <Input
                 {...form.register("neighborhood")}
                 placeholder="Centro"
-                className="bg-white/5 border-white/10 h-12 text-white placeholder:text-white/20 focus:border-primary focus:ring-primary/20"
+                
               />
               {form.formState.errors.neighborhood && (
                 <p className="text-xs text-destructive">
@@ -416,13 +416,13 @@ export function ConfigForm({ organization }: ConfigFormProps) {
             </div>
 
             <div className="space-y-2 lg:col-span-5">
-              <Label className="text-[10px] font-black uppercase text-white/40 tracking-widest">
+              <Label>
                 Cidade
               </Label>
               <Input
                 {...form.register("city")}
                 placeholder="São Paulo"
-                className="bg-white/5 border-white/10 h-12 text-white placeholder:text-white/20 focus:border-primary focus:ring-primary/20"
+                
               />
               {form.formState.errors.city && (
                 <p className="text-xs text-destructive">
@@ -432,13 +432,13 @@ export function ConfigForm({ organization }: ConfigFormProps) {
             </div>
 
             <div className="space-y-2 lg:col-span-3">
-              <Label className="text-[10px] font-black uppercase text-white/40 tracking-widest">
+              <Label>
                 Estado
               </Label>
               <Input
                 {...form.register("state")}
                 placeholder="SP"
-                className="bg-white/5 border-white/10 h-12 text-white placeholder:text-white/20 focus:border-primary focus:ring-primary/20"
+                
               />
               {form.formState.errors.state && (
                 <p className="text-xs text-destructive">
@@ -447,12 +447,12 @@ export function ConfigForm({ organization }: ConfigFormProps) {
               )}
             </div>
           </div>
-        </div>
+        </section>
 
         <Button
           type="submit"
           disabled={isLoading}
-          className="w-full h-14 font-black uppercase tracking-widest text-xs bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20"
+          size="lg" className="w-full"
           onClick={form.handleSubmit(onSubmit)}
         >
           {isLoading ? (

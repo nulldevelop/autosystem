@@ -16,6 +16,7 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSidebar } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   LayoutDashboard,
@@ -43,44 +44,35 @@ interface SidebarItemProps {
 export function SidebarItem({ item }: SidebarItemProps) {
   const pathname = usePathname();
   const { setOpenMobile, isMobile } = useSidebar();
-  const isActive = pathname === item.url;
+  const isActive =
+    item.url === "/dashboard"
+      ? pathname === item.url
+      : pathname.startsWith(item.url);
   const IconComponent = iconMap[item.iconName];
-
-  const handleClick = () => {
-    if (isMobile) {
-      setOpenMobile(false);
-    }
-  };
 
   return (
     <Link
       href={item.url}
-      onClick={handleClick}
-      className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-300 ${
+      onClick={() => isMobile && setOpenMobile(false)}
+      aria-current={isActive ? "page" : undefined}
+      className={cn(
+        "relative flex min-h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-colors",
         isActive
-          ? "bg-primary/10 text-primary"
-          : "hover:bg-white/[0.03] text-white/40 hover:text-white"
-      }`}
+          ? "bg-sidebar-accent text-foreground before:absolute before:inset-y-2 before:-left-3 before:w-[3px] before:rounded-r-full before:bg-primary"
+          : "text-muted-foreground hover:bg-sidebar-accent/60 hover:text-foreground",
+      )}
     >
       {IconComponent && (
         <IconComponent
-          className={`size-5 transition-all duration-300 ${
-            isActive ? "text-primary" : ""
-          }`}
+          className={cn("size-4 shrink-0", isActive && "text-primary")}
         />
       )}
-      <span
-        className={`font-bold tracking-tight text-sm transition-colors ${
-          isActive ? "text-primary" : ""
-        }`}
-      >
-        {item.title}
-      </span>
-      {item.badge && item.badge > 0 && (
-        <span className="ml-auto flex items-center justify-center rounded-full bg-primary/10 border border-primary/20 px-2 py-0.5 text-[10px] font-black text-primary">
+      <span className="truncate">{item.title}</span>
+      {item.badge && item.badge > 0 ? (
+        <span className="num ml-auto rounded-md bg-muted px-1.5 py-0.5 text-xs font-medium text-muted-foreground">
           {item.badge}
         </span>
-      )}
+      ) : null}
     </Link>
   );
 }

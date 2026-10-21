@@ -70,7 +70,7 @@ export async function DashboardStats() {
     {
       title: "Clientes",
       count: customersCount,
-      icon: <Users className="h-6 w-6 text-gray-400" />,
+      icon: <Users className="h-6 w-6 text-muted-foreground" />,
       action: { href: "/dashboard/customer", label: "Ver Clientes" },
       quickAction: {
         href: "/dashboard/customer?create=true",
@@ -80,7 +80,7 @@ export async function DashboardStats() {
     {
       title: "Veículos",
       count: vehiclesCount,
-      icon: <Car className="h-6 w-6 text-gray-400" />,
+      icon: <Car className="h-6 w-6 text-muted-foreground" />,
       action: { href: "/dashboard/vehicle", label: "Ver Veículos" },
       quickAction: {
         href: "/dashboard/vehicle?create=true",
@@ -90,7 +90,7 @@ export async function DashboardStats() {
     {
       title: "Orçamentos",
       count: budgetsCount,
-      icon: <FileText className="h-6 w-6 text-gray-400" />,
+      icon: <FileText className="h-6 w-6 text-muted-foreground" />,
       action: { href: "/dashboard/budget", label: "Ver Orçamentos" },
       quickAction: {
         href: "/dashboard/budget?create=true",
@@ -100,13 +100,13 @@ export async function DashboardStats() {
     {
       title: "Serviços",
       count: serviceOrdersCount,
-      icon: <Wrench className="h-6 w-6 text-gray-400" />,
+      icon: <Wrench className="h-6 w-6 text-muted-foreground" />,
       action: { href: "/dashboard/service", label: "Ver Serviços" },
     },
     {
       title: "Produtos",
       count: productsCount,
-      icon: <Package className="h-6 w-6 text-gray-400" />,
+      icon: <Package className="h-6 w-6 text-muted-foreground" />,
       action: { href: "/dashboard/product", label: "Ver Produtos" },
       quickAction: {
         href: "/dashboard/product?create=true",
@@ -128,9 +128,9 @@ export async function DashboardStats() {
         {visibleStats.map((stat) => (
           <Card
             key={stat.title}
-            className="relative overflow-hidden group border-white/5 hover:border-primary/20 transition-all duration-500"
+            className="relative overflow-hidden group border-border hover:border-primary/20 transition-all duration-500"
           >
-            <div className="absolute top-0 right-0 p-4 text-white/5 group-hover:text-primary/10 transition-colors duration-500">
+            <div className="absolute top-0 right-0 p-4 text-muted-foreground group-hover:text-primary/10 transition-colors duration-500">
               {stat.icon &&
                 React.cloneElement(
                   stat.icon as React.ReactElement<{ className?: string }>,
@@ -138,12 +138,12 @@ export async function DashboardStats() {
                 )}
             </div>
             <CardHeader className="pb-2">
-              <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 group-hover:text-primary transition-colors">
+              <CardTitle className="text-xs font-bold text-muted-foreground group-hover:text-primary transition-colors">
                 {stat.title}
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-5xl font-black italic tracking-tighter text-white mb-6 group-hover:translate-x-2 transition-transform duration-500">
+              <div className="text-5xl font-bold tracking-tight text-foreground mb-6 group-hover:translate-x-2 transition-transform duration-500">
                 {stat.count.toString().padStart(2, "0")}
               </div>
               <div className="flex items-center gap-2 relative z-10">
@@ -160,7 +160,7 @@ export async function DashboardStats() {
                     <Button
                       variant="default"
                       size="icon-sm"
-                      className="rounded-lg size-8 glow-primary"
+                      className="rounded-lg size-8 "
                     >
                       <PlusCircle className="size-4" />
                     </Button>

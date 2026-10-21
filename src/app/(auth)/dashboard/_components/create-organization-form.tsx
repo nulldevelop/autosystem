@@ -178,12 +178,12 @@ export function CreateOrganizationForm({
   return (
     <Dialog open={open}>
       <DialogContent
-        className="sm:max-w-4xl max-h-[95vh] overflow-y-auto bg-[#0a0a0a] border-white/10 text-white p-0 overflow-hidden"
+        className="sm:max-w-4xl max-h-[95vh] overflow-y-auto bg-background border-border text-foreground p-0 overflow-hidden"
         onPointerDownOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
       >
         <div className="flex h-full min-h-[500px]">
-          <div className="hidden md:flex w-64 bg-white/[0.02] border-r border-white/5 p-8 flex-col gap-8">
+          <div className="hidden md:flex w-64 bg-muted/50 border-r border-border p-8 flex-col gap-8">
             <div className="space-y-6">
               {[
                 { s: 1, label: "Informações Básicas", icon: ShieldCheck },
@@ -195,22 +195,22 @@ export function CreateOrganizationForm({
                   key={item.s}
                   className={cn(
                     "flex items-center gap-3 transition-colors",
-                    step >= item.s ? "text-primary" : "text-white/20",
+                    step >= item.s ? "text-primary" : "text-muted-foreground",
                   )}
                 >
                   <div
                     className={cn(
-                      "size-8 rounded-full border flex items-center justify-center text-xs font-black",
+                      "size-8 rounded-full border flex items-center justify-center text-xs font-bold",
                       step === item.s
                         ? "border-primary bg-primary/10"
                         : step > item.s
-                          ? "bg-primary border-primary text-black"
-                          : "border-white/10",
+                          ? "bg-primary border-primary text-primary-foreground"
+                          : "border-border",
                     )}
                   >
                     {step > item.s ? <Check size={14} /> : item.s}
                   </div>
-                  <span className="text-[10px] uppercase font-black tracking-widest leading-none">
+                  <span className="text-xs font-bold leading-none">
                     {item.label}
                   </span>
                 </div>
@@ -220,13 +220,13 @@ export function CreateOrganizationForm({
 
           <div className="flex-1 p-8 flex flex-col h-full">
             <DialogHeader className="mb-8 text-left">
-              <DialogTitle className="text-2xl font-black italic uppercase tracking-tighter">
+              <DialogTitle className="text-2xl font-bold tracking-tight">
                 {step === 1 && "Bem-vindo ao AutoSystem"}
                 {step === 2 && "Localização"}
                 {step === 3 && "Sua Marca"}
                 {step === 4 && "Escolha seu Plano"}
               </DialogTitle>
-              <DialogDescription className="text-white/40 font-medium">
+              <DialogDescription className="text-muted-foreground font-medium">
                 Passo {step} de 4
               </DialogDescription>
             </DialogHeader>
@@ -243,13 +243,13 @@ export function CreateOrganizationForm({
                       name="name"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-[10px] font-black uppercase text-white/40 tracking-widest">
+                          <FormLabel className="text-xs font-bold text-muted-foreground">
                             Nome da Oficina
                           </FormLabel>
                           <FormControl>
                             <Input
                               placeholder="Ex: Precision Motors"
-                              className="bg-white/5 border-white/10 h-12"
+                              className="bg-muted/50 border-border h-12"
                               {...field}
                               onChange={(e) => {
                                 field.onChange(e);
@@ -272,13 +272,13 @@ export function CreateOrganizationForm({
                       name="cnpj"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-[10px] font-black uppercase text-white/40 tracking-widest">
+                          <FormLabel className="text-xs font-bold text-muted-foreground">
                             CNPJ
                           </FormLabel>
                           <FormControl>
                             <Input
                               placeholder="00.000.000/0001-00"
-                              className="bg-white/5 border-white/10 h-12"
+                              className="bg-muted/50 border-border h-12"
                               {...field}
                               onChange={(e) =>
                                 field.onChange(formatCnpj(e.target.value))
@@ -294,13 +294,13 @@ export function CreateOrganizationForm({
                       name="slug"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-[10px] font-black uppercase text-white/40 tracking-widest">
+                          <FormLabel className="text-xs font-bold text-muted-foreground">
                             Slug
                           </FormLabel>
                           <FormControl>
                             <Input
                               placeholder="meu-negocio"
-                              className="bg-white/5 border-white/10 h-12 opacity-50"
+                              className="bg-muted/50 border-border h-12 opacity-50"
                               {...field}
                               disabled
                             />
@@ -320,13 +320,13 @@ export function CreateOrganizationForm({
                         name="cep"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-[10px] font-black uppercase text-white/40 tracking-widest">
+                            <FormLabel className="text-xs font-bold text-muted-foreground">
                               CEP
                             </FormLabel>
                             <FormControl>
                               <Input
                                 placeholder="00000-000"
-                                className="bg-white/5 border-white/10 h-12"
+                                className="bg-muted/50 border-border h-12"
                                 {...field}
                                 onChange={(e) =>
                                   handleCepChange(e.target.value)
@@ -342,13 +342,13 @@ export function CreateOrganizationForm({
                         name="phone"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-[10px] font-black uppercase text-white/40 tracking-widest">
+                            <FormLabel className="text-xs font-bold text-muted-foreground">
                               WhatsApp
                             </FormLabel>
                             <FormControl>
                               <Input
                                 placeholder="(11) 99999-9999"
-                                className="bg-white/5 border-white/10 h-12"
+                                className="bg-muted/50 border-border h-12"
                                 {...field}
                                 onChange={(e) =>
                                   field.onChange(formatPhone(e.target.value))
@@ -365,13 +365,13 @@ export function CreateOrganizationForm({
                       name="street"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-[10px] font-black uppercase text-white/40 tracking-widest">
+                          <FormLabel className="text-xs font-bold text-muted-foreground">
                             Endereço
                           </FormLabel>
                           <FormControl>
                             <Input
                               placeholder="Rua..."
-                              className="bg-white/5 border-white/10 h-12"
+                              className="bg-muted/50 border-border h-12"
                               {...field}
                             />
                           </FormControl>
@@ -389,7 +389,7 @@ export function CreateOrganizationForm({
                               <Input
                                 id="address-number"
                                 placeholder="Nº"
-                                className="bg-white/5 border-white/10 h-12"
+                                className="bg-muted/50 border-border h-12"
                                 {...field}
                               />
                             </FormControl>
@@ -404,7 +404,7 @@ export function CreateOrganizationForm({
                             <FormControl>
                               <Input
                                 placeholder="Bairro"
-                                className="bg-white/5 border-white/10 h-12"
+                                className="bg-muted/50 border-border h-12"
                                 {...field}
                               />
                             </FormControl>
@@ -445,11 +445,11 @@ export function CreateOrganizationForm({
                         "w-full p-4 rounded-xl border text-left transition-all",
                         form.watch("plan") === "TRIAL"
                           ? "border-primary bg-primary/5"
-                          : "border-white/5 bg-white/2 hover:border-white/10",
+                          : "border-border bg-muted/30 hover:border-border",
                       )}
                     >
                       <div className="flex justify-between items-center">
-                        <h4 className="font-black italic uppercase tracking-tighter">
+                        <h4 className="font-bold tracking-tight">
                           Teste Grátis (3 dias)
                         </h4>
                         <Check
@@ -471,11 +471,11 @@ export function CreateOrganizationForm({
                           "w-full p-4 rounded-xl border text-left transition-all",
                           form.watch("plan") === p.slug
                             ? "border-primary bg-primary/5"
-                            : "border-white/5 bg-white/2 hover:border-white/10",
+                            : "border-border bg-muted/30 hover:border-border",
                         )}
                       >
                         <div className="flex justify-between items-center">
-                          <h4 className="font-black italic uppercase tracking-tighter">
+                          <h4 className="font-bold tracking-tight">
                             {p.name}
                           </h4>
                           <Check
@@ -498,7 +498,7 @@ export function CreateOrganizationForm({
                       type="button"
                       variant="outline"
                       onClick={prevStep}
-                      className="h-12 bg-transparent border-white/10"
+                      className="h-12 bg-transparent border-border"
                     >
                       Voltar
                     </Button>
@@ -507,7 +507,7 @@ export function CreateOrganizationForm({
                     <Button
                       type="button"
                       onClick={nextStep}
-                      className="h-12 flex-1 font-black uppercase tracking-widest text-xs"
+                      className="h-12 flex-1 font-bold text-xs"
                     >
                       Próximo
                     </Button>
@@ -515,7 +515,7 @@ export function CreateOrganizationForm({
                     <Button
                       type="submit"
                       disabled={isLoading}
-                      className="h-12 flex-1 font-black uppercase tracking-widest text-xs shadow-primary/20 shadow-xl"
+                      className="h-12 flex-1 font-bold text-xs shadow-primary/20 shadow-xl"
                     >
                       {isLoading ? "Processando..." : "Finalizar Configuração"}
                     </Button>

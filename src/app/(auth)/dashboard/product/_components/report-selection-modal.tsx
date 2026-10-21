@@ -41,8 +41,8 @@ export function ReportSelectionModal({
       title: "Relatório Geral de Inventário",
       description: "Lista completa de produtos, SKUs e valores totais.",
       icon: Package,
-      color: "text-blue-500",
-      bgColor: "bg-blue-500/10",
+      color: "text-info",
+      bgColor: "bg-info/12",
       data: products,
     },
     {
@@ -51,8 +51,8 @@ export function ReportSelectionModal({
       description:
         "Somente itens que atingiram ou estão abaixo do estoque mínimo.",
       icon: AlertTriangle,
-      color: "text-yellow-500",
-      bgColor: "bg-yellow-500/10",
+      color: "text-warning",
+      bgColor: "bg-warning/12",
       data: products.filter((p) => p.stockQuantity <= p.minStock),
     },
     {
@@ -60,20 +60,20 @@ export function ReportSelectionModal({
       title: "Produtos Esgotados",
       description: "Relatório focado em itens com saldo zero para reposição.",
       icon: FileText,
-      color: "text-red-500",
-      bgColor: "bg-red-500/10",
+      color: "text-destructive",
+      bgColor: "bg-destructive/12",
       data: products.filter((p) => p.stockQuantity === 0),
     },
   ];
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg bg-zinc-950 border-white/5">
+      <DialogContent className="sm:max-w-lg bg-card border-border">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-black italic uppercase tracking-tighter text-white">
-            Central de <span className="text-primary">Relatórios</span>
+          <DialogTitle className="text-xl font-semibold tracking-tight">
+            Central de Relatórios
           </DialogTitle>
-          <DialogDescription className="text-white/40 font-bold uppercase tracking-widest text-[10px]">
+          <DialogDescription className="text-muted-foreground font-bold text-xs">
             Selecione o tipo de extração de dados desejada
           </DialogDescription>
         </DialogHeader>
@@ -82,17 +82,17 @@ export function ReportSelectionModal({
           {reportTypes.map((report) => (
             <div
               key={report.id}
-              className="group relative flex items-center justify-between p-4 rounded-2xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] transition-all"
+              className="group relative flex items-center justify-between p-4 rounded-2xl border border-border bg-muted/50 hover:bg-muted/50 transition-all"
             >
               <div className="flex items-center gap-4">
                 <div className={`p-3 rounded-xl ${report.bgColor}`}>
                   <report.icon className={`size-5 ${report.color}`} />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-white group-hover:text-primary transition-colors">
+                  <h4 className="text-sm font-bold text-foreground group-hover:text-primary transition-colors">
                     {report.title}
                   </h4>
-                  <p className="text-[10px] text-white/40 font-medium max-w-[240px]">
+                  <p className="text-xs text-muted-foreground font-medium max-w-[240px]">
                     {report.description}
                   </p>
                 </div>
@@ -115,7 +115,7 @@ export function ReportSelectionModal({
                       variant="ghost"
                       size="icon"
                       disabled={loading}
-                      className="size-10 rounded-xl hover:bg-primary hover:text-black transition-all"
+                      className="size-10 rounded-xl hover:bg-primary hover:text-primary-foreground transition-all"
                     >
                       {loading ? (
                         <Loader2 className="size-4 animate-spin" />
@@ -126,7 +126,7 @@ export function ReportSelectionModal({
                   )}
                 </PDFDownloadLink>
               ) : (
-                <div className="text-[9px] font-black uppercase text-white/20 px-2">
+                <div className="text-xs font-bold text-muted-foreground px-2">
                   Sem dados
                 </div>
               )}
@@ -134,8 +134,8 @@ export function ReportSelectionModal({
           ))}
         </div>
 
-        <div className="pt-2 border-t border-white/5">
-          <p className="text-[9px] text-center text-white/20 font-black uppercase tracking-[0.2em]">
+        <div className="pt-2 border-t border-border">
+          <p className="text-xs text-center text-muted-foreground font-bold">
             Formato: PDF Paisagem (A4) • Dados em Tempo Real
           </p>
         </div>

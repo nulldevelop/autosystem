@@ -15,7 +15,7 @@ export default async function ProductPage() {
     : null;
 
   return (
-    <div className="">
+    <div>
       <ProductList products={products.products} organization={organization} />
     </div>
   );

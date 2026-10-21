@@ -9,7 +9,7 @@ export default async function VehiclePage() {
   const customers = await getCustomers();
 
   return (
-    <div className="p-6">
+    <div>
       <VehicleList vehicles={vehicles} customers={customers.customers} />
     </div>
   );

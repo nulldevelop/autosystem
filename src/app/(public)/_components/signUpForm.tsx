@@ -1,8 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRight, Eye, EyeOff } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { ArrowRight, Eye, EyeOff, Loader2 } from "lucide-react";
+import Link from "next/link";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -21,17 +21,21 @@ import { Input } from "@/components/ui/input";
 import { PasswordStrengthIndicator } from "@/utils/PasswordStrengthIndicator";
 
 const signUpSchema = z.object({
-  name: z
-    .string()
-    .min(3, { message: "O nome deve ter pelo menos 3 caracteres." }),
-  email: z.email({ message: "Por favor, insira um e-mail válido." }),
+  name: z.string().min(3, { message: "Informe seu nome completo." }),
+  email: z.email({ message: "Informe um e-mail válido." }),
   password: z
     .string()
-    .min(8, { message: "A senha deve ter pelo menos 8 caracteres." }),
+    .min(8, { message: "A senha precisa de 8 ou mais caracteres." })
+    .regex(/[A-Z]/, { message: "Inclua uma letra maiúscula." })
+    .regex(/[a-z]/, { message: "Inclua uma letra minúscula." })
+    .regex(/[0-9]/, { message: "Inclua um número." }),
 });
 
-export function SignUpForm() {
-  const router = useRouter();
+export function SignUpForm({
+  onSuccess,
+}: {
+  onSuccess?: (email: string) => void;
+}) {
   const [isPending, startTransition] = useTransition();
   const [showPassword, setShowPassword] = useState(false);
   const form = useForm<z.infer<typeof signUpSchema>>({
@@ -64,29 +68,32 @@ export function SignUpForm() {
           toast.error(result.error.message);
         }
       } else {
-        toast.success(result.message + "Agora faça login para continuar.");
-        router.push("/auth");
-        router.refresh();
+        toast.success("Conta criada. Entre com seu e-mail e senha.");
+        onSuccess?.(values.email);
       }
     });
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-5"
+        noValidate
+      >
         <FormField
           control={form.control}
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-xs font-medium uppercase tracking-wider text-gray-400">
-                Nome
-              </FormLabel>
+              <FormLabel>Nome</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Seu nome"
+                  placeholder="Seu nome completo"
+                  autoComplete="name"
+                  disabled={isPending}
+                  className="h-11"
                   {...field}
-                  className="h-12 bg-[#1a1a1a] border-[#2a2a2a] text-white placeholder:text-gray-500 focus-visible:ring-[#16a34a] focus-visible:border-[#16a34a]"
                 />
               </FormControl>
               <FormMessage />
@@ -98,14 +105,15 @@ export function SignUpForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-xs font-medium uppercase tracking-wider text-gray-400">
-                Digite seu e-mail de trabalho
-              </FormLabel>
+              <FormLabel>E-mail</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="me@example.com"
+                  type="email"
+                  placeholder="voce@suaoficina.com.br"
+                  autoComplete="email"
+                  disabled={isPending}
+                  className="h-11"
                   {...field}
-                  className="h-12 bg-[#1a1a1a] border-[#2a2a2a] text-white placeholder:text-gray-500 focus-visible:ring-[#16a34a] focus-visible:border-[#16a34a]"
                 />
               </FormControl>
               <FormMessage />
@@ -117,43 +125,62 @@ export function SignUpForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-xs font-medium uppercase tracking-wider text-gray-400">
-                Digite sua senha
-              </FormLabel>
-              <FormControl>
-                <div className="relative">
+              <FormLabel>Senha</FormLabel>
+              <div className="relative">
+                <FormControl>
                   <Input
                     type={showPassword ? "text" : "password"}
-                    placeholder="••••••••••••"
+                    placeholder="Crie uma senha"
+                    autoComplete="new-password"
+                    disabled={isPending}
+                    className="h-11 pr-11"
                     {...field}
-                    className="h-12 bg-[#1a1a1a] border-[#2a2a2a] text-white placeholder:text-gray-500 focus-visible:ring-[#16a34a] focus-visible:border-[#16a34a] pr-12"
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors"
-                  >
-                    {showPassword ? (
-                      <EyeOff className="w-5 h-5" />
-                    ) : (
-                      <Eye className="w-5 h-5" />
-                    )}
-                  </button>
-                </div>
-              </FormControl>
-              {password && <PasswordStrengthIndicator password={password} />}
+                </FormControl>
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+                  className="absolute top-1/2 right-1 flex size-9 -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {showPassword ? (
+                    <EyeOff className="size-4" />
+                  ) : (
+                    <Eye className="size-4" />
+                  )}
+                </button>
+              </div>
+              {password ? (
+                <PasswordStrengthIndicator password={password} />
+              ) : null}
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button
-          type="submit"
-          disabled={isPending}
-          className="w-full h-12 bg-[#16a34a] hover:bg-[#15803d] text-white font-medium uppercase text-sm tracking-wider"
-        >
-          Comece de graça
-          <ArrowRight className="w-4 h-4 ml-2" />
+
+        <Button type="submit" size="lg" disabled={isPending} className="w-full">
+          {isPending ? <Loader2 className="animate-spin" /> : null}
+          {isPending ? "Criando conta…" : "Criar conta grátis"}
+          {!isPending && <ArrowRight />}
         </Button>
+
+        <p className="text-center text-xs text-muted-foreground">
+          Ao criar a conta, você concorda com os{" "}
+          <Link
+            href="/terms"
+            className="underline underline-offset-2 hover:text-foreground"
+          >
+            Termos de Serviço
+          </Link>{" "}
+          e a{" "}
+          <Link
+            href="/privacy"
+            className="underline underline-offset-2 hover:text-foreground"
+          >
+            Política de Privacidade
+          </Link>
+          .
+        </p>
       </form>
     </Form>
   );

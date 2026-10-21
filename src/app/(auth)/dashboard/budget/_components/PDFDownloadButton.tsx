@@ -27,19 +27,9 @@ export function PDFDownloadButton({ budget }: PDFDownloadButtonProps) {
       size="sm"
       onClick={handleDownload}
       disabled={isLoading}
-      className="w-full h-9 gap-2 border-white/5 bg-white/5 hover:bg-white/10 text-[10px] font-black uppercase tracking-wider"
     >
-      {isLoading ? (
-        <>
-          Gerando...
-          <Loader2 className="w-4 h-4 animate-spin" />
-        </>
-      ) : (
-        <>
-          Baixar PDF
-          <FileDown className="w-4 h-4" />
-        </>
-      )}
+      {isLoading ? <Loader2 className="animate-spin" /> : <FileDown />}
+      {isLoading ? "Gerando…" : "PDF"}
     </Button>
   );
 }

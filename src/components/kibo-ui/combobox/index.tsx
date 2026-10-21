@@ -150,7 +150,7 @@ export const ComboboxTrigger = ({
           <span className="flex w-full items-center justify-between gap-2">
             {value
               ? data.find((item) => item.value === value)?.label
-              : `Select ${type}...`}
+              : `Selecione ${type}`}
             <ChevronsUpDownIcon
               className="shrink-0 text-muted-foreground"
               size={16}
@@ -213,7 +213,7 @@ export const ComboboxInput = ({
   return (
     <CommandInput
       onValueChange={onValueChange}
-      placeholder={`Search ${type}...`}
+      placeholder={`Buscar ${type}`}
       value={value}
       {...props}
     />
@@ -232,7 +232,7 @@ export const ComboboxEmpty = ({ children, ...props }: ComboboxEmptyProps) => {
   const { type } = useContext(ComboboxContext);
 
   return (
-    <CommandEmpty {...props}>{children ?? `No ${type} found.`}</CommandEmpty>
+    <CommandEmpty {...props}>{children ?? `Nenhum resultado encontrado.`}</CommandEmpty>
   );
 };
 

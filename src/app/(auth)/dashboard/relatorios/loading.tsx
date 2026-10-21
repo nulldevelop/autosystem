@@ -1,29 +1,30 @@
+import { StatGridSkeleton } from "@/components/app/skeletons";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function Loading() {
+export default function RelatoriosLoading() {
   return (
-    <div className="space-y-8 animate-pulse">
-      <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6 bg-white/[0.02] border border-white/5 p-6 rounded-2xl">
+    <div className="space-y-6">
+      <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
         <div className="space-y-2">
-          <Skeleton className="h-8 w-48 bg-white/5" />
-          <Skeleton className="h-3 w-64 bg-white/5" />
+          <Skeleton className="h-8 w-44 sm:h-9" />
+          <Skeleton className="h-4 w-72 max-w-full" />
         </div>
-        <div className="flex gap-4">
-          <Skeleton className="h-10 w-32 bg-white/5" />
-          <Skeleton className="h-10 w-32 bg-white/5" />
-          <Skeleton className="h-10 w-24 bg-white/5" />
+        <div className="flex flex-wrap gap-3">
+          <Skeleton className="h-10 w-40" />
+          <Skeleton className="h-10 w-40" />
+          <Skeleton className="h-10 w-24" />
+          <Skeleton className="h-10 w-36" />
         </div>
       </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {[1, 2, 3, 4].map((i) => (
-          <Skeleton key={i} className="h-24 w-full bg-white/5 rounded-xl" />
-        ))}
+      <StatGridSkeleton />
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <Skeleton className="h-80 rounded-xl lg:col-span-2" />
+        <Skeleton className="h-80 rounded-xl" />
       </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Skeleton className="lg:col-span-2 h-[400px] w-full bg-white/5 rounded-xl" />
-        <Skeleton className="h-[400px] w-full bg-white/5 rounded-xl" />
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <Skeleton className="h-64 rounded-xl" />
+        <Skeleton className="h-64 rounded-xl" />
+        <Skeleton className="h-64 rounded-xl" />
       </div>
     </div>
   );

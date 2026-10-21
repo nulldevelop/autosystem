@@ -12,13 +12,99 @@ import {
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { PageHeader } from "@/components/app/page-header";
+import { StatCard } from "@/components/app/stat-card";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 import { ReportPDF } from "./report-pdf";
 
 interface RelatoriosClientProps {
+  // biome-ignore lint/suspicious/noExplicitAny: formato agregado vem da camada de dados
   data: any;
+  // biome-ignore lint/suspicious/noExplicitAny: organização repassada ao PDF
   organization?: any;
+}
+
+const CATEGORY_NAMES: Record<string, string> = {
+  SERVICE: "Serviços",
+  PRODUCT: "Produtos",
+  OTHER: "Outros",
+  RENT: "Aluguel",
+  SALARY: "Salários",
+  TAX: "Impostos",
+  "N/A": "Não informado",
+  BRAINTREE: "Cartão de crédito",
+  PIX: "PIX",
+  CASH: "Dinheiro",
+  DEBIT: "Débito",
+  CREDIT: "Crédito",
+  TRANSFER: "Transferência",
+  BOLETO: "Boleto",
+};
+
+const BAR_COLORS = ["bg-primary", "bg-info", "bg-warning", "bg-foreground/40"];
+
+const formatCurrency = (value: number) =>
+  new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(
+    value,
+  );
+
+const friendlyName = (key: string) => CATEGORY_NAMES[key] || key;
+
+function Panel({
+  title,
+  description,
+  aside,
+  children,
+  className,
+}: {
+  title: string;
+  description?: string;
+  aside?: React.ReactNode;
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <section className={cn("rounded-xl border bg-card", className)}>
+      <header className="flex items-start justify-between gap-4 border-b px-5 py-4">
+        <div>
+          <h2 className="text-base font-semibold">{title}</h2>
+          {description && (
+            <p className="text-sm text-muted-foreground">{description}</p>
+          )}
+        </div>
+        {aside}
+      </header>
+      <div className="p-5">{children}</div>
+    </section>
+  );
+}
+
+function Row({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: string | number;
+  tone?: "success" | "danger";
+}) {
+  return (
+    <div className="flex items-center justify-between rounded-lg bg-surface px-3.5 py-3">
+      <span className="text-sm text-muted-foreground">{label}</span>
+      <span
+        className={cn(
+          "num text-sm font-semibold",
+          tone === "success" && "text-success",
+          tone === "danger" && "text-destructive",
+        )}
+      >
+        {value}
+      </span>
+    </div>
+  );
 }
 
 export function RelatoriosClient({
@@ -27,22 +113,6 @@ export function RelatoriosClient({
 }: RelatoriosClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-
-  const categoryNames: Record<string, string> = {
-    SERVICE: "Serviços",
-    PRODUCT: "Produtos",
-    OTHER: "Outros",
-    "N/A": "Não informado",
-    BRAINTREE: "Cartão de Crédito",
-    PIX: "PIX",
-    CASH: "Dinheiro",
-    DEBIT: "Débito",
-    CREDIT: "Crédito",
-    TRANSFER: "Transferência",
-    BOLETO: "Boleto",
-  };
-
-  const getFriendlyName = (key: string) => categoryNames[key] || key;
 
   const [startDate, setStartDate] = useState(
     searchParams.get("from") || format(startOfMonth(new Date()), "yyyy-MM-dd"),
@@ -63,356 +133,246 @@ export function RelatoriosClient({
     router.push(`?${params.toString()}`);
   };
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    }).format(value);
-  };
-
-  const maxRevenue = Math.max(
-    ...(data.revenueOverTime.map((d: any) => d.amount) || [0]),
-    1,
-  );
+  const revenueOverTime: { date: string; amount: number }[] =
+    data.revenueOverTime || [];
+  const maxRevenue = Math.max(...revenueOverTime.map((d) => d.amount), 1);
+  const categories = Object.entries(data.revenueByCategory) as [
+    string,
+    number,
+  ][];
+  const paymentMethods = Object.entries(data.revenueByPaymentMethod) as [
+    string,
+    number,
+  ][];
 
   return (
-    <div className="space-y-8">
-      {/* Header & Filters */}
-      <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6 bg-white/[0.02] border border-white/5 p-6 rounded-2xl">
-        <div className="flex flex-col gap-1">
-          <h1 className="text-3xl font-black italic uppercase tracking-tighter text-white font-poppins">
-            Performance <span className="text-primary">Analytics</span>
-          </h1>
-          <p className="text-white/40 text-[10px] font-black uppercase tracking-widest">
-            Métricas avançadas e inteligência de negócio
-          </p>
-        </div>
-
-        <div className="flex flex-wrap items-end gap-4">
-          <div className="flex flex-col gap-1.5">
-            <label className="text-[10px] font-black uppercase text-white/40 ml-1">
-              De
-            </label>
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-            />
-          </div>
-          <div className="flex flex-col gap-1.5">
-            <label className="text-[10px] font-black uppercase text-white/40 ml-1">
-              Até
-            </label>
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-            />
-          </div>
-          <Button
-            onClick={handleFilter}
-            variant="secondary"
-            className="font-bold uppercase tracking-widest text-[10px] h-[38px]"
-          >
-            Filtrar
-          </Button>
-
-          {mounted ? (
-            <PDFDownloadLink
-              key={`${startDate}-${endDate}-${organization?.id}`}
-              document={
-                <ReportPDF
-                  data={data}
-                  period={{
-                    start: parseISO(startDate),
-                    end: parseISO(endDate),
-                  }}
-                  organization={organization}
-                />
-              }
-              fileName={`relatorio-performance-${startDate}-a-${endDate}.pdf`}
-            >
-              {({ loading }) => (
-                <Button
-                  disabled={loading}
-                  className="glow-primary uppercase font-bold tracking-widest text-[10px] h-[38px]"
-                >
-                  <Download className="mr-2 size-3" />
-                  {loading ? "Gerando..." : "Exportar PDF"}
-                </Button>
-              )}
-            </PDFDownloadLink>
-          ) : (
-            <Button
-              disabled
-              className="glow-primary uppercase font-bold tracking-widest text-[10px] h-[38px]"
-            >
-              <Download className="mr-2 size-3" />
-              Exportar PDF
+    <div className="space-y-6">
+      <PageHeader
+        title="Relatórios"
+        description="Desempenho da oficina no período selecionado."
+        actions={
+          <div className="flex w-full flex-wrap items-end gap-3 sm:w-auto sm:[&>*]:w-auto">
+            <div className="space-y-1.5">
+              <Label htmlFor="report-from">De</Label>
+              <Input
+                id="report-from"
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="report-to">Até</Label>
+              <Input
+                id="report-to"
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+              />
+            </div>
+            <Button onClick={handleFilter} variant="secondary">
+              Filtrar
             </Button>
-          )}
-        </div>
+            {mounted ? (
+              <PDFDownloadLink
+                key={`${startDate}-${endDate}-${organization?.id}`}
+                document={
+                  <ReportPDF
+                    data={data}
+                    period={{
+                      start: parseISO(startDate),
+                      end: parseISO(endDate),
+                    }}
+                    organization={organization}
+                  />
+                }
+                fileName={`relatorio-performance-${startDate}-a-${endDate}.pdf`}
+              >
+                {({ loading }) => (
+                  <Button disabled={loading}>
+                    <Download />
+                    {loading ? "Gerando…" : "Exportar PDF"}
+                  </Button>
+                )}
+              </PDFDownloadLink>
+            ) : (
+              <Button disabled>
+                <Download />
+                Exportar PDF
+              </Button>
+            )}
+          </div>
+        }
+      />
+
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <StatCard
+          label="Faturamento"
+          value={formatCurrency(data.metrics.totalRevenue)}
+          hint="Total bruto"
+          icon={DollarSign}
+          tone="primary"
+        />
+        <StatCard
+          label="Lucro líquido"
+          value={formatCurrency(data.metrics.totalNet)}
+          hint="Faturamento − custos"
+          icon={TrendingUp}
+          tone="primary"
+        />
+        <StatCard
+          label="Ticket médio"
+          value={formatCurrency(data.metrics.averageTicket)}
+          hint="Por atendimento"
+          icon={Target}
+          tone="info"
+        />
+        <StatCard
+          label="Conversão"
+          value={`${data.metrics.conversionRate.toFixed(1)}%`}
+          hint="Orçamentos aprovados"
+          icon={LineChart}
+          tone="info"
+        />
       </div>
 
-      {/* Main Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {[
-          {
-            label: "Faturamento Bruto",
-            value: formatCurrency(data.metrics.totalRevenue),
-            icon: DollarSign,
-            color: "text-primary",
-          },
-          {
-            label: "Lucro Líquido",
-            value: formatCurrency(data.metrics.totalNet),
-            icon: TrendingUp,
-            color: "text-secondary",
-          },
-          {
-            label: "Ticket Médio",
-            value: formatCurrency(data.metrics.averageTicket),
-            icon: Target,
-            color: "text-blue-500",
-          },
-          {
-            label: "Conversão",
-            value: `${data.metrics.conversionRate.toFixed(1)}%`,
-            icon: LineChart,
-            color: "text-purple-500",
-          },
-        ].map((item) => (
-          <Card
-            key={item.label}
-            className="border-white/5 bg-white/[0.02] overflow-hidden relative group"
-          >
-            <div
-              className={`absolute top-0 right-0 p-8 -mr-4 -mt-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity ${item.color}`}
-            >
-              <item.icon className="size-16" />
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <Panel
+          className="lg:col-span-2"
+          title="Receita diária"
+          description="Evolução do faturamento no período"
+          aside={
+            <div className="text-right">
+              <p className="text-xs text-muted-foreground">Total do período</p>
+              <p className="num font-display text-lg font-semibold text-primary">
+                {formatCurrency(data.metrics.totalRevenue)}
+              </p>
             </div>
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-3">
-                <div className={`p-2 rounded-lg bg-white/5 ${item.color}`}>
-                  <item.icon className="size-4" />
-                </div>
-                <div>
-                  <p className="text-[10px] font-black uppercase text-white/40">
-                    {item.label}
-                  </p>
-                  <p className="text-xl font-black text-white">{item.value}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="lg:col-span-2 border-white/5 bg-white/[0.02] flex flex-col">
-          <CardHeader>
-            <div className="flex justify-between items-center">
-              <div>
-                <CardTitle className="text-sm font-black uppercase tracking-widest">
-                  Receita Diária
-                </CardTitle>
-                <p className="text-[10px] text-white/40 uppercase mt-1">
-                  Evolução do faturamento no período
-                </p>
-              </div>
-              <div className="text-right">
-                <p className="text-[10px] text-white/40 uppercase">
-                  Total do Período
-                </p>
-                <p className="text-lg font-black text-primary">
-                  {formatCurrency(data.metrics.totalRevenue)}
-                </p>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="flex-1 flex items-end gap-1.5 px-6 pb-6 min-h-[300px]">
-            {data.revenueOverTime.length > 0 ? (
-              data.revenueOverTime.map((item: any, i: number) => (
+          }
+        >
+          {revenueOverTime.length > 0 ? (
+            <div className="flex h-64 items-end gap-1.5 pt-10">
+              {revenueOverTime.map((item) => (
                 <div
-                  key={i}
-                  className="flex-1 flex flex-col items-center gap-2 group"
+                  key={item.date}
+                  className="group flex h-full flex-1 flex-col items-center justify-end gap-2"
                 >
                   <div
-                    className="w-full bg-primary/20 hover:bg-primary transition-all duration-300 rounded-t-sm relative"
+                    className="relative w-full rounded-t-md bg-primary/35 transition-colors group-hover:bg-primary"
                     style={{
-                      height: `${(item.amount / maxRevenue) * 200 + 10}px`,
+                      height: `${Math.max((item.amount / maxRevenue) * 100, 4)}%`,
                     }}
                   >
-                    <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-white text-black text-[9px] font-black px-1.5 py-1 rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 whitespace-nowrap">
+                    <div className="pointer-events-none absolute -top-9 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-md bg-foreground px-2 py-1 text-xs font-medium text-background opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
                       {formatCurrency(item.amount)}
-                      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-white rotate-45" />
                     </div>
                   </div>
-                  <span className="text-[8px] font-bold text-white/30 uppercase group-hover:text-white/60 transition-colors">
+                  <span className="num text-xs text-muted-foreground">
                     {format(parseISO(item.date), "dd/MM", { locale: ptBR })}
                   </span>
                 </div>
-              ))
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-white/20 text-xs uppercase font-black italic">
-                Nenhum dado financeiro no período
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card className="border-white/5 bg-white/[0.02]">
-          <CardHeader>
-            <CardTitle className="text-sm font-black uppercase tracking-widest">
-              Divisão por Categoria
-            </CardTitle>
-            <p className="text-[10px] text-white/40 uppercase mt-1">
-              Participação na receita total
+              ))}
+            </div>
+          ) : (
+            <p className="flex h-64 items-center justify-center text-sm text-muted-foreground">
+              Nenhum dado financeiro no período.
             </p>
-          </CardHeader>
-          <CardContent className="space-y-6 pt-4">
-            {Object.entries(data.revenueByCategory).length > 0 ? (
-              Object.entries(data.revenueByCategory).map(
-                ([label, value]: any, i) => {
-                  const percentage = (value / data.metrics.totalRevenue) * 100;
-                  const colors = [
-                    "bg-primary",
-                    "bg-secondary",
-                    "bg-blue-500",
-                    "bg-purple-500",
-                    "bg-orange-500",
-                  ];
-                  const color = colors[i % colors.length];
+          )}
+        </Panel>
 
-                  return (
-                    <div key={label} className="space-y-2">
-                      <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
-                        <span className="text-white/60">
-                          {getFriendlyName(label)}
-                        </span>
-                        <span className="text-white">
-                          {percentage.toFixed(1)}%
-                        </span>
-                      </div>
-                      <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
-                        <div
-                          className={`h-full ${color} glow-primary shadow-current/20`}
-                          style={{ width: `${percentage}%` }}
-                        />
-                      </div>
-                      <div className="text-[9px] text-white/40 font-bold text-right">
-                        {formatCurrency(value)}
-                      </div>
+        <Panel
+          title="Divisão por categoria"
+          description="Participação na receita total"
+        >
+          {categories.length > 0 ? (
+            <ul className="space-y-5">
+              {categories.map(([label, value], i) => {
+                const percentage = data.metrics.totalRevenue
+                  ? (value / data.metrics.totalRevenue) * 100
+                  : 0;
+                return (
+                  <li key={label} className="space-y-1.5">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">
+                        {friendlyName(label)}
+                      </span>
+                      <span className="num font-medium">
+                        {percentage.toFixed(1)}%
+                      </span>
                     </div>
-                  );
-                },
-              )
-            ) : (
-              <div className="w-full h-40 flex items-center justify-center text-white/20 text-xs uppercase font-black italic">
-                Sem categorias
-              </div>
-            )}
-          </CardContent>
-        </Card>
+                    <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+                      <div
+                        className={cn(
+                          "h-full rounded-full",
+                          BAR_COLORS[i % BAR_COLORS.length],
+                        )}
+                        style={{ width: `${Math.min(percentage, 100)}%` }}
+                      />
+                    </div>
+                    <p className="num text-right text-xs text-muted-foreground">
+                      {formatCurrency(value)}
+                    </p>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <p className="flex h-40 items-center justify-center text-sm text-muted-foreground">
+              Sem categorias no período.
+            </p>
+          )}
+        </Panel>
       </div>
 
-      {/* Secondary Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="border-white/5 bg-white/[0.02]">
-          <CardHeader>
-            <CardTitle className="text-sm font-black uppercase tracking-widest">
-              Meios de Pagamento
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {Object.entries(data.revenueByPaymentMethod).map(
-              ([method, val]: any) => (
-                <div
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <Panel title="Meios de pagamento">
+          <div className="space-y-2">
+            {paymentMethods.length > 0 ? (
+              paymentMethods.map(([method, val]) => (
+                <Row
                   key={method}
-                  className="flex justify-between items-center p-3 rounded-lg bg-white/5"
-                >
-                  <span className="text-[10px] font-black uppercase text-white/60">
-                    {getFriendlyName(method)}
-                  </span>
-                  <span className="text-sm font-bold text-white">
-                    {formatCurrency(val)}
-                  </span>
-                </div>
-              ),
+                  label={friendlyName(method)}
+                  value={formatCurrency(val)}
+                />
+              ))
+            ) : (
+              <p className="py-6 text-center text-sm text-muted-foreground">
+                Nenhum pagamento no período.
+              </p>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </Panel>
 
-        <Card className="border-white/5 bg-white/[0.02]">
-          <CardHeader>
-            <CardTitle className="text-sm font-black uppercase tracking-widest">
-              Operacional
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex justify-between items-center p-3 rounded-lg bg-white/5">
-              <span className="text-[10px] font-black uppercase text-white/60">
-                OS Concluídas
-              </span>
-              <span className="text-sm font-bold text-white">
-                {data.metrics.completedOS}
-              </span>
-            </div>
-            <div className="flex justify-between items-center p-3 rounded-lg bg-white/5">
-              <span className="text-[10px] font-black uppercase text-white/60">
-                Novos Clientes
-              </span>
-              <span className="text-sm font-bold text-white">
-                {data.metrics.newCustomers}
-              </span>
-            </div>
-            <div className="flex justify-between items-center p-3 rounded-lg bg-white/5">
-              <span className="text-[10px] font-black uppercase text-white/60">
-                Taxa de Conversão
-              </span>
-              <span className="text-sm font-bold text-primary">
-                {data.metrics.conversionRate.toFixed(1)}%
-              </span>
-            </div>
-          </CardContent>
-        </Card>
+        <Panel title="Operacional">
+          <div className="space-y-2">
+            <Row label="O.S. concluídas" value={data.metrics.completedOS} />
+            <Row label="Novos clientes" value={data.metrics.newCustomers} />
+            <Row
+              label="Taxa de conversão"
+              value={`${data.metrics.conversionRate.toFixed(1)}%`}
+              tone="success"
+            />
+          </div>
+        </Panel>
 
-        <Card className="border-white/5 bg-white/[0.02]">
-          <CardHeader>
-            <CardTitle className="text-sm font-black uppercase tracking-widest">
-              Resumo Financeiro
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex justify-between items-center p-3 rounded-lg bg-white/5">
-              <span className="text-[10px] font-black uppercase text-white/60">
-                Faturamento
-              </span>
-              <span className="text-sm font-bold text-white">
-                {formatCurrency(data.metrics.totalRevenue)}
-              </span>
-            </div>
-            <div className="flex justify-between items-center p-3 rounded-lg bg-white/5">
-              <span className="text-[10px] font-black uppercase text-white/60">
-                Custo Total
-              </span>
-              <span className="text-sm font-bold text-red-400">
-                -{formatCurrency(data.metrics.totalCost)}
-              </span>
-            </div>
-            <div className="flex justify-between items-center p-3 rounded-lg bg-primary/10 border border-primary/20">
-              <span className="text-[10px] font-black uppercase text-primary">
-                Lucro Real
-              </span>
-              <span className="text-sm font-bold text-primary">
-                {formatCurrency(data.metrics.totalNet)}
-              </span>
-            </div>
-          </CardContent>
-        </Card>
+        <Panel title="Resumo financeiro">
+          <div className="space-y-2">
+            <Row
+              label="Faturamento"
+              value={formatCurrency(data.metrics.totalRevenue)}
+            />
+            <Row
+              label="Custo total"
+              value={`−${formatCurrency(data.metrics.totalCost)}`}
+              tone="danger"
+            />
+            <Row
+              label="Lucro real"
+              value={formatCurrency(data.metrics.totalNet)}
+              tone="success"
+            />
+          </div>
+        </Panel>
       </div>
     </div>
   );

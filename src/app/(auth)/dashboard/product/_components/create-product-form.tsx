@@ -139,12 +139,12 @@ export function CreateProductForm({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl max-w-[calc(100vw-32px)] max-h-[calc(100vh-32px)] overflow-y-auto bg-zinc-950 border-white/10 text-white p-4 sm:p-6">
+      <DialogContent className="sm:max-w-2xl max-w-[calc(100vw-32px)] max-h-[calc(100vh-32px)] overflow-y-auto bg-card border-border text-foreground p-4 sm:p-6">
         <DialogHeader className="mb-4">
-          <DialogTitle className="text-xl sm:text-2xl font-black italic uppercase tracking-tighter text-white">
-            Novo <span className="text-primary">Produto</span>
+          <DialogTitle className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+            Novo Produto
           </DialogTitle>
-          <DialogDescription className="text-white/60 text-sm">
+          <DialogDescription className="text-muted-foreground text-sm">
             Preencha os dados do produto
           </DialogDescription>
         </DialogHeader>
@@ -161,13 +161,13 @@ export function CreateProductForm({
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">
+                      <FormLabel className="text-xs font-bold text-muted-foreground">
                         Nome do Produto
                       </FormLabel>
                       <FormControl>
                         <Input
                           placeholder="Ex: Óleo de Motor 5W30"
-                          className="bg-white/5 border-white/10"
+                          className="bg-muted/50 border-border"
                           {...field}
                         />
                       </FormControl>
@@ -181,13 +181,13 @@ export function CreateProductForm({
                   name="sku"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">
+                      <FormLabel className="text-xs font-bold text-muted-foreground">
                         SKU / Código
                       </FormLabel>
                       <FormControl>
                         <Input
                           placeholder="Ex: PRD-001"
-                          className="bg-white/5 border-white/10"
+                          className="bg-muted/50 border-border"
                           {...field}
                         />
                       </FormControl>
@@ -201,7 +201,7 @@ export function CreateProductForm({
                   name="category"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">
+                      <FormLabel className="text-xs font-bold text-muted-foreground">
                         Categoria
                       </FormLabel>
                       <Select
@@ -209,11 +209,11 @@ export function CreateProductForm({
                         defaultValue={field.value}
                       >
                         <FormControl>
-                          <SelectTrigger className="bg-white/5 border-white/10">
+                          <SelectTrigger className="bg-muted/50 border-border">
                             <SelectValue placeholder="Selecione uma categoria" />
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent className="bg-zinc-900 border-white/10">
+                        <SelectContent className="bg-card border-border">
                           {CATEGORIES.map((cat) => (
                             <SelectItem key={cat} value={cat}>
                               {cat}
@@ -231,7 +231,7 @@ export function CreateProductForm({
                   name="unit"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">
+                      <FormLabel className="text-xs font-bold text-muted-foreground">
                         Unidade
                       </FormLabel>
                       <Select
@@ -239,11 +239,11 @@ export function CreateProductForm({
                         defaultValue={field.value}
                       >
                         <FormControl>
-                          <SelectTrigger className="bg-white/5 border-white/10">
+                          <SelectTrigger className="bg-muted/50 border-border">
                             <SelectValue placeholder="Unidade" />
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent className="bg-zinc-900 border-white/10">
+                        <SelectContent className="bg-card border-border">
                           {UNITS.map((unit) => (
                             <SelectItem key={unit} value={unit}>
                               {unit}
@@ -261,7 +261,7 @@ export function CreateProductForm({
                   name="costPrice"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">
+                      <FormLabel className="text-xs font-bold text-muted-foreground">
                         Preço de Custo (R$)
                       </FormLabel>
                       <FormControl>
@@ -269,7 +269,7 @@ export function CreateProductForm({
                           type="number"
                           step="0.01"
                           placeholder="0.00"
-                          className="bg-white/5 border-white/10 text-emerald-500 font-bold"
+                          className="bg-muted/50 border-border text-success font-bold"
                           {...field}
                           onChange={(e) =>
                             field.onChange(e.target.valueAsNumber)
@@ -286,7 +286,7 @@ export function CreateProductForm({
                   name="price"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">
+                      <FormLabel className="text-xs font-bold text-muted-foreground">
                         Preço de Venda (R$)
                       </FormLabel>
                       <FormControl>
@@ -294,7 +294,7 @@ export function CreateProductForm({
                           type="number"
                           step="0.01"
                           placeholder="0.00"
-                          className="bg-white/5 border-white/10 text-primary font-bold"
+                          className="bg-muted/50 border-border text-primary font-bold"
                           {...field}
                           onChange={(e) =>
                             field.onChange(e.target.valueAsNumber)
@@ -311,14 +311,14 @@ export function CreateProductForm({
                   name="stockQuantity"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">
+                      <FormLabel className="text-xs font-bold text-muted-foreground">
                         Estoque Inicial
                       </FormLabel>
                       <FormControl>
                         <Input
                           type="number"
                           placeholder="0"
-                          className="bg-white/5 border-white/10"
+                          className="bg-muted/50 border-border"
                           {...field}
                           onChange={(e) =>
                             field.onChange(e.target.valueAsNumber)
@@ -335,14 +335,14 @@ export function CreateProductForm({
                   name="minStock"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">
+                      <FormLabel className="text-xs font-bold text-muted-foreground">
                         Estoque Mínimo (Alerta)
                       </FormLabel>
                       <FormControl>
                         <Input
                           type="number"
                           placeholder="0"
-                          className="bg-white/5 border-white/10"
+                          className="bg-muted/50 border-border"
                           {...field}
                           onChange={(e) =>
                             field.onChange(e.target.valueAsNumber)
@@ -367,7 +367,7 @@ export function CreateProductForm({
                 <Button
                   type="submit"
                   disabled={isLoading}
-                  className="flex-1 glow-primary"
+                  className="flex-1 "
                 >
                   {isLoading ? "Processando..." : "Cadastrar Produto"}
                 </Button>

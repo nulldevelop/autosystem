@@ -21,7 +21,7 @@ export const BackgroundAnimation = () => (
         x: [0, 50, 0],
       }}
       transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-      className="absolute -top-20 -left-20 w-150 h-150 bg-green-500/20 blur-[120px] rounded-full"
+      className="absolute -top-20 -left-20 w-150 h-150 bg-success/12 blur-[120px] rounded-full"
     />
     <motion.div
       animate={{
@@ -30,7 +30,7 @@ export const BackgroundAnimation = () => (
         x: [0, -50, 0],
       }}
       transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-      className="absolute bottom-0 right-0 w-175 h-175 bg-orange-500/10 blur-[140px] rounded-full"
+      className="absolute bottom-0 right-0 w-175 h-175 bg-warning/12 blur-[140px] rounded-full"
     />
   </div>
 );

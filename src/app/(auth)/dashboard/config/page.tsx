@@ -1,3 +1,4 @@
+import { PageHeader } from "@/components/app/page-header";
 import { getSession } from "@/lib/getSession";
 import { prisma } from "@/lib/prisma";
 import { ConfigForm } from "./_components/config-form";
@@ -11,15 +12,11 @@ export default async function ConfigPage() {
     : null;
 
   return (
-    <div className="flex flex-col gap-6 p-6">
-      <div>
-        <h1 className="text-3xl font-black italic tracking-tighter">
-          Configurações da Oficina
-        </h1>
-        <p className="text-muted-foreground">
-          Gerencie as informações da sua empresa
-        </p>
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        title="Configurações"
+        description="Dados da oficina que aparecem em orçamentos e ordens de serviço."
+      />
       <ConfigForm organization={organization} />
     </div>
   );

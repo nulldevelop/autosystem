@@ -126,12 +126,12 @@ export function CreateVehicleForm({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg max-w-[calc(100vw-32px)] max-h-[calc(100vh-32px)] overflow-y-auto bg-zinc-950 border-white/10 text-white p-4 sm:p-6">
+      <DialogContent className="sm:max-w-lg max-w-[calc(100vw-32px)] max-h-[calc(100vh-32px)] overflow-y-auto bg-card border-border text-foreground p-4 sm:p-6">
         <DialogHeader className="mb-4">
-          <DialogTitle className="text-xl font-black italic uppercase tracking-tighter text-white">
-            Novo <span className="text-primary">Veículo</span>
+          <DialogTitle className="text-xl font-bold tracking-tight text-foreground">
+            Novo Veículo
           </DialogTitle>
-          <DialogDescription className="text-white/60 text-sm">
+          <DialogDescription className="text-muted-foreground text-sm">
             Preencha os dados do veículo
           </DialogDescription>
         </DialogHeader>
@@ -143,7 +143,7 @@ export function CreateVehicleForm({
               name="customerId"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel className="text-[10px] font-black uppercase text-white/40 tracking-widest mb-1">
+                  <FormLabel className="text-xs font-bold text-muted-foreground mb-1">
                     Cliente
                   </FormLabel>
                   <Combobox
@@ -153,12 +153,12 @@ export function CreateVehicleForm({
                     type="cliente"
                   >
                     <FormControl>
-                      <ComboboxTrigger className="bg-white/5 border-white/5 h-12 text-white" />
+                      <ComboboxTrigger className="bg-muted/50 border-border h-12 text-foreground" />
                     </FormControl>
-                    <ComboboxContent className="bg-zinc-900 border-white/10">
+                    <ComboboxContent className="bg-card border-border">
                       <ComboboxInput
                         placeholder="Pesquisar cliente..."
-                        className="text-white"
+                        className="text-foreground"
                       />
                       <ComboboxEmpty>Cliente não encontrado.</ComboboxEmpty>
                       <ComboboxList>
@@ -167,7 +167,7 @@ export function CreateVehicleForm({
                             <ComboboxItem
                               key={option.value}
                               value={option.value}
-                              className="text-white hover:bg-white/10"
+                              className="text-foreground hover:bg-muted"
                             >
                               {option.label}
                             </ComboboxItem>
@@ -186,7 +186,7 @@ export function CreateVehicleForm({
               name="marca"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel className="text-[10px] font-black uppercase text-white/40 tracking-widest mb-1">
+                  <FormLabel className="text-xs font-bold text-muted-foreground mb-1">
                     Marca
                   </FormLabel>
                   <Combobox
@@ -196,12 +196,12 @@ export function CreateVehicleForm({
                     type="marca"
                   >
                     <FormControl>
-                      <ComboboxTrigger className="bg-white/5 border-white/5 h-12 text-white" />
+                      <ComboboxTrigger className="bg-muted/50 border-border h-12 text-foreground" />
                     </FormControl>
-                    <ComboboxContent className="bg-zinc-900 border-white/10">
+                    <ComboboxContent className="bg-card border-border">
                       <ComboboxInput
                         placeholder="Pesquisar marca..."
-                        className="text-white"
+                        className="text-foreground"
                       />
                       <ComboboxEmpty>Marca não encontrada.</ComboboxEmpty>
                       <ComboboxList>
@@ -210,7 +210,7 @@ export function CreateVehicleForm({
                             <ComboboxItem
                               key={brand.value}
                               value={brand.value}
-                              className="text-white hover:bg-white/10"
+                              className="text-foreground hover:bg-muted"
                             >
                               {brand.label}
                             </ComboboxItem>
@@ -229,14 +229,14 @@ export function CreateVehicleForm({
               name="model"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[10px] font-black uppercase text-white/40 tracking-widest mb-1">
+                  <FormLabel className="text-xs font-bold text-muted-foreground mb-1">
                     Modelo
                   </FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Ex: Gol"
                       disabled={isLoading}
-                      className="bg-white/5 border-white/5 h-12 text-white"
+                      className="bg-muted/50 border-border h-12 text-foreground"
                       {...field}
                     />
                   </FormControl>
@@ -251,7 +251,7 @@ export function CreateVehicleForm({
                 name="year"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-[10px] font-black uppercase text-white/40 tracking-widest mb-1">
+                    <FormLabel className="text-xs font-bold text-muted-foreground mb-1">
                       Ano
                     </FormLabel>
                     <FormControl>
@@ -259,7 +259,7 @@ export function CreateVehicleForm({
                         type="number"
                         placeholder="Ex: 2023"
                         disabled={isLoading}
-                        className="bg-white/5 border-white/5 h-12 text-white"
+                        className="bg-muted/50 border-border h-12 text-foreground"
                         {...field}
                         onChange={(e) => field.onChange(e.target.valueAsNumber)}
                       />
@@ -274,14 +274,14 @@ export function CreateVehicleForm({
                 name="licensePlate"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-[10px] font-black uppercase text-white/40 tracking-widest mb-1">
+                    <FormLabel className="text-xs font-bold text-muted-foreground mb-1">
                       Placa
                     </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Ex: ABC1234"
                         disabled={isLoading}
-                        className="bg-white/5 border-white/5 h-12 text-white"
+                        className="bg-muted/50 border-border h-12 text-foreground"
                         {...field}
                       />
                     </FormControl>
@@ -294,7 +294,7 @@ export function CreateVehicleForm({
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full h-12 font-black uppercase italic tracking-tighter glow-primary"
+              className="w-full h-12 font-bold tracking-tight"
             >
               {isLoading ? (
                 <>

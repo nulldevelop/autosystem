@@ -132,15 +132,15 @@ export function TransactionFormModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-zinc-950 border-white/10 text-white sm:max-w-[450px]">
+      <DialogContent className="bg-card border-border text-foreground sm:max-w-[450px]">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-black italic uppercase tracking-tighter flex items-center gap-2">
+          <DialogTitle className="text-2xl font-bold tracking-tight flex items-center gap-2">
             <div
               className={cn(
                 "p-2 rounded-lg",
                 isExpense
                   ? "bg-secondary/20 text-secondary"
-                  : "bg-emerald-500/20 text-emerald-500",
+                  : "bg-success/12 text-success",
               )}
             >
               <DollarSign className="size-5" />
@@ -159,7 +159,7 @@ export function TransactionFormModal({
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">
+                  <FormLabel className="text-xs font-bold text-muted-foreground">
                     Descrição / Fornecedor
                   </FormLabel>
                   <FormControl>
@@ -170,7 +170,7 @@ export function TransactionFormModal({
                           ? "Ex: Aluguel, Peças, Luz..."
                           : "Ex: Venda de Acessórios..."
                       }
-                      className="w-full bg-white/[0.03] border border-white/10 rounded-lg h-11 px-4 text-sm focus:border-primary/50 outline-none transition-all"
+                      className="w-full bg-muted/50 border border-border rounded-lg h-11 px-4 text-sm focus:border-primary/50 outline-none transition-all"
                     />
                   </FormControl>
                   <FormMessage />
@@ -184,7 +184,7 @@ export function TransactionFormModal({
                 name="amount"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">
+                    <FormLabel className="text-xs font-bold text-muted-foreground">
                       Valor (R$)
                     </FormLabel>
                     <FormControl>
@@ -192,7 +192,7 @@ export function TransactionFormModal({
                         {...field}
                         type="number"
                         step="0.01"
-                        className="w-full bg-white/[0.03] border border-white/10 rounded-lg h-11 px-4 text-sm focus:border-primary/50 outline-none transition-all font-bold"
+                        className="w-full bg-muted/50 border border-border rounded-lg h-11 px-4 text-sm focus:border-primary/50 outline-none transition-all font-bold"
                       />
                     </FormControl>
                     <FormMessage />
@@ -205,7 +205,7 @@ export function TransactionFormModal({
                 name="status"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-2">
+                    <FormLabel className="text-xs font-bold text-muted-foreground mb-2">
                       Status
                     </FormLabel>
                     <Combobox
@@ -214,8 +214,8 @@ export function TransactionFormModal({
                       data={STATUS_OPTIONS}
                       type="status"
                     >
-                      <ComboboxTrigger className="bg-white/[0.03] border-white/10 h-11 justify-between font-normal" />
-                      <ComboboxContent className="bg-zinc-950 border-white/10">
+                      <ComboboxTrigger className="bg-muted/50 border-border h-11 justify-between font-normal" />
+                      <ComboboxContent className="bg-card border-border">
                         <ComboboxInput placeholder="Buscar status..." />
                         <ComboboxList>
                           <ComboboxEmpty>
@@ -226,7 +226,7 @@ export function TransactionFormModal({
                               <ComboboxItem
                                 key={option.value}
                                 value={option.value}
-                                className="text-white hover:bg-white/5"
+                                className="text-foreground hover:bg-muted/50"
                               >
                                 {option.label}
                               </ComboboxItem>
@@ -247,7 +247,7 @@ export function TransactionFormModal({
                 name="category"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-2">
+                    <FormLabel className="text-xs font-bold text-muted-foreground mb-2">
                       Categoria
                     </FormLabel>
                     <Combobox
@@ -256,8 +256,8 @@ export function TransactionFormModal({
                       data={CATEGORY_OPTIONS}
                       type="categoria"
                     >
-                      <ComboboxTrigger className="bg-white/[0.03] border-white/10 h-11 justify-between font-normal" />
-                      <ComboboxContent className="bg-zinc-950 border-white/10">
+                      <ComboboxTrigger className="bg-muted/50 border-border h-11 justify-between font-normal" />
+                      <ComboboxContent className="bg-card border-border">
                         <ComboboxInput placeholder="Buscar categoria..." />
                         <ComboboxList>
                           <ComboboxEmpty>
@@ -268,7 +268,7 @@ export function TransactionFormModal({
                               <ComboboxItem
                                 key={option.value}
                                 value={option.value}
-                                className="text-white hover:bg-white/5"
+                                className="text-foreground hover:bg-muted/50"
                               >
                                 {option.label}
                               </ComboboxItem>
@@ -287,7 +287,7 @@ export function TransactionFormModal({
                 name="paymentMethod"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-2">
+                    <FormLabel className="text-xs font-bold text-muted-foreground mb-2">
                       Método
                     </FormLabel>
                     <Combobox
@@ -296,8 +296,8 @@ export function TransactionFormModal({
                       data={PAYMENT_METHODS}
                       type="método"
                     >
-                      <ComboboxTrigger className="bg-white/[0.03] border-white/10 h-11 justify-between font-normal" />
-                      <ComboboxContent className="bg-zinc-950 border-white/10">
+                      <ComboboxTrigger className="bg-muted/50 border-border h-11 justify-between font-normal" />
+                      <ComboboxContent className="bg-card border-border">
                         <ComboboxInput placeholder="Buscar método..." />
                         <ComboboxList>
                           <ComboboxEmpty>
@@ -308,7 +308,7 @@ export function TransactionFormModal({
                               <ComboboxItem
                                 key={method.value}
                                 value={method.value}
-                                className="text-white hover:bg-white/5"
+                                className="text-foreground hover:bg-muted/50"
                               >
                                 {method.label}
                               </ComboboxItem>
@@ -328,7 +328,7 @@ export function TransactionFormModal({
                 type="button"
                 variant="ghost"
                 onClick={() => onOpenChange(false)}
-                className="text-white/40 hover:text-white"
+                className="text-muted-foreground hover:text-foreground"
               >
                 Cancelar
               </Button>
@@ -336,10 +336,10 @@ export function TransactionFormModal({
                 type="submit"
                 disabled={isPending}
                 className={cn(
-                  "font-black uppercase italic tracking-tighter px-8",
+                  "font-bold tracking-tight px-8",
                   isExpense
-                    ? "bg-secondary text-white hover:bg-secondary/90"
-                    : "bg-primary text-black hover:bg-primary/90",
+                    ? "bg-secondary text-foreground hover:bg-secondary/90"
+                    : "bg-primary text-primary-foreground hover:bg-primary/90",
                 )}
               >
                 {isPending ? (

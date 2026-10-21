@@ -46,17 +46,17 @@ export function SignatureForm({ serviceOrderId }: { serviceOrderId: string }) {
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="space-y-2">
-        <h3 className="text-[10px] font-black uppercase text-primary tracking-widest">
+        <h3 className="text-xs font-bold text-primary">
           Assinatura Digital da O.S.
         </h3>
-        <p className="text-xs text-white/40">
+        <p className="text-xs text-muted-foreground">
           Confirme a autorização dos serviços em execução
         </p>
       </div>
 
       <div className="relative group">
         <div className="absolute -inset-1 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 rounded-[2rem] blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
-        <Card className="relative border-white/5 bg-zinc-900 rounded-[2rem] overflow-hidden">
+        <Card className="relative border-border bg-card rounded-[2rem] overflow-hidden">
           <CardContent className="p-0">
             <SignatureCanvas
               ref={sigCanvas}
@@ -66,16 +66,16 @@ export function SignatureForm({ serviceOrderId }: { serviceOrderId: string }) {
               }}
             />
           </CardContent>
-          <div className="p-4 border-t border-white/5 flex justify-between items-center bg-white/[0.02]">
+          <div className="p-4 border-t border-border flex justify-between items-center bg-muted/50">
             <Button
               variant="ghost"
               size="sm"
               onClick={clear}
-              className="text-white/40 hover:text-white"
+              className="text-muted-foreground hover:text-foreground"
             >
               <RotateCcw className="mr-2 size-4" /> Limpar
             </Button>
-            <div className="flex items-center gap-2 text-[10px] font-black uppercase text-white/20">
+            <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground">
               <PenTool className="size-3" /> Assine aqui
             </div>
           </div>
@@ -85,7 +85,7 @@ export function SignatureForm({ serviceOrderId }: { serviceOrderId: string }) {
       <Button
         onClick={handleSign}
         disabled={isSubmitting}
-        className="w-full h-14 text-lg font-black uppercase italic tracking-tighter glow-primary bg-emerald-600 hover:bg-emerald-700"
+        className="w-full h-14 text-lg font-bold tracking-tight bg-primary hover:bg-primary/90"
       >
         {isSubmitting ? (
           <>
@@ -96,7 +96,7 @@ export function SignatureForm({ serviceOrderId }: { serviceOrderId: string }) {
         )}
       </Button>
 
-      <p className="text-[9px] text-center text-white/20 font-medium leading-relaxed">
+      <p className="text-xs text-center text-muted-foreground font-medium leading-relaxed">
         Ao assinar, você autoriza formalmente o início ou continuação dos
         trabalhos técnicos descritos nesta Ordem de Serviço. Este registro
         eletrônico possui validade técnica e jurídica.

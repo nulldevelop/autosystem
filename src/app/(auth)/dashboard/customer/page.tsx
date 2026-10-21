@@ -7,7 +7,7 @@ export default async function CustomerPage() {
   const customers = await getCustomers();
 
   return (
-    <div className="p-6">
+    <div>
       <CustomerList customers={customers.customers} />
     </div>
   );

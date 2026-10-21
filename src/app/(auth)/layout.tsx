@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { ThemeToggle } from "@/components/app/theme-toggle";
 import { PWAInstallPrompt } from "@/components/pwa-install-prompt";
 import { Logo } from "@/components/ui/logo";
 import {
@@ -31,35 +32,25 @@ export default async function AuthLayout({
   return (
     <SidebarProvider defaultOpen={defaultOpen}>
       <AppSidebar />
-      <SidebarInset className="bg-[#0a0a0a] tech-grid">
-        <header className="flex h-16 shrink-0 items-center justify-between gap-2 border-b border-white/5 px-6 sticky top-0 bg-black/40 backdrop-blur-xl z-30">
-          <div className="flex items-center gap-4">
-            <SidebarTrigger className="-ml-1 text-gray-400 hover:text-primary transition-colors" />
-            <div className="h-4 w-[1px] bg-white/10 hidden md:block" />
-            <div className="flex items-center gap-3">
-              <Logo />
-              <div className="flex flex-col leading-none">
-                <span className="text-xl font-black italic tracking-tighter text-white">
-                  AUTO<span className="text-primary">SYSTEM</span>
-                </span>
-              </div>
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
-              <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
-              <span className="text-[10px] font-bold uppercase tracking-wider text-white/60">
-                System Online
+      <SidebarInset className="min-h-screen bg-background">
+        <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center justify-between gap-3 border-b bg-background/90 px-4 backdrop-blur-md sm:h-16 sm:px-6">
+          <div className="flex min-w-0 items-center gap-3">
+            <SidebarTrigger className="-ml-1 hidden text-muted-foreground hover:text-foreground lg:inline-flex" />
+            <div className="flex items-center gap-2 lg:hidden">
+              <Logo className="size-7" />
+              <span className="font-display text-base font-semibold tracking-tight">
+                Auto<span className="text-primary">System</span>
               </span>
             </div>
+          </div>
+          <div className="flex items-center gap-1 sm:gap-2">
+            <ThemeToggle />
             <HeaderUserMenu session={sessionData} />
           </div>
         </header>
 
-        <main className="flex-1 p-4 md:p-6 pb-24 lg:pb-6 relative min-h-[calc(100vh-4rem)]">
-          <div className="absolute top-0 left-1/4 w-1/2 h-1/2 bg-primary/5 blur-[120px] pointer-events-none rounded-full" />
-          <div className="absolute bottom-0 right-1/4 w-1/3 h-1/3 bg-secondary/5 blur-[100px] pointer-events-none rounded-full" />
-          <div className="relative z-10 mx-auto w-full">{children}</div>
+        <main className="pb-dock mx-auto w-full max-w-[1760px] flex-1 px-4 py-5 sm:px-5 sm:py-6 lg:px-6 lg:pb-10">
+          {children}
         </main>
 
         <MobileDock />

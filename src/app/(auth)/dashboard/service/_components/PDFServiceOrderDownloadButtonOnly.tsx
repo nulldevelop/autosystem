@@ -4,15 +4,18 @@ import { PDFDownloadLink } from "@react-pdf/renderer";
 import { Download, FileText, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import type { BudgetWithRelations } from "@/types/budget";
 import { ServiceOrderPDF } from "../../budget/_components/ServiceOrderPDF";
 
 interface PDFServiceOrderDownloadButtonOnlyProps {
   budget: BudgetWithRelations;
+  className?: string;
 }
 
 export function PDFServiceOrderDownloadButtonOnly({
   budget,
+  className,
 }: PDFServiceOrderDownloadButtonOnlyProps) {
   const [shouldRender, setShouldRender] = useState(false);
 
@@ -22,10 +25,10 @@ export function PDFServiceOrderDownloadButtonOnly({
         variant="outline"
         size="sm"
         onClick={() => setShouldRender(true)}
-        className="w-full h-9 gap-2 border-white/5 bg-white/5 hover:bg-white/10 text-[10px] font-black uppercase tracking-wider"
+        className={cn(className)}
       >
-        Download O.S.
-        <Download className="w-3.5 h-3.5" />
+        <Download />
+        PDF
       </Button>
     );
   }
@@ -34,24 +37,24 @@ export function PDFServiceOrderDownloadButtonOnly({
     <PDFDownloadLink
       document={<ServiceOrderPDF budget={budget as any} />}
       fileName={`ordem-de-servico-${budget.id.substring(0, 6)}.pdf`}
-      style={{ width: "100%" }}
+      style={{ display: "inline-block" }}
     >
       {({ loading }) => (
         <Button
           variant="outline"
           size="sm"
           disabled={loading}
-          className="w-full h-9 gap-2 border-white/5 bg-white/5 hover:bg-white/10 text-[10px] font-black uppercase tracking-wider text-primary border-primary/20"
+          className={cn(className)}
         >
           {loading ? (
             <>
+              <Loader2 className="animate-spin" />
               Gerando...
-              <Loader2 className="w-3.5 h-3.5 animate-spin" />
             </>
           ) : (
             <>
+              <FileText />
               Baixar PDF
-              <FileText className="w-3.5 h-3.5" />
             </>
           )}
         </Button>

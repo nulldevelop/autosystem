@@ -15,7 +15,7 @@ const securityHeaders = [
   },
   {
     key: "Content-Security-Policy",
-    value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; frame-src https://js.stripe.com; connect-src 'self' https://api.stripe.com https://viacep.com.br;",
+    value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; font-src 'self' data:; worker-src 'self' blob:; frame-src https://js.stripe.com; connect-src 'self' blob: data: https://api.stripe.com https://viacep.com.br;",
   },
 ];
 

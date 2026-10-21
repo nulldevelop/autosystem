@@ -41,31 +41,31 @@ interface Notification {
 const typeConfig = {
   BUDGET_SIGNED: {
     icon: FileSignature,
-    color: "text-green-400",
-    bgColor: "bg-green-400/10",
-    borderColor: "border-green-400/20",
+    color: "text-success",
+    bgColor: "bg-success/12",
+    borderColor: "border-success/20",
   },
   SERVICE_ORDER_SIGNED: {
     icon: CheckCircle,
-    color: "text-green-400",
-    bgColor: "bg-green-400/10",
-    borderColor: "border-green-400/20",
+    color: "text-success",
+    bgColor: "bg-success/12",
+    borderColor: "border-success/20",
   },
   BUDGET_APPROVED: {
     icon: FileText,
-    color: "text-blue-400",
+    color: "text-info",
     bgColor: "bg-blue-400/10",
     borderColor: "border-blue-400/20",
   },
   SERVICE_ORDER_COMPLETED: {
     icon: Wrench,
-    color: "text-amber-400",
+    color: "text-warning",
     bgColor: "bg-amber-400/10",
     borderColor: "border-amber-400/20",
   },
   NEW_CUSTOMER: {
     icon: UserPlus,
-    color: "text-purple-400",
+    color: "text-info",
     bgColor: "bg-purple-400/10",
     borderColor: "border-purple-400/20",
   },
@@ -137,14 +137,14 @@ export function NotificationsList({
 
   if (notificationsList.length === 0) {
     return (
-      <div className="rounded-2xl bg-white/[0.02] border border-white/10 p-12 text-center">
-        <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-4">
-          <Bell className="w-10 h-10 text-white/20" />
+      <div className="rounded-xl border border-dashed bg-surface p-12 text-center">
+        <div className="w-20 h-20 rounded-full bg-muted/50 flex items-center justify-center mx-auto mb-4">
+          <Bell className="w-10 h-10 text-muted-foreground" />
         </div>
-        <h3 className="text-xl font-bold text-white mb-2">
+        <h3 className="text-xl font-bold text-foreground mb-2">
           Nenhuma notificação
         </h3>
-        <p className="text-white/40">
+        <p className="text-muted-foreground">
           Quando houver alguma atividade, você será notificado aqui.
         </p>
       </div>
@@ -155,8 +155,9 @@ export function NotificationsList({
     <div className="space-y-3">
       {unreadCount > 0 && (
         <button
+          type="button"
           onClick={markAllAsRead}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/20 border border-primary/30 text-primary hover:bg-primary/30 transition-colors text-sm font-medium w-full justify-center"
+          className="ml-auto flex min-h-10 items-center gap-2 rounded-lg border px-4 text-sm font-medium text-primary transition-colors hover:bg-muted"
         >
           <CheckCheck className="w-4 h-4" />
           Marcar todas como lidas ({unreadCount})
@@ -169,13 +170,14 @@ export function NotificationsList({
 
         return (
           <button
+            type="button"
             key={notification.id}
             onClick={() => !notification.read && markAsRead(notification.id)}
             className={cn(
-              "w-full text-left p-5 rounded-2xl border transition-all",
+              "w-full text-left p-4 sm:p-5 rounded-xl border transition-colors",
               notification.read
-                ? "bg-white/[0.02] border-white/10"
-                : "bg-primary/5 border-primary/20 hover:bg-primary/10",
+                ? "bg-card border-border"
+                : "bg-card border-primary/40 hover:bg-muted/40",
             )}
           >
             <div className="flex gap-4">
@@ -191,23 +193,23 @@ export function NotificationsList({
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <h3 className="font-bold text-white">
+                    <h3 className="font-bold text-foreground">
                       {notification.title}
                     </h3>
-                    <p className="text-sm text-white/60 mt-0.5">
+                    <p className="text-sm text-muted-foreground mt-0.5">
                       {notification.message}
                     </p>
                   </div>
-                  <span className="text-xs text-white/40 shrink-0">
+                  <span className="text-xs text-muted-foreground shrink-0">
                     {formatDate(notification.createdAt)}
                   </span>
                 </div>
 
                 {(notification.budget || notification.serviceOrder) && (
-                  <div className="mt-3 flex items-center gap-2 text-xs text-white/40">
+                  <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
                     {notification.budget?.vehicle && (
                       <>
-                        <span className="px-2 py-1 rounded bg-white/5">
+                        <span className="px-2 py-1 rounded bg-muted/50">
                           {notification.budget.vehicle.marca}{" "}
                           {notification.budget.vehicle.model}
                         </span>
@@ -218,7 +220,7 @@ export function NotificationsList({
                     )}
                     {notification.serviceOrder?.vehicle && (
                       <>
-                        <span className="px-2 py-1 rounded bg-white/5">
+                        <span className="px-2 py-1 rounded bg-muted/50">
                           {notification.serviceOrder.vehicle.marca}{" "}
                           {notification.serviceOrder.vehicle.model}
                         </span>
@@ -231,7 +233,7 @@ export function NotificationsList({
                 )}
 
                 {notification.customer && (
-                  <div className="mt-2 text-xs text-white/40">
+                  <div className="mt-2 text-xs text-muted-foreground">
                     Cliente: {notification.customer.name}
                   </div>
                 )}

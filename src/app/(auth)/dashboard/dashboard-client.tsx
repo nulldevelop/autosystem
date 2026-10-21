@@ -1,5 +1,4 @@
 "use client";
-import { motion } from "framer-motion";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -31,24 +30,6 @@ export default function DashboardClient({
 
   return (
     <>
-      <section className="relative z-10 pt-5 pb-5">
-        <div className="mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className="max-w-4xl"
-          >
-            <h1 className="text-3xl md:text-5xl font-black mb-4 leading-[0.9] tracking-tighter">
-              SEU PAINEL <span className="text-green-500">DE CONTROLE</span>
-            </h1>
-            <p className="text-xl text-gray-400 max-w-xl leading-relaxed">
-              Bem-vindo ao AutoSystem. Gerencie sua oficina com eficiência.
-            </p>
-          </motion.div>
-        </div>
-      </section>
-
       {children}
 
       <CreateOrganizationForm

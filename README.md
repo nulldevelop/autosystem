@@ -1,129 +1,234 @@
+<div align="center">
+
 # 🚗 AutoSystem
 
-## 📌 Descrição
-O **AutoSystem** é uma plataforma SaaS robusta desenvolvida para a gestão completa de centros automotivos e oficinas. O sistema resolve o problema de organização administrativa ao centralizar o cadastro de clientes, veículos, controle de estoque de produtos, além de automatizar a criação de orçamentos e ordens de serviço (OS) com geração de PDF profissional.
+**Sistema SaaS completo de gestão para oficinas mecânicas**
+Orçamentos, ordens de serviço, estoque, financeiro e CRM — tudo em um só lugar.
 
-O projeto conta com uma arquitetura multi-tenant, permitindo que diferentes oficinas (organizações) gerenciem seus próprios dados, além de um sistema de assinaturas integrado para monetização.
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![Prisma](https://img.shields.io/badge/Prisma-7-2D3748?logo=prisma&logoColor=white)](https://www.prisma.io/)
+[![Stripe](https://img.shields.io/badge/Stripe-Payments-635BFF?logo=stripe&logoColor=white)](https://stripe.com)
 
-## 🚀 Funcionalidades
+[Funcionalidades](#-funcionalidades) • [Planos](#-planos) • [Stack](#-stack) • [Como rodar](#-como-rodar-localmente)
 
--   **Gestão de Organizações**: Suporte a multi-empresa com convites para membros.
--   **Controle de Clientes**: Cadastro completo com suporte a CPF e CNPJ.
--   **Gestão de Veículos**: Vínculo de veículos aos clientes com histórico de serviços.
--   **Estoque de Produtos**: Gerenciamento de peças e insumos com SKU e precificação.
--   **Sistema de Orçamentos**: Criação dinâmica de orçamentos com status (Pendente, Aprovado, Rejeitado).
--   **Ordens de Serviço (OS)**: Conversão automática de orçamentos em OS com controle de status (Aberto, Em Progresso, Concluído, Cancelado).
--   **Geração de PDF**: Emissão de documentos profissionais para orçamentos e ordens de serviço.
--   **Assinaturas (SaaS)**: Planos (Basic, Plus, Professional) com limites de recursos e checkout integrado via Stripe.
--   **Dashboard Estatístico**: Visualização rápida de métricas e volumes de atendimento.
+</div>
 
-## 🛠️ Tecnologias e Stack
+---
 
--   **Framework**: [Next.js 15+](https://nextjs.org/) (App Router)
--   **Linguagem**: [TypeScript](https://www.typescriptlang.org/)
--   **Banco de Dados**: [PostgreSQL](https://www.postgresql.org/)
--   **ORM**: [Prisma](https://www.prisma.io/)
--   **Autenticação**: [Better-Auth](https://better-auth.com/)
--   **Pagamentos**: [Stripe](https://stripe.com/)
--   **Estilização**: [Tailwind CSS](https://tailwindcss.com/) & [Shadcn UI](https://ui.shadcn.com/)
--   **Formulários**: [React Hook Form](https://react-hook-form.com/) & [Zod](https://zod.dev/)
--   **Relatórios**: [@react-pdf/renderer](https://react-pdf.org/)
--   **Linter/Formatter**: [Biome](https://biomejs.dev/)
+## 📸 Demonstração
 
-## 📷 Demonstração / Screenshots
+> Prints gerados com **dados 100% fictícios** — nenhum dado real de clientes.
 
-## ⚙️ Como rodar o projeto localmente
+### 🏠 Landing & Acesso
+
+| Landing Page | Login / Cadastro |
+|:-:|:-:|
+| ![Landing](public/screenshots/01-landing.jpg) | ![Login](public/screenshots/02-login.jpg) |
+
+### 📊 Dashboard & Orçamentos
+
+| Dashboard | Orçamentos |
+|:-:|:-:|
+| ![Dashboard](public/screenshots/04-dashboard.jpg) | ![Orçamentos](public/screenshots/05-orcamentos.jpg) |
+
+### 🔧 Ordens de Serviço
+
+| Lista de OS | Detalhe do Orçamento |
+|:-:|:-:|
+| ![Ordens de Serviço](public/screenshots/06-ordens-servico.jpg) | ![Detalhe do Orçamento](public/screenshots/14-orcamento-detalhe.jpg) |
+
+### 👥 Clientes & Veículos
+
+| Clientes | Veículos |
+|:-:|:-:|
+| ![Clientes](public/screenshots/07-clientes.jpg) | ![Veículos](public/screenshots/08-veiculos.jpg) |
+
+### 📦 Estoque & Financeiro
+
+| Estoque | Financeiro |
+|:-:|:-:|
+| ![Estoque](public/screenshots/09-estoque.jpg) | ![Financeiro](public/screenshots/10-financeiro.jpg) |
+
+### 📈 Relatórios & Planos
+
+| Relatórios | Planos |
+|:-:|:-:|
+| ![Relatórios](public/screenshots/11-relatorios.jpg) | ![Planos](public/screenshots/12-planos.jpg) |
+
+---
+
+## 💡 Sobre o projeto
+
+O **AutoSystem** resolve o caos administrativo das oficinas centralizando clientes, veículos, estoque e serviços — automatizando a criação de orçamentos e ordens de serviço (OS) com **geração de PDF profissional** e **assinatura digital** pelo cliente, via link público e sem login.
+
+Com arquitetura **multi-tenant**, cada oficina (organização) tem seus dados 100% isolados, e o sistema de **assinaturas via Stripe** permite monetizar a plataforma.
+
+---
+
+## ✨ Funcionalidades
+
+### 🏢 Gestão
+- **Multi-tenant** — várias empresas com dados isolados e convite de membros
+- **Clientes** — cadastro completo (CPF/CNPJ) com histórico de serviços (CRM)
+- **Veículos** — vinculados aos clientes com detalhes e histórico
+
+### 🔧 Serviços
+- **Orçamentos** — criação dinâmica com itens, fotos e status (Pendente / Aprovado / Rejeitado)
+- **Ordens de Serviço** — geradas automaticamente de orçamentos aprovados (Aberto / Em Progresso / Concluído / Cancelado)
+- **Assinatura digital** — cliente assina orçamento e OS por link público, sem precisar de conta
+- **PDF profissional** — emissão de documentos para orçamentos, OS e recibos
+
+### 📦 Operação
+- **Estoque** — produtos com SKU, precificação, alertas de baixo estoque e relatório de inventário em PDF
+- **Financeiro** — transações, fluxo de caixa e recibo em PDF
+- **Relatórios** — métricas estratégicas por período com exportação em PDF
+- **Notificações** — sistema de alertas interno
+
+### 💳 Monetização (SaaS)
+- **Planos via Stripe** — checkout, webhooks e atualização automática de assinaturas
+- **Trial de 14 dias** em todos os planos
+- **Limites de recursos** por plano
+
+### 📱 Extras
+- **PWA** — instalável como app no celular
+- **Modo offline** com sincronização posterior
+- **Dashboard estatístico** com métricas de atendimento
+
+---
+
+## 💰 Planos
+
+| | Basic | Plus | Professional |
+|:-:|:-:|:-:|:-:|
+| **Preço** | R$ 79,99/mês | R$ 119,99/mês | R$ 179,99/mês |
+| **Trial** | 14 dias | 14 dias | 14 dias |
+
+> Os limites de recursos de cada plano ficam em `src/utils` (lógica de permissões/planos).
+
+---
+
+## 🛠️ Stack
+
+| Camada | Tecnologias |
+|---|---|
+| **Frontend** | Next.js 16 (App Router), React 19, TypeScript, TailwindCSS 4, Shadcn UI, Framer Motion |
+| **Backend** | Prisma ORM, PostgreSQL, Better Auth (auth + multi-tenant) |
+| **Pagamentos** | Stripe (checkout, webhooks, assinaturas) |
+| **Documentos** | @react-pdf/renderer |
+| **Qualidade** | Biome (lint + format) |
+
+---
+
+## 🚀 Como rodar localmente
 
 ### Pré-requisitos
--   Node.js 20+
--   PostgreSQL
--   Stripe CLI (opcional para webhooks locais)
+
+- Node.js 20+
+- PostgreSQL
+- Stripe CLI _(opcional, para webhooks em desenvolvimento)_
 
 ### Instalação
 
-1. Clone o repositório:
-   ```bash
-   git clone https://github.com/seu-usuario/autosystem.git
-   cd autosystem
-   ```
-
-2. Instale as dependências:
-   ```bash
-   npm install
-   ```
-
-3. Configure as variáveis de ambiente (veja a seção abaixo).
-
-4. Execute as migrações do banco de dados:
-   ```bash
-   npx prisma generate
-   npx prisma migrate dev
-   ```
-
-### Execução
-
-Inicie o servidor de desenvolvimento:
 ```bash
+# 1. Clone o repositório
+git clone https://github.com/seu-usuario/autosystem.git
+cd autosystem
+
+# 2. Instale as dependências
+npm install
+
+# 3. Configure o arquivo .env (veja abaixo)
+
+# 4. Gere o Prisma Client e rode as migrações
+npx prisma generate
+npx prisma migrate dev
+
+# 5. Inicie o servidor de desenvolvimento
 npm run dev
 ```
+
 O projeto estará disponível em `https://autosystem.nulldev.com.br`.
 
-### Variáveis de Ambiente
+### Variáveis de ambiente
 
-Crie um arquivo `.env` na raiz do projeto com as seguintes chaves (exemplo):
+Crie um arquivo `.env` na raiz:
 
 ```env
 DATABASE_URL="postgresql://user:password@localhost:5432/autosystem"
 
 # Stripe
-STRIPE_SECRET_KEY="sk_test_.."
+STRIPE_SECRET_KEY="sk_test_..."
 STRIPE_WEBHOOK_SECRET="whsec_..."
 NEXT_PUBLIC_STRIPE_PUBLIC_KEY="pk_test_..."
 
-# Better-Auth
+# Better Auth
 BETTER_AUTH_SECRET="seu_secret_aqui"
 BETTER_AUTH_URL="https://autosystem.nulldev.com.br"
 NEXT_PUBLIC_APP_URL="https://autosystem.nulldev.com.br"
 ```
 
-## 🧪 Testes
+### Webhooks do Stripe (dev)
 
-Atualmente, o projeto utiliza o **Biome** para garantir a qualidade do código e padronização:
 ```bash
-npm run lint    # Verificar erros
-npm run format  # Formatar código
+npm run stripe:listem
 ```
 
-## 📦 Estrutura do projeto
+---
+
+## 🧪 Qualidade de código
+
+```bash
+npm run lint     # Verificar erros
+npm run format   # Formatar código
+```
+
+---
+
+## 📁 Estrutura
 
 ```text
 src/
-├── app/             # Rotas do Next.js e lógica de páginas
-│   ├── (auth)/      # Rotas autenticadas (Dashboard, Clientes, etc)
+├── app/
+│   ├── (auth)/      # Rotas autenticadas (Dashboard, Clientes, OS...)
 │   ├── (public)/    # Páginas públicas (Landing, Login, Registro)
-│   └── api/         # Endpoints de API (Auth, Stripe Webhooks)
+│   └── api/         # Endpoints (Auth, Stripe Webhooks)
 ├── components/      # Componentes UI reutilizáveis (Shadcn)
-├── lib/             # Configurações de bibliotecas (Prisma, Auth, Stripe)
-├── types/           # Definições de tipos TypeScript
-└── utils/           # Funções utilitárias e lógica de permissões/planos
-prisma/              # Esquema do banco de dados e migrações
+├── lib/             # Configurações (Prisma, Auth, Stripe)
+├── types/           # Definições TypeScript
+└── utils/           # Utilitários e lógica de permissões/planos
+prisma/              # Schema do banco e migrações
 ```
 
-## 📌 Roadmap / Melhorias futuras
+---
 
-- [ ] Implementar notificações via WhatsApp/E-mail para clientes.
-- [ ] Módulo de fluxo de caixa e gestão financeira avançada.
-- [ ] Aplicativo mobile para mecânicos registrarem fotos dos serviços.
-- [ ] Suporte a múltiplos idiomas (i18n).
+## 🗺️ Roadmap
 
-## 🤝 Contribuição
+- [ ] Notificações via WhatsApp / E-mail para clientes
+- [ ] Gestão financeira avançada
+- [ ] App mobile para mecânicos (fotos dos serviços)
+- [ ] Suporte a múltiplos idiomas (i18n)
 
-1. Faça um Fork do projeto.
-2. Crie uma branch para sua feature (`git checkout -b feature/nova-feature`).
-3. Commit suas mudanças (`git commit -m 'Add: nova funcionalidade'`).
-4. Push para a branch (`git push origin feature/nova-feature`).
-5. Abra um Pull Request.
+---
+
+## 🤝 Contribuindo
+
+1. Faça um **fork** do projeto
+2. Crie uma branch: `git checkout -b feature/minha-feature`
+3. Commite: `git commit -m "Add: minha feature"`
+4. Push: `git push origin feature/minha-feature`
+5. Abra um **Pull Request**
+
+---
 
 ## 📄 Licença
 
-Copyright © 2026 AutoSystem. Todos os direitos reservados.
+© 2026 AutoSystem — Todos os direitos reservados.
+
+---
+
+<div align="center">
+Feito com ❤️ para oficinas que merecem organize-se melhor
+</div>

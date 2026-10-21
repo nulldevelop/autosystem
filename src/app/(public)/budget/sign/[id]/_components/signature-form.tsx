@@ -46,17 +46,15 @@ export function SignatureForm({ budgetId }: { budgetId: string }) {
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="space-y-2">
-        <h3 className="text-[10px] font-black uppercase text-primary tracking-widest">
-          Assinatura Digital
-        </h3>
-        <p className="text-xs text-white/40">
+        <h3 className="text-xs font-bold text-primary">Assinatura Digital</h3>
+        <p className="text-xs text-muted-foreground">
           Use o seu dedo ou mouse para assinar no campo abaixo
         </p>
       </div>
 
       <div className="relative group">
         <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-blue-500/20 rounded-[2rem] blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
-        <Card className="relative border-white/5 bg-zinc-900 rounded-[2rem] overflow-hidden">
+        <Card className="relative border-border bg-card rounded-[2rem] overflow-hidden">
           <CardContent className="p-0">
             <SignatureCanvas
               ref={sigCanvas}
@@ -66,16 +64,16 @@ export function SignatureForm({ budgetId }: { budgetId: string }) {
               }}
             />
           </CardContent>
-          <div className="p-4 border-t border-white/5 flex justify-between items-center bg-white/[0.02]">
+          <div className="p-4 border-t border-border flex justify-between items-center bg-muted/50">
             <Button
               variant="ghost"
               size="sm"
               onClick={clear}
-              className="text-white/40 hover:text-white"
+              className="text-muted-foreground hover:text-foreground"
             >
               <RotateCcw className="mr-2 size-4" /> Limpar
             </Button>
-            <div className="flex items-center gap-2 text-[10px] font-black uppercase text-white/20">
+            <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground">
               <PenTool className="size-3" /> Assine aqui
             </div>
           </div>
@@ -85,7 +83,7 @@ export function SignatureForm({ budgetId }: { budgetId: string }) {
       <Button
         onClick={handleSign}
         disabled={isSubmitting}
-        className="w-full h-14 text-lg font-black uppercase italic tracking-tighter glow-primary"
+        className="w-full h-14 text-lg font-bold tracking-tight"
       >
         {isSubmitting ? (
           <>
@@ -96,7 +94,7 @@ export function SignatureForm({ budgetId }: { budgetId: string }) {
         )}
       </Button>
 
-      <p className="text-[9px] text-center text-white/20 font-medium leading-relaxed">
+      <p className="text-xs text-center text-muted-foreground font-medium leading-relaxed">
         Ao clicar em confirmar, você declara estar de acordo com os valores e
         serviços descritos neste orçamento técnico. A assinatura digital possui
         validade jurídica conforme MP 2.200-2/2001.

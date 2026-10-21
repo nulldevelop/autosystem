@@ -33,7 +33,7 @@ export default async function RelatoriosPage({ searchParams }: PageProps) {
 
   if (!data) {
     return (
-      <div className="flex items-center justify-center h-full text-white/40 uppercase font-black italic">
+      <div className="flex items-center justify-center h-full text-muted-foreground font-bold">
         Organização não encontrada
       </div>
     );

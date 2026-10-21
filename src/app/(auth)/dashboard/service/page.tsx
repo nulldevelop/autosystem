@@ -7,7 +7,7 @@ export default async function ServiceOrderPage() {
   const serviceOrders = await getServiceOrders();
 
   return (
-    <div className="p-6">
+    <div>
       <ServiceOrderList serviceOrders={serviceOrders.serviceOrders} />
     </div>
   );

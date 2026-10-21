@@ -7,7 +7,7 @@ export default async function BudgetPage() {
   const budgets = await getBudgets();
 
   return (
-    <div className="p-6">
+    <div>
       <BudgetList budgets={budgets.budgets} />
     </div>
   );

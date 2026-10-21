@@ -148,7 +148,7 @@ export async function AppSidebar({
 
   const menuGroups = [
     {
-      title: "Overview",
+      title: "Visão geral",
       items: [
         { title: "Dashboard", url: "/dashboard", iconName: "LayoutDashboard" },
         {
@@ -165,7 +165,7 @@ export async function AppSidebar({
       ],
     },
     {
-      title: "Gestão",
+      title: "Operação",
       items: allGestaoItems,
     },
     {
@@ -182,20 +182,20 @@ export async function AppSidebar({
   ];
 
   return (
-    <Sidebar {...props} className="bg-[#0a0a0a] border-r border-white/5">
-      <SidebarHeader className="p-4 border-b border-white/5">
+    <Sidebar {...props} className="bg-sidebar border-r border-sidebar-border">
+      <SidebarHeader className="h-16 justify-center border-b border-sidebar-border px-5">
         <div className="flex items-center gap-3">
           <Logo className="size-8" />
-          <span className="text-xl font-black italic tracking-tighter text-white">
-            AUTO<span className="text-primary">SYSTEM</span>
+          <span className="font-display text-lg font-semibold tracking-tight text-foreground">
+            Auto<span className="text-primary">System</span>
           </span>
         </div>
       </SidebarHeader>
 
-      <SidebarContent className="px-3 gap-2">
+      <SidebarContent className="gap-3 px-3 py-4">
         {menuGroups.map((group) => (
           <SidebarGroup key={group.title} className="p-0">
-            <SidebarGroupLabel className="text-white/20 text-[10px] uppercase tracking-[0.2em] px-4 py-4 font-black">
+            <SidebarGroupLabel className="px-3 py-2 text-xs font-medium text-muted-foreground/80">
               {group.title}
             </SidebarGroupLabel>
             <SidebarGroupContent>

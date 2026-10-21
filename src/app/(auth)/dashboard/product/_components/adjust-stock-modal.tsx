@@ -94,12 +94,12 @@ export function AdjustStockModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md bg-zinc-950 border-white/5">
+      <DialogContent className="sm:max-w-md bg-card border-border">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-black italic uppercase tracking-tighter text-white">
-            Ajustar <span className="text-primary">Estoque</span>
+          <DialogTitle className="text-xl font-semibold tracking-tight">
+            Ajustar Estoque
           </DialogTitle>
-          <DialogDescription className="text-white/40 font-bold uppercase tracking-widest text-[10px]">
+          <DialogDescription className="text-muted-foreground text-sm">
             {product?.name} - Saldo atual: {product?.stockQuantity}{" "}
             {product?.unit}
           </DialogDescription>
@@ -115,7 +115,7 @@ export function AdjustStockModal({
               name="type"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">
+                  <FormLabel className="text-xs font-bold text-muted-foreground">
                     Tipo de Movimentação
                   </FormLabel>
                   <Select
@@ -124,11 +124,11 @@ export function AdjustStockModal({
                     value={field.value}
                   >
                     <FormControl>
-                      <SelectTrigger className="bg-white/5 border-white/10">
+                      <SelectTrigger className="bg-muted/50 border-border">
                         <SelectValue />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent className="bg-zinc-900 border-white/10">
+                    <SelectContent className="bg-card border-border">
                       <SelectItem value="IN">Entrada (+)</SelectItem>
                       <SelectItem value="OUT">Saída (-)</SelectItem>
                       <SelectItem value="ADJUSTMENT">
@@ -146,13 +146,13 @@ export function AdjustStockModal({
               name="quantity"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">
+                  <FormLabel className="text-xs font-bold text-muted-foreground">
                     Quantidade
                   </FormLabel>
                   <FormControl>
                     <Input
                       type="number"
-                      className="bg-white/5 border-white/10"
+                      className="bg-muted/50 border-border"
                       {...field}
                       onChange={(e) => field.onChange(e.target.valueAsNumber)}
                     />
@@ -167,13 +167,13 @@ export function AdjustStockModal({
               name="reason"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">
+                  <FormLabel className="text-xs font-bold text-muted-foreground">
                     Motivo / Observação
                   </FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Ex: Compra de fornecedor, Ajuste de inventário..."
-                      className="bg-white/5 border-white/10"
+                      className="bg-muted/50 border-border"
                       {...field}
                     />
                   </FormControl>
@@ -187,14 +187,14 @@ export function AdjustStockModal({
                 type="button"
                 variant="outline"
                 onClick={() => onOpenChange(false)}
-                className="flex-1 text-[10px] font-black uppercase"
+                className="flex-1 text-xs font-bold "
               >
                 Cancelar
               </Button>
               <Button
                 type="submit"
                 disabled={isLoading}
-                className="flex-1 glow-primary uppercase font-black italic"
+                className="flex-1 font-bold"
               >
                 {isLoading ? "Processando..." : "Confirmar Ajuste"}
               </Button>

@@ -76,50 +76,48 @@ export function PWAInstallPrompt() {
   }
 
   return (
-    <div className="fixed bottom-24 left-4 right-4 md:left-auto md:right-4 md:bottom-4 md:w-96 bg-[#111111] border border-white/10 p-5 rounded-2xl shadow-2xl z-50 animate-in slide-in-from-bottom-8 duration-500 fade-in">
+    <div className="fixed bottom-24 left-4 right-4 md:left-auto md:right-6 md:bottom-6 md:w-96 bg-card border border-border p-4 sm:p-5 rounded-xl shadow-xl z-40 animate-in slide-in-from-bottom-4 duration-300">
       <button
         onClick={handleDismiss}
-        className="absolute top-3 right-3 text-white/50 hover:text-white transition-colors p-1"
+        className="absolute top-3 right-3 text-muted-foreground hover:text-foreground transition-colors p-1 rounded-md"
         aria-label="Fechar"
       >
         <X size={16} />
       </button>
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-3">
         <div>
-          <h3 className="font-semibold text-white text-lg">Instale o App</h3>
-          <p className="text-sm text-white/60 mt-1 leading-relaxed">
-            Adicione o AutoSystem à sua tela inicial para uma experiência mais
-            rápida e em tela cheia.
+          <h3 className="font-semibold text-foreground text-base">Instale o App AutoSystem</h3>
+          <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+            Adicione o sistema à sua tela inicial para acesso rápido e em tela cheia.
           </p>
         </div>
 
         {isIOS ? (
-          <div className="bg-white/5 p-4 rounded-xl text-sm text-white/80 flex flex-col gap-3 border border-white/5">
-            <p className="flex items-center gap-3">
-              <span className="flex items-center justify-center w-6 h-6 rounded bg-white/10 text-xs font-medium">
+          <div className="bg-muted/50 p-3 rounded-lg text-xs text-foreground flex flex-col gap-2.5 border border-border">
+            <p className="flex items-center gap-2.5">
+              <span className="flex items-center justify-center size-5 rounded bg-muted text-xs font-semibold text-muted-foreground">
                 1
               </span>
               <span>
-                Toque em compartilhar{" "}
-                <Share size={16} className="inline ml-1 text-blue-400" />
+                Toque no botão de compartilhar{" "}
+                <Share size={14} className="inline ml-1 text-primary" />
               </span>
             </p>
-            <p className="flex items-center gap-3">
-              <span className="flex items-center justify-center w-6 h-6 rounded bg-white/10 text-xs font-medium">
+            <p className="flex items-center gap-2.5">
+              <span className="flex items-center justify-center size-5 rounded bg-muted text-xs font-semibold text-muted-foreground">
                 2
               </span>
               <span>
                 Selecione "Adicionar à Tela de Início"{" "}
-                <PlusSquare size={16} className="inline ml-1" />
+                <PlusSquare size={14} className="inline ml-1 text-primary" />
               </span>
             </p>
           </div>
         ) : (
           <Button
             onClick={handleInstallClick}
-            className="w-full font-medium"
-            size="lg"
+            className="w-full text-xs font-medium h-9"
           >
             Instalar Agora
           </Button>

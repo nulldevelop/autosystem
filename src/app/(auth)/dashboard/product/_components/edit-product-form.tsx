@@ -124,12 +124,12 @@ export function EditProductForm({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl bg-zinc-950 border-white/5">
+      <DialogContent className="sm:max-w-2xl bg-card border-border">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-black italic uppercase tracking-tighter text-white">
-            Editar <span className="text-primary">Produto</span>
+          <DialogTitle className="text-xl font-semibold tracking-tight">
+            Editar Produto
           </DialogTitle>
-          <DialogDescription className="text-white/40 font-bold uppercase tracking-widest text-[10px]">
+          <DialogDescription className="text-muted-foreground font-bold text-xs">
             Atualize as informações técnicas e financeiras do item
           </DialogDescription>
         </DialogHeader>
@@ -146,12 +146,12 @@ export function EditProductForm({
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">
+                      <FormLabel className="text-xs font-bold text-muted-foreground">
                         Nome
                       </FormLabel>
                       <FormControl>
                         <Input
-                          className="bg-white/5 border-white/10"
+                          className="bg-muted/50 border-border"
                           {...field}
                         />
                       </FormControl>
@@ -165,12 +165,12 @@ export function EditProductForm({
                   name="sku"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">
+                      <FormLabel className="text-xs font-bold text-muted-foreground">
                         SKU
                       </FormLabel>
                       <FormControl>
                         <Input
-                          className="bg-white/5 border-white/10 font-mono"
+                          className="bg-muted/50 border-border font-mono"
                           {...field}
                         />
                       </FormControl>
@@ -184,7 +184,7 @@ export function EditProductForm({
                   name="category"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">
+                      <FormLabel className="text-xs font-bold text-muted-foreground">
                         Categoria
                       </FormLabel>
                       <Select
@@ -193,11 +193,11 @@ export function EditProductForm({
                         value={field.value}
                       >
                         <FormControl>
-                          <SelectTrigger className="bg-white/5 border-white/10">
+                          <SelectTrigger className="bg-muted/50 border-border">
                             <SelectValue />
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent className="bg-zinc-900 border-white/10">
+                        <SelectContent className="bg-card border-border">
                           {CATEGORIES.map((cat) => (
                             <SelectItem key={cat} value={cat}>
                               {cat}
@@ -215,7 +215,7 @@ export function EditProductForm({
                   name="unit"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">
+                      <FormLabel className="text-xs font-bold text-muted-foreground">
                         Unidade
                       </FormLabel>
                       <Select
@@ -224,11 +224,11 @@ export function EditProductForm({
                         value={field.value}
                       >
                         <FormControl>
-                          <SelectTrigger className="bg-white/5 border-white/10">
+                          <SelectTrigger className="bg-muted/50 border-border">
                             <SelectValue />
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent className="bg-zinc-900 border-white/10">
+                        <SelectContent className="bg-card border-border">
                           {UNITS.map((unit) => (
                             <SelectItem key={unit} value={unit}>
                               {unit}
@@ -246,14 +246,14 @@ export function EditProductForm({
                   name="costPrice"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">
+                      <FormLabel className="text-xs font-bold text-muted-foreground">
                         Custo (R$)
                       </FormLabel>
                       <FormControl>
                         <Input
                           type="number"
                           step="0.01"
-                          className="bg-white/5 border-white/10 text-emerald-500 font-bold"
+                          className="bg-muted/50 border-border text-success font-bold"
                           {...field}
                           onChange={(e) =>
                             field.onChange(e.target.valueAsNumber)
@@ -270,14 +270,14 @@ export function EditProductForm({
                   name="price"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">
+                      <FormLabel className="text-xs font-bold text-muted-foreground">
                         Venda (R$)
                       </FormLabel>
                       <FormControl>
                         <Input
                           type="number"
                           step="0.01"
-                          className="bg-white/5 border-white/10 text-primary font-bold"
+                          className="bg-muted/50 border-border text-primary font-bold"
                           {...field}
                           onChange={(e) =>
                             field.onChange(e.target.valueAsNumber)
@@ -294,13 +294,13 @@ export function EditProductForm({
                   name="minStock"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-white/40">
+                      <FormLabel className="text-xs font-bold text-muted-foreground">
                         Estoque Mínimo
                       </FormLabel>
                       <FormControl>
                         <Input
                           type="number"
-                          className="bg-white/5 border-white/10"
+                          className="bg-muted/50 border-border"
                           {...field}
                           onChange={(e) =>
                             field.onChange(e.target.valueAsNumber)
@@ -325,7 +325,7 @@ export function EditProductForm({
                 <Button
                   type="submit"
                   disabled={isLoading}
-                  className="flex-1 glow-primary uppercase font-black italic"
+                  className="flex-1 font-bold"
                 >
                   {isLoading ? "Salvando..." : "Salvar Alterações"}
                 </Button>

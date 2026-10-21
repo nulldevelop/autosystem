@@ -1,477 +1,502 @@
-"use client";
-
-import { motion, useInView } from "framer-motion";
 import {
   ArrowRight,
   BarChart3,
+  Bell,
   Car,
-  CheckCircle2,
-  ChevronRight,
+  Check,
   ClipboardList,
-  Clock,
-  CreditCard,
-  DollarSign,
-  Gauge,
-  HeadphonesIcon,
+  FileDown,
+  Link2,
+  MessageCircle,
+  Moon,
   Package,
-  Quote,
-  Shield,
-  Star,
-  Truck,
+  Send,
+  Smartphone,
+  TrendingUp,
   Users,
-  Video,
-  Wallet,
-  Zap,
+  Wrench,
 } from "lucide-react";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { Plate } from "@/components/app/plate";
+import { ThemeToggle } from "@/components/app/theme-toggle";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/ui/logo";
+import { cn } from "@/lib/utils";
 import { subscriptionPlans } from "@/utils/plans/subscription-plans";
+import { TRIAL_DAYS } from "@/utils/permissions/trial-limits";
 
-const BackgroundAnimation = () => (
-  <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
-    <div
-      className="absolute inset-0 opacity-[0.03]"
-      style={{
-        backgroundImage:
-          "linear-gradient(#22c55e 1px, transparent 1px), linear-gradient(90deg, #22c55e 1px, transparent 1px)",
-        backgroundSize: "50px 50px",
-      }}
-    />
-    <motion.div
-      animate={{ scale: [1, 1.2, 1], opacity: [0.15, 0.25, 0.15] }}
-      transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-      className="absolute -top-40 -left-40 w-[500px] h-[500px] bg-primary/30 blur-[150px] rounded-full"
-    />
-    <motion.div
-      animate={{ scale: [1, 1.3, 1], opacity: [0.1, 0.2, 0.1], x: [0, -30, 0] }}
-      transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-      className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-secondary/20 blur-[160px] rounded-full"
-    />
-    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0a0a0a] z-10" />
-  </div>
-);
-
-const testimonials = [
-  {
-    name: "Roberto Silva",
-    role: "Dono - Auto Centro São Paulo",
-    text: "Em 3 meses, aumentamos nosso faturamento em 40%. O sistema é intuitivo e nossa equipe adorou.",
-    avatar: "RS",
-    rating: 5,
-  },
-  {
-    name: "Juliana Mendes",
-    role: "Gerente - Mega Motors",
-    text: "O controle de estoque me ahorrou R$ 5k por mês em peças perdidas. Imperdível!",
-    avatar: "JM",
-    rating: 5,
-  },
-  {
-    name: "Carlos Eduardo",
-    role: "Proprietário - Fast Fix",
-    text: "Melhor investimento que fizemos. O app mobile é show, gravo OS direto na oficina.",
-    avatar: "CE",
-    rating: 5,
-  },
-];
-
-const trustBadges = [
-  { icon: Shield, text: "Dados Criptografados" },
-  { icon: HeadphonesIcon, text: "Suporte 24/7" },
-  { icon: Zap, text: "99.9% Uptime" },
-  { icon: Truck, text: "Deploy em 5	min" },
-];
-
-const features = [
-  {
-    title: "Orçamento Inteligente",
-    desc: "Crie orçamentos em 30 segundos. O cliente recebe via WhatsApp e approve com um tap.",
-    icon: ClipboardList,
-    stats: "-70% tempo",
-  },
-  {
-    title: "Controle Total de Estoque",
-    desc: "Alertas automáticos quando o estoque baixa. Nunca mais falta peça importante.",
-    icon: Package,
-    stats: "-5k/mês",
-  },
-  {
-    title: "Financeiro 360°",
-    desc: "Fluxo de caixa, ticket médio, lucratividade por serviço. Tudo em tempo real.",
-    icon: DollarSign,
-    stats: "100% visível",
-  },
-  {
-    title: "Gestão de Clientes CRM",
-    desc: "Histórico completo, lembretes de revisão, marketing automático.",
-    icon: Users,
-    stats: "+30% retornos",
-  },
-  {
-    title: "App Mobile Offline",
-    desc: "Trabalhe sem internet. dados sincroniza quando conectar.",
-    icon: Zap,
-    stats: "Always-on",
-  },
-  {
-    title: "Relatórios Estratégicos",
-    desc: "Métricas que importam.ROI, ticket médio, лучший clientes.",
-    icon: BarChart3,
-    stats: "Data-driven",
-  },
-];
-
-export default function LandingPage() {
-  const [billingInterval, setBillingInterval] = useState<"monthly" | "yearly">(
-    "monthly",
+const brl = (value: number) =>
+  new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(
+    value,
   );
 
-  const fadeIn = {
-    initial: { opacity: 0, y: 40 },
-    whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true },
-    transition: { duration: 0.7 },
-  };
+const NAV = [
+  { href: "#como-funciona", label: "Como funciona" },
+  { href: "#recursos", label: "Recursos" },
+  { href: "#planos", label: "Planos" },
+];
 
+const STEPS = [
+  {
+    icon: Users,
+    title: "Cadastre cliente e veículo",
+    text: "Nome, documento, telefone e a placa. Tudo fica salvo para os próximos atendimentos.",
+  },
+  {
+    icon: ClipboardList,
+    title: "Monte o orçamento",
+    text: "Escolha peças e serviços do estoque, anexe fotos do veículo e gere o PDF.",
+  },
+  {
+    icon: MessageCircle,
+    title: "Envie e colha a assinatura",
+    text: "O cliente recebe o link no WhatsApp, confere os valores e assina na tela do celular.",
+  },
+  {
+    icon: Wrench,
+    title: "Execute e receba",
+    text: "O orçamento aprovado vira ordem de serviço. Ao finalizar, a receita entra no financeiro.",
+  },
+];
+
+const FEATURES = [
+  {
+    icon: ClipboardList,
+    title: "Orçamentos com assinatura digital",
+    text: "Itens, fotos do veículo, PDF e um link para o cliente aprovar. Você acompanha o que está pendente, aprovado ou rejeitado.",
+  },
+  {
+    icon: Wrench,
+    title: "Ordens de serviço",
+    text: "Geradas a partir do orçamento aprovado. Acompanhe o andamento, baixe o PDF e finalize quando o carro sair.",
+  },
+  {
+    icon: Package,
+    title: "Estoque com quantidade mínima",
+    text: "Veja o que está baixo ou esgotado, registre entradas e saídas e exporte o relatório do inventário.",
+  },
+  {
+    icon: Car,
+    title: "Clientes e veículos",
+    text: "Cada carro ligado ao seu proprietário, com placa no padrão Mercosul e busca por nome, placa ou documento.",
+  },
+  {
+    icon: TrendingUp,
+    title: "Financeiro com lucro real",
+    text: "Receitas, despesas e custo de peças por serviço. O lucro líquido é calculado para você, com recibo em PDF.",
+  },
+  {
+    icon: BarChart3,
+    title: "Relatórios por período",
+    text: "Faturamento, ticket médio, meios de pagamento e divisão por categoria. Exporte em PDF.",
+  },
+];
+
+const ALSO = [
+  { icon: Bell, label: "Notificações de atividade" },
+  { icon: Smartphone, label: "Instalável no celular" },
+  { icon: Moon, label: "Tema claro e escuro" },
+];
+
+function SectionHeading({
+  eyebrow,
+  title,
+  text,
+}: {
+  eyebrow: string;
+  title: string;
+  text?: string;
+}) {
   return (
-    <div className="relative min-h-screen bg-[#0a0a0a] text-white selection:bg-primary/30 selection:text-white overflow-x-hidden font-sans">
-      <BackgroundAnimation />
+    <div className="mx-auto max-w-2xl text-center">
+      <p className="text-sm font-medium text-primary">{eyebrow}</p>
+      <h2 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
+        {title}
+      </h2>
+      {text && <p className="mt-3 text-base text-muted-foreground">{text}</p>}
+    </div>
+  );
+}
 
-      {/* --- NAVBAR --- */}
-      <nav className="relative z-50 flex justify-between items-center px-6 py-4 mx-auto max-w-7xl border-b border-white/5 backdrop-blur-xl sticky top-0 bg-black/50">
-        <div className="flex items-center gap-3">
-          <Logo />
-          <div className="h-6 w-[1px] bg-white/10 hidden md:block" />
-          <div className="hidden md:flex flex-col leading-none">
-            <span className="text-xl font-black italic tracking-tighter text-white">
-              AUTO<span className="text-primary">SYSTEM</span>
+/** Exemplo ilustrativo do orçamento e da assinatura, montado com os mesmos componentes do sistema. */
+function ProductMock() {
+  return (
+    <div
+      role="img"
+      aria-label="Exemplo de orçamento com placa, itens e total, e a assinatura do cliente aprovando"
+      className="relative mx-auto w-full max-w-md lg:max-w-none"
+    >
+      <div className="rounded-2xl border bg-card shadow-xl shadow-foreground/5">
+        <div className="flex items-center justify-between border-b px-5 py-3.5">
+          <span className="font-mono text-xs text-muted-foreground">
+            Orçamento #2cf9d72c
+          </span>
+          <Badge variant="warning">
+            <span className="size-1.5 rounded-full bg-current" />
+            Pendente
+          </Badge>
+        </div>
+
+        <div className="space-y-3 px-5 py-4">
+          <p className="font-display text-xl font-semibold">Luciana Mendes</p>
+          <div className="flex items-center gap-2.5">
+            <Plate value="KDF5M78" />
+            <span className="text-sm text-muted-foreground">
+              Chevrolet Onix LT 1.0
             </span>
           </div>
         </div>
 
-        <div className="hidden md:flex gap-8 text-[10px] font-bold uppercase tracking-wider text-white/40">
-          <a href="#features" className="hover:text-primary transition-colors">
-            Recursos
-          </a>
-          <a
-            href="#depoimentos"
-            className="hover:text-primary transition-colors"
-          >
-            Depoimentos
-          </a>
-          <a href="#precos" className="hover:text-secondary transition-colors">
-            Planos
-          </a>
-        </div>
-
-        <div className="flex gap-3">
-          <Link href="/auth">
-            <Button variant="ghost" size="sm" className="hidden md:flex">
-              Entrar
-            </Button>
-          </Link>
-          <Link href="/auth">
-            <Button size="sm" className="bg-primary hover:bg-primary/90">
-              Começar Grátis
-            </Button>
-          </Link>
-        </div>
-      </nav>
-
-      {/* --- HERO SECTION --- */}
-      <section className="relative z-10 pt-24 pb-32">
-        <div className="mx-auto px-6 max-w-7xl">
-          <div className="text-center max-w-5xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
+        <dl className="divide-y border-y text-sm">
+          {[
+            ["Vela de ignição NGK BKR6E", "4 × R$ 32,90", "R$ 131,60"],
+            ["Mão de obra · troca de velas", "1 × R$ 90,00", "R$ 90,00"],
+          ].map(([name, calc, total]) => (
+            <div
+              key={name}
+              className="flex items-center justify-between gap-4 px-5 py-3"
             >
-              <span className="inline-flex items-center gap-2 bg-primary/10 text-primary border border-primary/20 px-5 py-2 rounded-full font-bold tracking-widest uppercase text-xs mb-8">
-                <Zap size={14} /> #1 Sistema para Oficinas
-              </span>
-
-              <h1 className="text-5xl md:text-7xl lg:text-8xl font-black mb-8 leading-[0.9] tracking-tighter italic font-poppins">
-                Sua Oficina <br />
-                <span className="text-primary">Não Pode Ficar</span> <br />
-                <span className="text-secondary">Fora do Ar.</span>
-              </h1>
-
-              <p className="text-xl md:text-2xl text-white/50 mb-12 max-w-3xl mx-auto leading-relaxed font-medium">
-                Mais de{" "}
-                <span className="text-primary font-bold">1.500 oficinas</span>{" "}
-                confiam no AutoSystem para gestão completa: orçamentos, estoque,
-                financeiro e muito mais.
-              </p>
-
-              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-                <Link href="/auth">
-                  <Button
-                    size="lg"
-                    className="w-full sm:w-auto px-12 h-16 text-lg bg-primary hover:bg-primary/90 shadow-[0_0_30px_rgba(34,197,94,0.3)]"
-                  >
-                    Criar Conta Grátis <ArrowRight className="ml-3" />
-                  </Button>
-                </Link>
-                <Link href="#features">
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    className="w-full sm:w-auto px-12 h-16 text-lg border-white/10 bg-white/5"
-                  >
-                    <Video className="mr-3" /> Ver Demonstração
-                  </Button>
-                </Link>
+              <div className="min-w-0">
+                <dt className="truncate font-medium">{name}</dt>
+                <dd className="num text-xs text-muted-foreground">{calc}</dd>
               </div>
-
-              {/* Trust Badges */}
-              <div className="flex flex-wrap justify-center gap-8 mb-8">
-                {trustBadges.map((badge, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center gap-2 text-white/30 text-sm font-medium"
-                  >
-                    <badge.icon size={18} className="text-primary" />
-                    {badge.text}
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          </div>
-
-          {/* Dashboard Preview */}
-          <motion.div
-            initial={{ opacity: 0, y: 60 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 1 }}
-            className="relative mt-16"
-          >
-            <div className="glass rounded-3xl p-2 md:p-4 border-white/10 shadow-2xl max-w-5xl mx-auto">
-              <div className="bg-[#050505] rounded-2xl overflow-hidden border border-white/5 relative">
-                <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.05)_50%),linear-gradient(90deg,rgba(255,0,0,0.01),rgba(0,255,0,0.01),rgba(0,0,255,0.01))] bg-size-[100%_4px,4px_100%] pointer-events-none z-10" />
-
-                {/* Fake Dashboard Header */}
-                <div className="flex items-center justify-between px-6 py-4 border-b border-white/5">
-                  <div className="flex gap-2">
-                    <div className="size-3 rounded-full bg-red-500/60" />
-                    <div className="size-3 rounded-full bg-yellow-500/60" />
-                    <div className="size-3 rounded-full bg-green-500/60" />
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-xs font-bold text-white/30 uppercase tracking-widest">
-                      AutoSystem
-                    </span>
-                    <div className="size-2 rounded-full bg-primary animate-pulse" />
-                  </div>
-                </div>
-
-                {/* Fake Dashboard Content */}
-                <div className="p-6 grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {[
-                    {
-                      label: "Faturamento Hoje",
-                      value: "R$ 12.450",
-                      trend: "+12%",
-                      color: "primary",
-                    },
-                    {
-                      label: "Ordens Abertas",
-                      value: "8",
-                      trend: "3",
-                      color: "blue",
-                    },
-                    {
-                      label: "Clientes",
-                      value: "1.247",
-                      trend: "+5",
-                      color: "secondary",
-                    },
-                    {
-                      label: "Estoque Baixo",
-                      value: "3 itens",
-                      trend: "Alerta",
-                      color: "red",
-                    },
-                  ].map((stat, i) => (
-                    <div
-                      key={i}
-                      className="bg-white/[0.02] rounded-xl p-4 border border-white/5"
-                    >
-                      <p className="text-[10px] font-bold text-white/30 uppercase mb-2">
-                        {stat.label}
-                      </p>
-                      <div className="flex items-end justify-between">
-                        <span className="text-xl font-black italic">
-                          {stat.value}
-                        </span>
-                        <span
-                          className={`text-[10px] font-bold ${stat.color === "primary" ? "text-green-400" : stat.color === "red" ? "text-red-400" : "text-white/50"}`}
-                        >
-                          {stat.trend}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Fake Chart */}
-                <div className="px-6 pb-6">
-                  <div className="h-32 flex items-end gap-2 px-4">
-                    {[35, 45, 30, 55, 70, 50, 80, 65, 90, 75, 85, 95].map(
-                      (h, i) => (
-                        <motion.div
-                          key={i}
-                          initial={{ height: 0 }}
-                          animate={{ height: `${h}%` }}
-                          transition={{ delay: i * 0.05, duration: 0.5 }}
-                          className="flex-1 bg-gradient-to-t from-primary/60 to-primary/20 rounded-t-sm"
-                        />
-                      ),
-                    )}
-                  </div>
-                </div>
-              </div>
+              <dd className="num shrink-0 font-medium">{total}</dd>
             </div>
-          </motion.div>
+          ))}
+        </dl>
+
+        <div className="flex items-center justify-between px-5 py-4">
+          <span className="text-sm text-muted-foreground">Total</span>
+          <span className="num font-display text-2xl font-semibold">
+            R$ 221,60
+          </span>
         </div>
-      </section>
 
-      {/* --- DEPOIMENTOS --- */}
-      <section id="depoimentos" className="relative z-10 py-24 bg-white/[0.02]">
-        <div className="mx-auto px-6 max-w-7xl">
-          <motion.div {...fadeIn} className="text-center mb-16">
-            <h2 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter mb-6 font-poppins">
-              O que <span className="text-primary">Donos de Oficina</span>
-              <br />
-              Falam sobre nós
-            </h2>
-          </motion.div>
+        <div className="flex flex-wrap gap-2 rounded-b-2xl border-t bg-surface px-5 py-3">
+          {[
+            { icon: FileDown, label: "PDF" },
+            { icon: Link2, label: "Link" },
+            { icon: Send, label: "WhatsApp", accent: true },
+          ].map(({ icon: Icon, label, accent }) => (
+            <span
+              key={label}
+              className="inline-flex h-9 items-center gap-1.5 rounded-lg border bg-card px-3 text-sm font-medium"
+            >
+              <Icon
+                className={cn("size-4", accent && "text-success")}
+                aria-hidden
+              />
+              {label}
+            </span>
+          ))}
+        </div>
+      </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {testimonials.map((t, i) => (
-              <motion.div
-                key={i}
-                {...fadeIn}
-                transition={{ delay: i * 0.1 }}
-                className="glass rounded-2xl p-8 border-white/5"
+      <div className="mt-4 rounded-2xl border bg-card p-4 shadow-xl shadow-foreground/5 lg:absolute lg:-bottom-36 lg:-left-12 lg:mt-0 lg:w-64 lg:-rotate-2">
+        <div className="flex items-center justify-between">
+          <span className="text-xs text-muted-foreground">
+            Assinatura do cliente
+          </span>
+          <Badge variant="success">
+            <Check className="size-3" aria-hidden />
+            Aprovado
+          </Badge>
+        </div>
+        <svg
+          viewBox="0 0 100 44"
+          className="mt-2 h-14 w-full text-foreground"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <title>Assinatura do cliente</title>
+          <path d="M6 32 C 12 8, 20 8, 24 26 S 36 40, 42 18 S 56 12, 62 28 S 78 36, 94 14" />
+        </svg>
+        <p className="border-t pt-2 text-xs text-muted-foreground">
+          Assinado pelo celular, sem imprimir nada
+        </p>
+      </div>
+    </div>
+  );
+}
+
+export default function LandingPage() {
+  const year = new Date().getFullYear();
+
+  return (
+    <div className="min-h-screen bg-background text-foreground selection:bg-primary/25">
+      <header className="sticky top-0 z-40 border-b bg-background/85 backdrop-blur-md">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
+          <Link href="/" className="flex items-center gap-2.5">
+            <Logo className="size-8" />
+            <span className="font-display text-lg font-semibold tracking-tight">
+              Auto<span className="text-primary">System</span>
+            </span>
+          </Link>
+
+          <nav
+            aria-label="Seções"
+            className="hidden items-center gap-1 md:flex"
+          >
+            {NAV.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                className="rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
               >
-                <div className="flex gap-1 mb-4">
-                  {[...Array(t.rating)].map((_, j) => (
-                    <Star
-                      key={j}
-                      size={16}
-                      className="fill-secondary text-secondary"
-                    />
-                  ))}
-                </div>
-                <p className="text-lg text-white/70 mb-6 leading-relaxed">
-                  "{t.text}"
-                </p>
-                <div className="flex items-center gap-3">
-                  <div className="size-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center font-bold text-black text-sm">
-                    {t.avatar}
-                  </div>
-                  <div>
-                    <p className="font-bold">{t.name}</p>
-                    <p className="text-xs text-white/40">{t.role}</p>
-                  </div>
-                </div>
-              </motion.div>
+                {item.label}
+              </a>
             ))}
+          </nav>
+
+          <div className="flex items-center gap-1 sm:gap-2">
+            <ThemeToggle />
+            <Button asChild variant="ghost" size="sm">
+              <Link href="/auth">Entrar</Link>
+            </Button>
+            <Button asChild size="sm">
+              <Link href="/auth?mode=signup">Testar grátis</Link>
+            </Button>
           </div>
         </div>
-      </section>
+      </header>
 
-      {/* --- FEATURES --- */}
-      <section id="features" className="relative z-10 py-32">
-        <div className="mx-auto px-6 max-w-7xl">
-          <motion.div {...fadeIn} className="text-center mb-20">
-            <h2 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter mb-6 font-poppins">
-              Tudo que sua oficina <span className="text-primary">Precisa</span>
-              ,<br />
-              em um só lugar.
-            </h2>
-            <p className="text-white/40 text-xl max-w-2xl mx-auto">
-              Semplanilhas, semcaos. Um sistema feito para oficсей que querem
-              crecer.
-            </p>
-          </motion.div>
+      <main>
+        {/* Hero */}
+        <section className="relative overflow-hidden">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0"
+            style={{
+              backgroundImage:
+                "radial-gradient(color-mix(in oklab, var(--foreground) 13%, transparent) 1px, transparent 1px)",
+              backgroundSize: "22px 22px",
+              maskImage:
+                "linear-gradient(to bottom, black 20%, transparent 85%)",
+              WebkitMaskImage:
+                "linear-gradient(to bottom, black 20%, transparent 85%)",
+            }}
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -top-32 right-0 size-[28rem] rounded-full bg-primary/15 blur-3xl"
+          />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {features.map((f, i) => (
-              <motion.div
-                key={i}
-                {...fadeIn}
-                transition={{ delay: i * 0.1 }}
-                className="group glass rounded-2xl p-8 border-white/5 hover:border-primary/30 transition-all"
-              >
-                <div className="flex justify-between items-start mb-4">
-                  <div className="p-4 rounded-xl bg-white/5 text-primary group-hover:scale-110 transition-transform">
-                    <f.icon size={28} />
+          <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-4 pt-14 pb-20 sm:px-6 sm:pt-20 lg:grid-cols-[1.05fr_1fr] lg:gap-10 lg:pb-32">
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+              <Badge variant="neutral" className="mb-5">
+                Gestão para oficinas mecânicas
+              </Badge>
+              <h1 className="text-4xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">
+                Do orçamento ao recibo, sem papel e sem planilha.
+              </h1>
+              <p className="mt-5 max-w-xl text-lg text-muted-foreground">
+                Monte o orçamento, envie pelo WhatsApp e o cliente assina no
+                celular. Aprovado, ele vira ordem de serviço e já entra no
+                financeiro.
+              </p>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <Button asChild size="lg">
+                  <Link href="/auth?mode=signup">
+                    Testar por {TRIAL_DAYS} dias <ArrowRight />
+                  </Link>
+                </Button>
+                <Button asChild size="lg" variant="outline">
+                  <a href="#como-funciona">Ver como funciona</a>
+                </Button>
+              </div>
+              <p className="mt-5 text-sm text-muted-foreground">
+                Funciona no celular e no computador. Você instala como app, sem
+                loja.
+              </p>
+            </div>
+
+            <div className="animate-in fade-in slide-in-from-bottom-6 duration-700 delay-150 lg:pb-32">
+              <p className="mb-3 text-center text-xs text-muted-foreground lg:text-left">
+                Exemplo ilustrativo com dados fictícios.
+              </p>
+              <ProductMock />
+            </div>
+          </div>
+        </section>
+
+        {/* Como funciona: a ordem importa, por isso os números */}
+        <section
+          id="como-funciona"
+          className="scroll-mt-16 border-y bg-surface py-16 sm:py-24"
+        >
+          <div className="mx-auto max-w-6xl px-4 sm:px-6">
+            <SectionHeading
+              eyebrow="Como funciona"
+              title="Do balcão à aprovação em quatro passos"
+              text="O mesmo caminho que você já faz, só que sem anotar duas vezes."
+            />
+            <ol className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {STEPS.map(({ icon: Icon, title, text }, i) => (
+                <li
+                  key={title}
+                  className="relative rounded-xl border bg-card p-5"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex size-10 items-center justify-center rounded-lg bg-primary/12 text-primary">
+                      <Icon className="size-5" aria-hidden />
+                    </div>
+                    <span className="num font-display text-3xl font-semibold text-border">
+                      {i + 1}
+                    </span>
                   </div>
-                  <span className="text-xs font-bold text-primary bg-primary/10 px-3 py-1 rounded-full">
-                    {f.stats}
-                  </span>
-                </div>
-                <h3 className="text-xl font-black italic uppercase tracking-tighter mb-3">
-                  {f.title}
-                </h3>
-                <p className="text-white/40 font-medium">{f.desc}</p>
-              </motion.div>
-            ))}
+                  <h3 className="mt-4 text-base font-semibold">{title}</h3>
+                  <p className="mt-1.5 text-sm text-muted-foreground">{text}</p>
+                </li>
+              ))}
+            </ol>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* --- CTA FINAL --- */}
-      <section className="relative z-10 py-32">
-        <div className="mx-auto px-6 max-w-4xl">
-          <div className="glass rounded-[3rem] p-12 md:p-20 text-center border-primary/20 bg-primary/5 relative overflow-hidden">
-            <div className="absolute -top-20 -right-20 w-80 h-80 bg-primary/20 blur-[120px] rounded-full" />
-            <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-secondary/20 blur-[120px] rounded-full" />
+        {/* Recursos */}
+        <section id="recursos" className="scroll-mt-16 py-16 sm:py-24">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6">
+            <SectionHeading
+              eyebrow="Recursos"
+              title="Tudo o que a oficina usa no dia a dia"
+            />
+            <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {FEATURES.map(({ icon: Icon, title, text }) => (
+                <article
+                  key={title}
+                  className="rounded-xl border bg-card p-6 transition-colors hover:border-primary/40"
+                >
+                  <div className="flex size-10 items-center justify-center rounded-lg bg-primary/12 text-primary">
+                    <Icon className="size-5" aria-hidden />
+                  </div>
+                  <h3 className="mt-4 text-base font-semibold">{title}</h3>
+                  <p className="mt-1.5 text-sm text-muted-foreground">{text}</p>
+                </article>
+              ))}
+            </div>
+            <ul className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
+              {ALSO.map(({ icon: Icon, label }) => (
+                <li key={label} className="inline-flex items-center gap-2">
+                  <Icon className="size-4 text-primary" aria-hidden />
+                  {label}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
 
-            <h2 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter mb-8 relative z-10">
-              Comece <span className="text-primary">HOJE</span>
-              <br />
-              Não Esqueça Mais de Nada.
+        {/* Planos */}
+        <section
+          id="planos"
+          className="scroll-mt-16 border-t bg-surface py-16 sm:py-24"
+        >
+          <div className="mx-auto max-w-6xl px-4 sm:px-6">
+            <SectionHeading
+              eyebrow="Planos"
+              title="Escolha o plano da sua oficina"
+              text={`Teste grátis por ${TRIAL_DAYS} dias. No plano anual você paga 10 meses e usa 12.`}
+            />
+            <div className="mt-12 grid gap-4 md:grid-cols-3">
+              {subscriptionPlans.map((plan, index) => {
+                const featured = index === 1;
+                return (
+                  <article
+                    key={plan.slug}
+                    className={cn(
+                      "relative flex flex-col rounded-xl border bg-card p-6",
+                      featured &&
+                        "border-primary/60 shadow-lg shadow-primary/10",
+                    )}
+                  >
+                    {featured && (
+                      <Badge className="absolute -top-2.5 left-6">
+                        Mais escolhido
+                      </Badge>
+                    )}
+                    <h3 className="text-lg font-semibold">{plan.name}</h3>
+                    <p className="mt-4 flex items-baseline gap-1">
+                      <span className="num font-display text-4xl font-semibold tracking-tight">
+                        {brl(plan.price.monthly)}
+                      </span>
+                      <span className="text-sm text-muted-foreground">
+                        /mês
+                      </span>
+                    </p>
+                    <p className="num mt-1 text-sm text-muted-foreground">
+                      ou {brl(plan.price.yearly)} por ano
+                    </p>
+                    <ul className="mt-6 flex-1 space-y-2.5 text-sm">
+                      {plan.features.map((feature) => (
+                        <li key={feature} className="flex items-start gap-2.5">
+                          <Check
+                            className="mt-0.5 size-4 shrink-0 text-primary"
+                            aria-hidden
+                          />
+                          <span className="text-muted-foreground">
+                            {feature}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                    <Button
+                      asChild
+                      size="lg"
+                      variant={featured ? "default" : "outline"}
+                      className="mt-6 w-full"
+                    >
+                      <Link href="/auth?mode=signup">Começar teste grátis</Link>
+                    </Button>
+                  </article>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* Chamada final */}
+        <section className="px-4 py-16 sm:px-6 sm:py-24">
+          <div className="mx-auto flex max-w-4xl flex-col items-center gap-6 rounded-2xl bg-primary px-6 py-12 text-center text-primary-foreground sm:px-12">
+            <h2 className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
+              Sua próxima ordem de serviço já pode nascer aqui.
             </h2>
-
-            <p className="text-xl text-white/50 mb-10 relative z-10 max-w-xl mx-auto">
-              14 dias de teste gratuito, sem cartão. Cancelamento quando quiser.
+            <p className="max-w-xl text-primary-foreground/85">
+              Crie sua conta e faça o primeiro orçamento hoje. São {TRIAL_DAYS}{" "}
+              dias para testar tudo.
             </p>
-
-            <Link href="/auth" className="relative z-10 inline-block">
-              <Button
-                size="lg"
-                className="h-18 px-16 text-xl bg-primary hover:bg-primary/90 shadow-[0_0_40px_rgba(34,197,94,0.4)]"
-              >
-                Criar Conta Grátis <ArrowRight className="ml-3" />
-              </Button>
-            </Link>
+            <Button
+              asChild
+              size="lg"
+              className="bg-background text-foreground hover:bg-background/90"
+            >
+              <Link href="/auth?mode=signup">
+                Criar conta grátis <ArrowRight />
+              </Link>
+            </Button>
           </div>
-        </div>
-      </section>
+        </section>
+      </main>
 
-      {/* --- FOOTER --- */}
-      <footer className="relative z-10 py-16 border-t border-white/5 text-center">
-        <div className="mx-auto px-6 max-w-7xl">
-          <Logo className="mb-8" />
-          <div className="flex flex-wrap justify-center gap-8 text-xs font-bold uppercase tracking-wider text-white/30 mb-8">
-            <a href="#" className="hover:text-white transition-colors">
+      <footer className="border-t">
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-8 text-sm text-muted-foreground sm:flex-row sm:px-6">
+          <div className="flex items-center gap-2.5">
+            <Logo className="size-6" />
+            <span>© {year} AutoSystem</span>
+          </div>
+          <nav aria-label="Rodapé" className="flex items-center gap-5">
+            <Link href="/privacy" className="hover:text-foreground">
               Privacidade
-            </a>
-            <a href="#" className="hover:text-white transition-colors">
+            </Link>
+            <Link href="/terms" className="hover:text-foreground">
               Termos
-            </a>
-            <a href="#" className="hover:text-white transition-colors">
-              Contato
-            </a>
-          </div>
-          <p className="text-white/15 text-xs uppercase tracking-widest">
-            © 2026 AutoSystem. Feito com ⚡ para Oficinas.
-          </p>
+            </Link>
+            <Link href="/auth" className="hover:text-foreground">
+              Entrar
+            </Link>
+          </nav>
         </div>
       </footer>
     </div>

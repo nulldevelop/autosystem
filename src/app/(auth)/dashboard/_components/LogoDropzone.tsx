@@ -88,7 +88,7 @@ export function LogoDropzone({
         "relative group flex flex-col items-center justify-center w-full h-40 border-2 border-dashed rounded-xl transition-all duration-300",
         isDragging
           ? "border-primary bg-primary/5 scale-[1.02]"
-          : "border-white/10 bg-white/[0.02] hover:border-white/20",
+          : "border-border bg-muted/50 hover:border-border",
         disabled && "opacity-50 cursor-not-allowed",
         preview && "border-none",
       )}
@@ -113,7 +113,7 @@ export function LogoDropzone({
               setPreview(null);
               onChange("");
             }}
-            className="absolute top-2 right-2 p-1.5 rounded-full bg-black/60 text-white hover:bg-black/80 transition-colors opacity-0 group-hover:opacity-100"
+            className="absolute top-2 right-2 p-1.5 rounded-full bg-card text-white hover:bg-black/80 transition-colors opacity-0 group-hover:opacity-100"
           >
             <X size={16} />
           </button>
@@ -125,13 +125,13 @@ export function LogoDropzone({
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
             ) : (
               <>
-                <div className="p-3 rounded-full bg-white/5 mb-3 group-hover:scale-110 transition-transform">
+                <div className="p-3 rounded-full bg-muted/50 mb-3 group-hover:scale-110 transition-transform">
                   <Upload size={24} className="text-primary" />
                 </div>
-                <p className="mb-1 text-sm text-white/60 font-bold">
+                <p className="mb-1 text-sm text-muted-foreground font-bold">
                   Clique ou arraste a logo
                 </p>
-                <p className="text-xs text-white/20 uppercase tracking-widest font-black">
+                <p className="text-xs text-muted-foreground font-bold">
                   PNG, JPG ou SVG (Máx. 2MB)
                 </p>
               </>
