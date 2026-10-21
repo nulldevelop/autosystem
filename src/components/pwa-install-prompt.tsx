@@ -77,13 +77,13 @@ export function PWAInstallPrompt() {
 
   return (
     <div className="fixed bottom-24 left-4 right-4 md:left-auto md:right-6 md:bottom-6 md:w-96 bg-card border border-border p-4 sm:p-5 rounded-xl shadow-xl z-40 animate-in slide-in-from-bottom-4 duration-300">
-      <button
+      <Button
         onClick={handleDismiss}
         className="absolute top-3 right-3 text-muted-foreground hover:text-foreground transition-colors p-1 rounded-md"
         aria-label="Fechar"
       >
         <X size={16} />
-      </button>
+      </Button>
 
       <div className="flex flex-col gap-3">
         <div>
