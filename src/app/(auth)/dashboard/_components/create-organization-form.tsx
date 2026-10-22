@@ -28,6 +28,7 @@ import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { extractCnpj, formatCnpj } from "@/utils/formatCNPJ";
 import { extractPhoneNumber, formatPhone } from "@/utils/formatPhone";
+import { TRIAL_DAYS } from "@/utils/permissions/trial-limits";
 import { subscriptionPlans } from "@/utils/plans/subscription-plans";
 import {
   createOrganization,
@@ -450,7 +451,7 @@ export function CreateOrganizationForm({
                     >
                       <div className="flex justify-between items-center">
                         <h4 className="font-bold tracking-tight">
-                          Teste Grátis (3 dias)
+                          Teste Grátis ({TRIAL_DAYS} dias)
                         </h4>
                         <Check
                           className={cn(

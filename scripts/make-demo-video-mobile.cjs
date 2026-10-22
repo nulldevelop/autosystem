@@ -734,7 +734,7 @@ async function run() {
       });
       await progress(page, TOTAL);
       await sleep(400);
-      await page.evaluate(([c, u]) => window.__demo.outro(c, u), ["Teste grátis por 3 dias", CTA_URL]);
+      await page.evaluate(([c, u]) => window.__demo.outro(c, u), ["Teste grátis por 14 dias", CTA_URL]);
       await sleep(4400);
       await page.evaluate(() => window.__demo.cover(true, { color: "#0b0d10", ms: 900 }));
       await sleep(1100);
