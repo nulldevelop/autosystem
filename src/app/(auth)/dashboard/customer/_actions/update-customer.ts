@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { getSession } from "@/lib/getSession";
 import { prisma } from "@/lib/prisma";
+import { isUniqueViolation } from "@/lib/prisma-errors";
 
 const updateCustomerSchema = z.object({
   id: z.string().uuid(),
@@ -122,6 +123,13 @@ export async function updateCustomer(
     };
   } catch (error: unknown) {
     console.error("Erro ao atualizar cliente:", error);
+
+    if (isUniqueViolation(error)) {
+      return {
+        success: false,
+        message: "Já existe outro cliente com este CPF/CNPJ nesta organização.",
+      };
+    }
 
     const errorMessage =
       error instanceof Error

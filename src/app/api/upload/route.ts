@@ -1,6 +1,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { NextResponse } from "next/server";
+import { isImageFile, safeFileName } from "@/lib/files";
 import { getSession } from "@/lib/getSession";
 import { prisma } from "@/lib/prisma";
 
@@ -34,13 +35,20 @@ export async function POST(req: Request) {
       );
     }
 
+    if (!isImageFile(file)) {
+      return NextResponse.json(
+        { error: "Envie apenas imagens" },
+        { status: 400 },
+      );
+    }
+
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
     const uploadDir = join(process.cwd(), "storage", organization.slug, "imgs");
     await mkdir(uploadDir, { recursive: true });
 
-    const fileName = `${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
+    const fileName = safeFileName(file.name);
     const filePath = join(uploadDir, fileName);
     const publicPath = `/api/storage/${organization.slug}/imgs/${fileName}`;
 

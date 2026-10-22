@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { getSession } from "@/lib/getSession";
 import { prisma } from "@/lib/prisma";
+import { isUniqueViolation } from "@/lib/prisma-errors";
 
 const createCustomerSchema = z.object({
   name: z.string().min(2, {
@@ -104,6 +105,13 @@ export async function createCustomer(
     };
   } catch (error: unknown) {
     console.error("Erro ao criar cliente:", error);
+
+    if (isUniqueViolation(error)) {
+      return {
+        success: false,
+        message: "Já existe um cliente com este CPF/CNPJ nesta organização.",
+      };
+    }
 
     const errorMessage =
       error instanceof Error

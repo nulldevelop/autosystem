@@ -87,6 +87,26 @@ export async function createBudget(input: z.infer<typeof createBudgetSchema>) {
       };
     }
 
+    // Produtos do catálogo precisam ser desta oficina (itens "custom-" são criados abaixo)
+    const catalogIds = [
+      ...new Set(
+        items
+          .map((item) => item.productId)
+          .filter((id) => !id.startsWith("custom-")),
+      ),
+    ];
+    if (catalogIds.length > 0) {
+      const ownedProducts = await prisma.product.count({
+        where: { id: { in: catalogIds }, organizationId: orgId },
+      });
+      if (ownedProducts !== catalogIds.length) {
+        return {
+          success: false,
+          message: "Produto não encontrado nesta organização.",
+        };
+      }
+    }
+
     const permission = await canPermission({ type: "budget" });
     if (!permission.hasPermission) {
       return {

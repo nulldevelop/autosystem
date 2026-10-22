@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Check, Clock, ShieldCheck, Zap } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -29,7 +29,10 @@ import { cn } from "@/lib/utils";
 import { extractCnpj, formatCnpj } from "@/utils/formatCNPJ";
 import { extractPhoneNumber, formatPhone } from "@/utils/formatPhone";
 import { TRIAL_DAYS } from "@/utils/permissions/trial-limits";
+import { isValidCnpj } from "@/utils/validateCNPJ";
 import { subscriptionPlans } from "@/utils/plans/subscription-plans";
+import type { PlanSlug } from "@/utils/plans/types";
+import { createCheckout } from "../plans/_actions/create-checkout";
 import {
   createOrganization,
   updateOrganizationLogo,
@@ -54,13 +57,22 @@ const formSchema = z.object({
   phone: z
     .string()
     .min(11, { message: "O telefone deve ter pelo menos 11 caracteres." }),
-  cnpj: z
-    .string()
-    .min(14, { message: "O CNPJ deve ter pelo menos 14 caracteres." }),
+  cnpj: z.string().refine(isValidCnpj, { message: "CNPJ inválido." }),
   plan: z.string(),
 });
 
 type Step = 1 | 2 | 3 | 4;
+
+// "Oficina São José!" -> "oficina-sao-jose"
+function slugify(value: string) {
+  const slug = value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  return slug.length >= 2 ? slug : "oficina";
+}
 
 export function CreateOrganizationForm({
   open,
@@ -71,6 +83,8 @@ export function CreateOrganizationForm({
 }) {
   const router = useRouter();
   const [step, setStep] = useState<Step>(1);
+  // evita criar uma segunda oficina se o envio falhar depois da criação
+  const createdOrgId = useRef<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [_isCheckingSlug, _setIsCheckingSlug] = useState(false);
   const [_isFetchingCep, setIsFetchingCep] = useState(false);
@@ -133,37 +147,61 @@ export function CreateOrganizationForm({
     try {
       const fullAddress = `${values.street}, ${values.number} - ${values.neighborhood}, ${values.city} - ${values.state}, CEP: ${values.cep}`;
 
-      const result = await createOrganization({
-        name: values.name,
-        slug: values.slug,
-        address: fullAddress,
-        phone: extractPhoneNumber(values.phone),
-        cnpj: extractCnpj(values.cnpj),
-      });
+      let organizationId = createdOrgId.current;
 
-      if (!result.success || !result.organizationId) {
-        toast.error(result.message);
-        return;
+      if (!organizationId) {
+        const result = await createOrganization({
+          name: values.name,
+          slug: values.slug,
+          address: fullAddress,
+          phone: extractPhoneNumber(values.phone),
+          cnpj: extractCnpj(values.cnpj),
+        });
+
+        if (!result.success || !result.organizationId) {
+          toast.error(result.message);
+          return;
+        }
+        organizationId = result.organizationId;
+        createdOrgId.current = organizationId;
       }
 
-      // Upload Logo se existir
+      // Logo é opcional: falha no upload não pode impedir o fim da configuração
       if (values.logo instanceof File) {
-        const formData = new FormData();
-        formData.append("file", values.logo);
-        formData.append("organizationId", result.organizationId);
-        const uploadRes = await fetch("/api/upload", {
-          method: "POST",
-          body: formData,
-        });
-        const uploadData = await uploadRes.json();
-        if (uploadData.url)
-          await updateOrganizationLogo(result.organizationId, uploadData.url);
+        try {
+          const formData = new FormData();
+          formData.append("file", values.logo);
+          formData.append("organizationId", organizationId);
+          const uploadRes = await fetch("/api/upload", {
+            method: "POST",
+            body: formData,
+          });
+          const uploadData = uploadRes.ok ? await uploadRes.json() : null;
+          if (uploadData?.url) {
+            await updateOrganizationLogo(organizationId, uploadData.url);
+          } else {
+            toast.warning("Não foi possível enviar o logo. Envie depois em Configurações.");
+          }
+        } catch {
+          toast.warning("Não foi possível enviar o logo. Envie depois em Configurações.");
+        }
       }
 
       toast.success("Sua oficina está pronta!");
 
       // Sincroniza a sessão do cliente e redireciona
       await authClient.getSession();
+
+      // Plano pago escolhido: segue para o pagamento (o teste grátis continua valendo até lá)
+      if (values.plan !== "TRIAL") {
+        const checkout = await createCheckout({
+          planSlug: values.plan as PlanSlug,
+          billingInterval: "monthly",
+        });
+        if (checkout.success) return; // redirecionando para a AbacatePay
+        toast.info("Você pode assinar depois em Planos.");
+      }
+
       onOpenChange(false);
       router.refresh();
     } catch (error) {
@@ -254,13 +292,7 @@ export function CreateOrganizationForm({
                               {...field}
                               onChange={(e) => {
                                 field.onChange(e);
-                                form.setValue(
-                                  "slug",
-                                  e.target.value
-                                    .toLowerCase()
-                                    .replace(/\s+/g, "-")
-                                    .replace(/[^a-z0-9-]/g, ""),
-                                );
+                                form.setValue("slug", slugify(e.target.value));
                               }}
                             />
                           </FormControl>

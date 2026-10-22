@@ -311,11 +311,12 @@ export type ProductOrderByWithRelationInput = {
 
 export type ProductWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  sku?: string
+  sku_organizationId?: Prisma.ProductSkuOrganizationIdCompoundUniqueInput
   AND?: Prisma.ProductWhereInput | Prisma.ProductWhereInput[]
   OR?: Prisma.ProductWhereInput[]
   NOT?: Prisma.ProductWhereInput | Prisma.ProductWhereInput[]
   name?: Prisma.StringFilter<"Product"> | string
+  sku?: Prisma.StringFilter<"Product"> | string
   category?: Prisma.StringNullableFilter<"Product"> | string | null
   unit?: Prisma.StringFilter<"Product"> | string
   price?: Prisma.FloatFilter<"Product"> | number
@@ -329,7 +330,7 @@ export type ProductWhereUniqueInput = Prisma.AtLeast<{
   serviceOrders?: Prisma.ServiceOrderItemListRelationFilter
   movements?: Prisma.ProductMovementListRelationFilter
   organization?: Prisma.XOR<Prisma.OrganizationNullableScalarRelationFilter, Prisma.OrganizationWhereInput> | null
-}, "id" | "sku">
+}, "id" | "sku_organizationId">
 
 export type ProductOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -493,6 +494,11 @@ export type ProductListRelationFilter = {
 
 export type ProductOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type ProductSkuOrganizationIdCompoundUniqueInput = {
+  sku: string
+  organizationId: string
 }
 
 export type ProductCountOrderByAggregateInput = {

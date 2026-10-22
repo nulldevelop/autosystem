@@ -1,12 +1,14 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { prisma } from "@/lib/prisma";
+import { requireTenant, TenantError } from "@/lib/tenant";
 
 export async function deleteCustomer(customerId: string) {
   try {
+    const { db } = await requireTenant();
+
     // Verificar se o cliente tem orçamentos ou ordens de serviço vinculadas
-    const customer = await prisma.customer.findUnique({
+    const customer = await db.customer.findUnique({
       where: { id: customerId },
       include: {
         _count: {
@@ -30,7 +32,7 @@ export async function deleteCustomer(customerId: string) {
       };
     }
 
-    await prisma.customer.delete({
+    await db.customer.delete({
       where: { id: customerId },
     });
 
@@ -38,6 +40,9 @@ export async function deleteCustomer(customerId: string) {
 
     return { success: true, message: "Cliente removido com sucesso!" };
   } catch (error) {
+    if (error instanceof TenantError) {
+      return { success: false, message: error.message };
+    }
     console.error("Erro ao excluir cliente:", error);
     return {
       success: false,

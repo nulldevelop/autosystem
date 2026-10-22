@@ -25,7 +25,7 @@ export async function SubscriptionStatusNotice() {
   let icon = <PartyPopper className="h-6 w-6 text-success" />;
   let cardClass = "bg-success/12 border-success/25";
 
-  const access = resolveAccess(session.user.createdAt, subscription);
+  const access = resolveAccess(session.user, subscription);
 
   if (access.kind === "BONUS" && access.endsAt) {
     const daysRemaining = differenceInDays(access.endsAt, new Date());

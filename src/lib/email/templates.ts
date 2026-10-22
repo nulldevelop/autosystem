@@ -33,8 +33,9 @@ function layout(opts: {
 </div></body></html>`;
 }
 
+// sem escapar aqui: o layout já escapa o título uma vez
 const firstName = (name?: string | null) =>
-  escapeHtml((name?.trim().split(/\s+/)[0] || "").slice(0, 40));
+  (name?.trim().split(/\s+/)[0] || "").slice(0, 40);
 
 export function verifyEmailTemplate(user: { name?: string | null }, url: string) {
   const name = firstName(user.name);

@@ -36,17 +36,17 @@ export async function DashboardStats() {
     subscription,
   ] = await Promise.all([
     getCustomersCount(),
-    getVehiclesCount(orgId),
+    getVehiclesCount(),
     getBudgetsCount(),
-    getProductsCount(orgId),
-    getServiceOrdersCount(orgId),
+    getProductsCount(),
+    getServiceOrdersCount(),
     session?.user?.id ? getSubscription(session.user.id) : null,
   ]);
 
   let allowedRoutes: string[] = [];
 
   if (session) {
-    const access = resolveAccess(session.user.createdAt, subscription);
+    const access = resolveAccess(session.user, subscription);
     if (access.plan) {
       allowedRoutes = planRoutes[access.plan] || [];
     } else if (access.kind === "TRIAL") {

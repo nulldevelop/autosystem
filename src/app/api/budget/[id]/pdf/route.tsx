@@ -1,17 +1,22 @@
 import { renderToBuffer } from "@react-pdf/renderer";
 import { NextResponse } from "next/server";
-import React from "react";
 import { BudgetPDF } from "@/app/(auth)/dashboard/budget/_components/BudgetPDF";
-import { prisma } from "@/lib/prisma";
+import { getTenant } from "@/lib/tenant";
 
 export async function GET(
   _req: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const tenant = await getTenant();
+    if (!tenant) {
+      return new NextResponse("Não autorizado", { status: 401 });
+    }
+
     const { id } = await params;
 
-    const budget = await prisma.budget.findUnique({
+    // O db da oficina só enxerga orçamentos da própria oficina
+    const budget = await tenant.db.budget.findFirst({
       where: { id },
       include: {
         customer: true,
@@ -29,30 +34,18 @@ export async function GET(
       return new NextResponse("Orçamento não encontrado", { status: 404 });
     }
 
-    // Gerar o buffer do PDF
-    // Usando JSX diretamente para melhor compatibilidade com React 18/19 e react-pdf
+    // biome-ignore lint/suspicious/noExplicitAny: tipos do Prisma x react-pdf
     const buffer = await renderToBuffer(<BudgetPDF budget={budget as any} />);
 
-    // Retornar o PDF como resposta
-    return new NextResponse(buffer, {
+    return new NextResponse(buffer as unknown as BodyInit, {
       headers: {
         "Content-Type": "application/pdf",
         "Content-Disposition": `attachment; filename="orcamento-${budget.id.substring(0, 8)}.pdf"`,
       },
     });
   } catch (error) {
-    console.error("ERRO CRÍTICO NA GERAÇÃO DE PDF:", error);
-    const errorMessage =
-      error instanceof Error ? error.message : "Erro desconhecido";
-    const errorStack = error instanceof Error ? error.stack : "";
-
-    // Retornar o erro detalhado para facilitar o debug se necessário
-    return new NextResponse(
-      `Erro ao gerar PDF: ${errorMessage}\n${errorStack}`,
-      {
-        status: 500,
-        headers: { "Content-Type": "text/plain" },
-      },
-    );
+    // detalhes só no log do servidor
+    console.error("ERRO NA GERAÇÃO DE PDF:", error);
+    return new NextResponse("Erro ao gerar PDF", { status: 500 });
   }
 }

@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { getSession } from "@/lib/getSession";
 import { prisma } from "@/lib/prisma";
+import { isUniqueViolation } from "@/lib/prisma-errors";
 
 const createProductSchema = z.object({
   name: z.string().min(1, "O nome do produto é obrigatório."),
@@ -84,6 +85,13 @@ export async function createProduct(
     };
   } catch (error: unknown) {
     console.error("Erro ao criar produto:", error);
+
+    if (isUniqueViolation(error)) {
+      return {
+        success: false,
+        message: "Já existe um produto com este SKU nesta organização.",
+      };
+    }
 
     const errorMessage =
       error instanceof Error

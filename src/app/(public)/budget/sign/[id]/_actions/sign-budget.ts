@@ -5,13 +5,24 @@ import { prisma } from "@/lib/prisma";
 
 export async function signBudget(budgetId: string, signatureBase64: string) {
   try {
-    const budget = await prisma.budget.update({
-      where: { id: budgetId },
+    // Só assina orçamento pendente e ainda não assinado (o link é público)
+    const signed = await prisma.budget.updateMany({
+      where: { id: budgetId, signedAt: null, status: "pending" },
       data: {
         signature: signatureBase64,
         signedAt: new Date(),
         status: "aproved",
       },
+    });
+    if (signed.count === 0) {
+      return {
+        success: false,
+        error: "Este orçamento não pode mais ser assinado",
+      };
+    }
+
+    const budget = await prisma.budget.findUniqueOrThrow({
+      where: { id: budgetId },
       include: {
         customer: true,
         vehicle: true,

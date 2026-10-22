@@ -27,6 +27,8 @@ model User {
   referredBy         User?     @relation("Referrals", fields: [referredById], references: [id], onDelete: SetNull)
   referrals          User[]    @relation("Referrals")
   referralRewardedAt DateTime?
+  // início do teste grátis: preenchido quando o e-mail é confirmado (senão vale createdAt)
+  trialStartedAt     DateTime?
 
   @@index([referredById])
   @@map("user")
@@ -140,8 +142,8 @@ model Invitation {
 model Customer {
   id             String         @id @default(uuid())
   name           String
-  email          String         @unique
-  document       String         @unique
+  email          String
+  document       String
   documentType   DocumentType
   phone          String?
   address        String?        @db.Text
@@ -154,6 +156,8 @@ model Customer {
   serviceOrders  ServiceOrder[]
   notifications  Notification[]
 
+  @@unique([document, organizationId])
+  @@index([email])
   @@index([organizationId])
   @@map("customer")
 }
@@ -237,7 +241,7 @@ model BudgetPhoto {
 model Product {
   id       String  @id @default(uuid())
   name     String
-  sku      String  @unique
+  sku      String
   category String? @default("Geral")
   unit     String  @default("UN")
 
@@ -255,6 +259,7 @@ model Product {
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
 
+  @@unique([sku, organizationId])
   @@index([organizationId])
   @@map("product")
 }

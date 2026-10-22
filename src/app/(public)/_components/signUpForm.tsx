@@ -23,7 +23,10 @@ import { PasswordStrengthIndicator } from "@/utils/PasswordStrengthIndicator";
 
 const signUpSchema = z.object({
   name: z.string().min(3, { message: "Informe seu nome completo." }),
-  email: z.email({ message: "Informe um e-mail válido." }),
+  email: z
+    .string()
+    .trim()
+    .pipe(z.email({ message: "Informe um e-mail válido." })),
   password: z
     .string()
     .min(8, { message: "A senha precisa de 8 ou mais caracteres." })

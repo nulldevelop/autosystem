@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { getSession } from "@/lib/getSession";
 import { prisma } from "@/lib/prisma";
+import { isUniqueViolation } from "@/lib/prisma-errors";
 
 const updateProductSchema = z.object({
   id: z.string().uuid(),
@@ -41,6 +42,12 @@ export async function updateProduct(
     return { success: true, message: "Produto atualizado com sucesso!" };
   } catch (error) {
     console.error(error);
+    if (isUniqueViolation(error)) {
+      return {
+        success: false,
+        message: "Já existe outro produto com este SKU nesta organização.",
+      };
+    }
     return { success: false, message: "Erro ao atualizar produto" };
   }
 }

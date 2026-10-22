@@ -1,11 +1,10 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
+import { getTenant } from "@/lib/tenant";
 
-export async function getVehiclesCount(orgId: string) {
-  if (!orgId) return 0;
+export async function getVehiclesCount() {
+  const tenant = await getTenant();
+  if (!tenant) return 0;
 
-  return prisma.vehicle.count({
-    where: { organizationId: orgId },
-  });
+  return tenant.db.vehicle.count();
 }

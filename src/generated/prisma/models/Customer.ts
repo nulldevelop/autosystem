@@ -249,12 +249,13 @@ export type CustomerOrderByWithRelationInput = {
 
 export type CustomerWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  email?: string
-  document?: string
+  document_organizationId?: Prisma.CustomerDocumentOrganizationIdCompoundUniqueInput
   AND?: Prisma.CustomerWhereInput | Prisma.CustomerWhereInput[]
   OR?: Prisma.CustomerWhereInput[]
   NOT?: Prisma.CustomerWhereInput | Prisma.CustomerWhereInput[]
   name?: Prisma.StringFilter<"Customer"> | string
+  email?: Prisma.StringFilter<"Customer"> | string
+  document?: Prisma.StringFilter<"Customer"> | string
   documentType?: Prisma.EnumDocumentTypeFilter<"Customer"> | $Enums.DocumentType
   phone?: Prisma.StringNullableFilter<"Customer"> | string | null
   address?: Prisma.StringNullableFilter<"Customer"> | string | null
@@ -266,7 +267,7 @@ export type CustomerWhereUniqueInput = Prisma.AtLeast<{
   organization?: Prisma.XOR<Prisma.OrganizationNullableScalarRelationFilter, Prisma.OrganizationWhereInput> | null
   serviceOrders?: Prisma.ServiceOrderListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
-}, "id" | "email" | "document">
+}, "id" | "document_organizationId">
 
 export type CustomerOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -414,6 +415,11 @@ export type CustomerListRelationFilter = {
 
 export type CustomerOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type CustomerDocumentOrganizationIdCompoundUniqueInput = {
+  document: string
+  organizationId: string
 }
 
 export type CustomerCountOrderByAggregateInput = {

@@ -3,8 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { ServiceOrderStatus } from "@/generated/prisma/client";
-import { getActiveOrganization } from "@/lib/getActiveOrganization";
-import { getSession } from "@/lib/getSession";
+import { getTenant } from "@/lib/tenant";
 import { prisma } from "@/lib/prisma";
 import { canPermission } from "@/utils/permissions/canPermission";
 
@@ -19,17 +18,17 @@ export async function updateServiceOrderStatus(
   const { serviceOrderId, status } =
     updateServiceOrderStatusSchema.parse(input);
 
-  const session = await getSession();
+  // Oficina ativa da sessão (e o usuário precisa ser membro dela)
+  const tenant = await getTenant();
 
-  if (!session) {
-    return { success: false, message: "Usuário não autenticado." };
+  if (!tenant) {
+    return {
+      success: false,
+      message: "Usuário não autenticado ou sem oficina ativa.",
+    };
   }
 
-  const organization = await getActiveOrganization(session.user.id);
-
-  if (!organization) {
-    return { success: false, message: "Organização não encontrada." };
-  }
+  const organization = { id: tenant.organizationId };
 
   try {
     const serviceOrder = await prisma.serviceOrder.findUnique({
@@ -69,6 +68,7 @@ export async function updateServiceOrderStatus(
     await prisma.serviceOrder.update({
       where: {
         id: serviceOrderId,
+        organizationId: organization.id,
       },
       data: {
         status,
@@ -79,6 +79,7 @@ export async function updateServiceOrderStatus(
       await prisma.transaction.updateMany({
         where: {
           serviceOrderId: serviceOrderId,
+          organizationId: organization.id,
           type: "INCOME",
         },
         data: {

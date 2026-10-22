@@ -5,6 +5,7 @@ import { headers } from "next/headers";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { isValidCnpj } from "@/utils/validateCNPJ";
 
 const createOrganizationSchema = z.object({
   name: z.string().min(2, {
@@ -26,9 +27,7 @@ const createOrganizationSchema = z.object({
     message: "O telefone deve ter pelo menos 11 caracteres.",
   }),
 
-  cnpj: z.string().min(14, {
-    message: "O CNPJ deve ter pelo menos 14 caracteres.",
-  }),
+  cnpj: z.string().refine(isValidCnpj, { message: "CNPJ inválido." }),
 });
 
 interface CreateOrganizationInput {
@@ -56,10 +55,7 @@ export async function createOrganization(
     if (!validationResult.success) {
       const errors = validationResult.error.flatten().fieldErrors;
       const firstError =
-        errors.name?.[0] ||
-        errors.slug?.[0] ||
-        errors.logo?.[0] ||
-        "Dados inválidos";
+        Object.values(errors).flat()[0] || "Dados inválidos";
 
       return {
         success: false,
@@ -79,37 +75,50 @@ export async function createOrganization(
       };
     }
 
-    // Criar organização
-    const org = await prisma.organization.create({
-      data: {
-        id: crypto.randomUUID(),
-        name,
-        slug,
-        address,
-        phone,
-        cnpj,
-        logo: logo || null,
-      },
-    });
-
-    // Criar membership para o usuário
-    await prisma.member.create({
-      data: {
-        id: crypto.randomUUID(),
-        organizationId: org.id,
-        userId: session.user.id,
-        role: "owner",
-        createdAt: new Date(),
-      },
-    });
-
-    // Atualizar a sessão com o activeOrganizationId
-    if (session.session?.id) {
-      await prisma.session.update({
-        where: { id: session.session.id },
-        data: { activeOrganizationId: org.id },
+    // Slug precisa ser único: se já existe, acrescenta um sufixo curto
+    let uniqueSlug = slug;
+    for (let attempt = 0; attempt < 5; attempt++) {
+      const taken = await prisma.organization.findUnique({
+        where: { slug: uniqueSlug },
+        select: { id: true },
       });
+      if (!taken) break;
+      uniqueSlug = `${slug}-${crypto.randomUUID().slice(0, 4)}`;
     }
+
+    // Organização, vínculo do dono e sessão ativa: tudo ou nada
+    const org = await prisma.$transaction(async (tx) => {
+      const created = await tx.organization.create({
+        data: {
+          id: crypto.randomUUID(),
+          name,
+          slug: uniqueSlug,
+          address,
+          phone,
+          cnpj,
+          logo: logo || null,
+        },
+      });
+
+      await tx.member.create({
+        data: {
+          id: crypto.randomUUID(),
+          organizationId: created.id,
+          userId: session.user.id,
+          role: "owner",
+          createdAt: new Date(),
+        },
+      });
+
+      if (session.session?.id) {
+        await tx.session.update({
+          where: { id: session.session.id },
+          data: { activeOrganizationId: created.id },
+        });
+      }
+
+      return created;
+    });
 
     revalidatePath("/dashboard");
     return {
@@ -122,7 +131,7 @@ export async function createOrganization(
     console.error("Erro ao criar organização:", error);
 
     // Tratamento de erros específicos
-    if (error?.message?.includes("slug")) {
+    if (error?.code === "P2002") {
       return {
         success: false,
         message: "Este slug já está em uso. Escolha outro.",
@@ -181,11 +190,32 @@ export async function checkOrganizationSlug(
   }
 }
 
+// Só dono/administrador da própria oficina pode alterar os dados dela.
+// O organizationId vem do cliente, então nunca é confiado sem checar a membership.
+async function canManageOrganization(organizationId: string) {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session?.user) return false;
+
+  const member = await prisma.member.findFirst({
+    where: {
+      userId: session.user.id,
+      organizationId,
+      role: { in: ["owner", "admin"] },
+    },
+    select: { id: true },
+  });
+  return Boolean(member);
+}
+
 export async function updateOrganizationLogo(
   organizationId: string,
   logoUrl: string,
 ) {
   try {
+    if (!(await canManageOrganization(organizationId))) {
+      return { success: false };
+    }
+
     await prisma.organization.update({
       where: { id: organizationId },
       data: { logo: logoUrl },
@@ -209,7 +239,18 @@ export async function updateOrganizationData(
     address: string;
   },
 ) {
+  if (!isValidCnpj(data.cnpj)) {
+    return { success: false, message: "CNPJ inválido." };
+  }
+
   try {
+    if (!(await canManageOrganization(organizationId))) {
+      return {
+        success: false,
+        message: "Você não tem permissão para alterar esta oficina.",
+      };
+    }
+
     await prisma.organization.update({
       where: { id: organizationId },
       data: {

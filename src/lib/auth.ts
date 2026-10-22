@@ -34,8 +34,21 @@ export const auth = betterAuth({
     },
   },
 
+  user: {
+    additionalFields: {
+      trialStartedAt: { type: "date", required: false, input: false },
+    },
+  },
+
   emailVerification: {
     sendOnSignUp: true,
+    // o teste grátis só começa quando a pessoa confirma o e-mail
+    afterEmailVerification: async (user) => {
+      await prisma.user.updateMany({
+        where: { id: user.id, trialStartedAt: null },
+        data: { trialStartedAt: new Date() },
+      });
+    },
     autoSignInAfterVerification: true,
     expiresIn: 60 * 60,
     sendVerificationEmail: async ({ user, url }) => {

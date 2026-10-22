@@ -16,7 +16,7 @@ export async function checkPermission(page: string) {
   let userPlan: Plan | "TRIAL" | "EXPIRED" = "EXPIRED";
   let allowedRoutes: string[] = [];
 
-  const access = resolveAccess(session.user.createdAt, subscription);
+  const access = resolveAccess(session.user, subscription);
   if (access.plan) {
     userPlan = access.plan;
     allowedRoutes = planRoutes[access.plan] || [];

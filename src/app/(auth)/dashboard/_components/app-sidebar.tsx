@@ -85,14 +85,14 @@ export async function AppSidebar({
   ] = await Promise.all([
     session?.user?.id ? getSubscription(session.user.id) : null,
     getCustomersCount(),
-    getVehiclesCount(orgId),
+    getVehiclesCount(),
     getBudgetsCount(),
-    getProductsCount(orgId),
-    getServiceOrdersCount(orgId),
+    getProductsCount(),
+    getServiceOrdersCount(),
   ]);
 
   if (session) {
-    const access = resolveAccess(session.user.createdAt, subscription);
+    const access = resolveAccess(session.user, subscription);
     if (access.plan) {
       allowedRoutes = planRoutes[access.plan] || [];
     } else if (access.kind === "TRIAL") {

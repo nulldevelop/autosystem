@@ -1,14 +1,12 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
+import { getTenant } from "@/lib/tenant";
 
-export async function getProductsCount(orgId: string) {
-  if (!orgId) return 0;
+export async function getProductsCount() {
+  const tenant = await getTenant();
+  if (!tenant) return 0;
 
-  const products = await prisma.product.findMany({
-    where: {
-      organizationId: orgId,
-    },
+  const products = await tenant.db.product.findMany({
     select: {
       sku: true,
     },

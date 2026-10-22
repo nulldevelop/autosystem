@@ -119,7 +119,7 @@ export async function createServiceOrder(
         if (!isCustom) {
           // 3a. Verificar Disponibilidade
           const product = await tx.product.findUnique({
-            where: { id: item.productId },
+            where: { id: item.productId, organizationId: orgId },
             select: { stockQuantity: true, name: true },
           });
 
@@ -135,7 +135,7 @@ export async function createServiceOrder(
 
           // 3b. Atualiza estoque
           await tx.product.update({
-            where: { id: item.productId },
+            where: { id: item.productId, organizationId: orgId },
             data: {
               stockQuantity: {
                 decrement: item.quantity,

@@ -10,10 +10,12 @@ const signUpSchema = z.object({
     .min(3, { message: "O nome deve ter pelo menos 3 caracteres." })
     .max(100, { message: "O nome deve ter no máximo 100 caracteres." })
     .trim(),
+  // limpa espaços e caixa ANTES de validar (teclados de celular costumam deixar um espaço no fim)
   email: z
-    .email({ message: "Por favor, insira um e-mail válido." })
+    .string()
+    .trim()
     .toLowerCase()
-    .trim(),
+    .pipe(z.email({ message: "Por favor, insira um e-mail válido." })),
   password: z
     .string()
     .min(8, { message: "A senha deve ter pelo menos 8 caracteres." })

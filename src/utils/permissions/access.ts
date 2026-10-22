@@ -12,6 +12,16 @@ export type Access = {
   endsAt: Date | null;
 };
 
+export type TrialUser = {
+  createdAt: Date | string;
+  trialStartedAt?: Date | string | null;
+};
+
+/** O teste grátis conta a partir da confirmação do e-mail; antes disso, do cadastro. */
+export function getTrialStart(user: TrialUser) {
+  return new Date(user.trialStartedAt ?? user.createdAt);
+}
+
 type SubscriptionAccessFields = Pick<
   Subscription,
   "plan" | "status" | "currentPeriodEnd" | "bonusUntil" | "abacatepaySubscriptionId"
@@ -22,7 +32,7 @@ type SubscriptionAccessFields = Pick<
  * assinatura paga > meses grátis de indicação > trial de TRIAL_DAYS > expirado.
  */
 export function resolveAccess(
-  userCreatedAt: Date | string,
+  user: TrialUser,
   subscription: SubscriptionAccessFields | null | undefined,
   now: Date = new Date(),
 ): Access {
@@ -45,7 +55,7 @@ export function resolveAccess(
     };
   }
 
-  const trialEnd = addDays(new Date(userCreatedAt), TRIAL_DAYS);
+  const trialEnd = addDays(getTrialStart(user), TRIAL_DAYS);
   if (isAfter(trialEnd, now)) {
     return { kind: "TRIAL", plan: null, endsAt: trialEnd };
   }

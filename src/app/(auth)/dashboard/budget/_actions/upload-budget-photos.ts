@@ -3,6 +3,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { revalidatePath } from "next/cache";
+import { isImageFile, safeFileName } from "@/lib/files";
 import { getSession } from "@/lib/getSession";
 import { prisma } from "@/lib/prisma";
 
@@ -19,6 +20,22 @@ export async function uploadBudgetPhotos(formData: FormData) {
 
     if (!budgetId || files.length === 0) {
       throw new Error("Dados insuficientes");
+    }
+
+    // O orçamento precisa ser desta oficina (também impede usar budgetId como caminho)
+    const budget = await prisma.budget.findFirst({
+      where: {
+        id: budgetId,
+        organizationId: session.session.activeOrganizationId,
+      },
+      select: { id: true },
+    });
+    if (!budget) {
+      throw new Error("Orçamento inválido");
+    }
+
+    if (!files.every(isImageFile)) {
+      throw new Error("Envie apenas imagens");
     }
 
     const organization = await prisma.organization.findUnique({
@@ -46,7 +63,7 @@ export async function uploadBudgetPhotos(formData: FormData) {
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
 
-      const fileName = `${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
+      const fileName = safeFileName(file.name);
       const filePath = join(uploadDir, fileName);
 
       await writeFile(filePath, buffer);

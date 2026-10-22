@@ -1,52 +1,16 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { prisma } from "@/lib/prisma";
+import { requireTenant, TenantError } from "@/lib/tenant";
 
-type NotificationType =
-  | "BUDGET_SIGNED"
-  | "SERVICE_ORDER_SIGNED"
-  | "BUDGET_APPROVED"
-  | "SERVICE_ORDER_COMPLETED"
-  | "NEW_CUSTOMER"
-  | "NEW_BUDGET";
-
-type CreateNotificationInput = {
-  type: NotificationType;
-  title: string;
-  message: string;
-  organizationId: string;
-  budgetId?: string;
-  serviceOrderId?: string;
-  customerId?: string;
-};
-
-export async function createNotification(input: CreateNotificationInput) {
-  try {
-    const notification = await prisma.notification.create({
-      data: {
-        id: crypto.randomUUID(),
-        type: input.type,
-        title: input.title,
-        message: input.message,
-        organizationId: input.organizationId,
-        budgetId: input.budgetId,
-        serviceOrderId: input.serviceOrderId,
-        customerId: input.customerId,
-      },
-    });
-
-    revalidatePath("/dashboard/notifications");
-    return { success: true, notification };
-  } catch (error) {
-    console.error("Error creating notification:", error);
-    return { success: false, error };
-  }
-}
+// Ações expostas ao cliente: a oficina vem SEMPRE da sessão, nunca de um parâmetro.
+// (A criação de notificações é feita só no servidor, nas rotas de assinatura.)
 
 export async function markNotificationAsRead(notificationId: string) {
   try {
-    await prisma.notification.update({
+    const { db } = await requireTenant();
+
+    await db.notification.updateMany({
       where: { id: notificationId },
       data: { read: true },
     });
@@ -54,22 +18,30 @@ export async function markNotificationAsRead(notificationId: string) {
     revalidatePath("/dashboard/notifications");
     return { success: true };
   } catch (error) {
+    if (error instanceof TenantError) {
+      return { success: false, error: error.message };
+    }
     console.error("Error marking notification as read:", error);
-    return { success: false, error };
+    return { success: false, error: "Falha ao atualizar a notificação" };
   }
 }
 
-export async function markAllNotificationsAsRead(organizationId: string) {
+export async function markAllNotificationsAsRead() {
   try {
-    await prisma.notification.updateMany({
-      where: { organizationId, read: false },
+    const { db } = await requireTenant();
+
+    await db.notification.updateMany({
+      where: { read: false },
       data: { read: true },
     });
 
     revalidatePath("/dashboard/notifications");
     return { success: true };
   } catch (error) {
+    if (error instanceof TenantError) {
+      return { success: false, error: error.message };
+    }
     console.error("Error marking all notifications as read:", error);
-    return { success: false, error };
+    return { success: false, error: "Falha ao atualizar as notificações" };
   }
 }

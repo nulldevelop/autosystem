@@ -57,7 +57,11 @@ export async function GET(
     return new NextResponse(file, {
       headers: {
         "Content-Type": contentType,
-        "Cache-Control": "public, max-age=31536000, immutable",
+        "Cache-Control": "private, max-age=31536000, immutable",
+        "X-Content-Type-Options": "nosniff",
+        // impede que um SVG enviado execute scripts na origem do app
+        "Content-Security-Policy":
+          "default-src 'none'; style-src 'unsafe-inline'; sandbox",
       },
     });
   } catch (_error) {

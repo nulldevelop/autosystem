@@ -1,12 +1,14 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { prisma } from "@/lib/prisma";
+import { requireTenant, TenantError } from "@/lib/tenant";
 
 export async function deleteVehicle(vehicleId: string) {
   try {
+    const { db } = await requireTenant();
+
     // Verificar se o veículo tem orçamentos ou ordens de serviço vinculadas
-    const vehicle = await prisma.vehicle.findUnique({
+    const vehicle = await db.vehicle.findUnique({
       where: { id: vehicleId },
       include: {
         _count: {
@@ -30,7 +32,7 @@ export async function deleteVehicle(vehicleId: string) {
       };
     }
 
-    await prisma.vehicle.delete({
+    await db.vehicle.delete({
       where: { id: vehicleId },
     });
 
@@ -38,6 +40,9 @@ export async function deleteVehicle(vehicleId: string) {
 
     return { success: true, message: "Veículo removido com sucesso!" };
   } catch (error) {
+    if (error instanceof TenantError) {
+      return { success: false, message: error.message };
+    }
     console.error("Erro ao excluir veículo:", error);
     return {
       success: false,

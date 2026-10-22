@@ -67,6 +67,21 @@ export async function createVehicle(
     const { marca, model, year, licensePlate, customerId } =
       validationResult.data;
 
+    // O cliente do veículo precisa ser desta oficina
+    const customer = await prisma.customer.findFirst({
+      where: {
+        id: customerId,
+        organizationId: session.session.activeOrganizationId,
+      },
+      select: { id: true },
+    });
+    if (!customer) {
+      return {
+        success: false,
+        message: "Cliente não encontrado nesta organização.",
+      };
+    }
+
     // This query now works because of the @@unique([licensePlate, organizationId]) in the schema
     const existingVehicle = await prisma.vehicle.findUnique({
       where: {

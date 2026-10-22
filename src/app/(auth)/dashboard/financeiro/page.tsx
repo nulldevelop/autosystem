@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { getActiveOrganization } from "@/lib/getActiveOrganization";
+import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/getSession";
 import { checkPermission } from "@/utils/permissions/check-permission";
 import { FinanceiroSkeleton } from "./loading";
@@ -18,7 +18,14 @@ export default async function FinanceiroPage() {
 
   const [data, organization] = await Promise.all([
     getFinancialData(),
-    getActiveOrganization(session.user.id),
+    session.session.activeOrganizationId
+      ? prisma.organization.findFirst({
+          where: {
+            id: session.session.activeOrganizationId,
+            members: { some: { userId: session.user.id } },
+          },
+        })
+      : null,
   ]);
 
   if (!data) {

@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { isValidCnpj } from "@/utils/validateCNPJ";
 import {
   updateOrganizationData,
   updateOrganizationLogo,
@@ -28,9 +29,7 @@ const formSchema = z.object({
   phone: z
     .string()
     .min(11, { message: "O telefone deve ter pelo menos 11 caracteres." }),
-  cnpj: z
-    .string()
-    .min(14, { message: "O CNPJ deve ter pelo menos 14 caracteres." }),
+  cnpj: z.string().refine(isValidCnpj, { message: "CNPJ inválido." }),
   street: z.string().min(1, { message: "Rua é obrigatória." }),
   number: z.string().min(1, { message: "Número é obrigatório." }),
   neighborhood: z.string().min(1, { message: "Bairro é obrigatório." }),

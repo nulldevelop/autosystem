@@ -17,6 +17,7 @@ type BetterAuthSession = {
     email: string;
     name?: string | null;
     createdAt: Date;
+    trialStartedAt?: Date | null;
   };
   session: {
     id: string;
@@ -57,7 +58,7 @@ export async function canCreateBudget(
       },
     });
 
-    const access = resolveAccess(session.user.createdAt, subscription);
+    const access = resolveAccess(session.user, subscription);
 
     if (access.plan) {
       const plan = access.plan;

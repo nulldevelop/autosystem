@@ -2,6 +2,7 @@
 
 import { addDays, differenceInDays, isAfter } from "date-fns";
 import { prisma } from "@/lib/prisma";
+import { getTrialStart } from "./access";
 import { TRIAL_DAYS } from "./trial-limits";
 
 export async function checkSubscription(userId: string) {
@@ -30,7 +31,7 @@ export async function checkSubscription(userId: string) {
     };
   }
 
-  const trialEndDate = addDays(user.createdAt, TRIAL_DAYS);
+  const trialEndDate = addDays(getTrialStart(user), TRIAL_DAYS);
 
   if (isAfter(new Date(), trialEndDate)) {
     return {

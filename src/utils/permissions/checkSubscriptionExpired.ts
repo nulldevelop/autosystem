@@ -2,6 +2,7 @@
 
 import { addDays, isAfter } from "date-fns";
 import type { ResultPermissionProp } from "./canPermission";
+import { getTrialStart } from "./access";
 import { TRIAL_DAYS } from "./trial-limits";
 
 type BetterAuthSession = {
@@ -10,6 +11,7 @@ type BetterAuthSession = {
     email: string;
     name?: string | null;
     createdAt: Date;
+    trialStartedAt?: Date | null;
   };
   session: {
     id: string;
@@ -29,7 +31,7 @@ export async function checkSubscriptionExpired(
     };
   }
 
-  const trialEndDate = addDays(new Date(session.user.createdAt), TRIAL_DAYS);
+  const trialEndDate = addDays(getTrialStart(session.user), TRIAL_DAYS);
 
   if (isAfter(new Date(), trialEndDate)) {
     return {
