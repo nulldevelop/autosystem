@@ -1,6 +1,12 @@
 import "@/styles/globals.css";
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Inter, JetBrains_Mono } from "next/font/google";
+import {
+  Barlow_Condensed,
+  Bricolage_Grotesque,
+  Caveat,
+  Inter,
+  JetBrains_Mono,
+} from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -12,6 +18,17 @@ const inter = Inter({
 const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
   variable: "--font-bricolage",
+});
+
+const barlow = Barlow_Condensed({
+  weight: ["500", "600", "700"],
+  subsets: ["latin"],
+  variable: "--font-barlow",
+});
+
+const caveat = Caveat({
+  subsets: ["latin"],
+  variable: "--font-caveat",
 });
 
 const jetbrains = JetBrains_Mono({
@@ -55,7 +72,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${bricolage.variable} ${jetbrains.variable} font-sans antialiased bg-background text-foreground`}
+        className={`${inter.variable} ${bricolage.variable} ${jetbrains.variable} ${barlow.variable} ${caveat.variable} font-sans antialiased bg-background text-foreground`}
       >
         <ThemeProvider
           attribute="class"

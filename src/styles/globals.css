@@ -111,6 +111,9 @@
   --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, Menlo,
     monospace;
 
+  --font-industrial: var(--font-barlow), "Arial Narrow", ui-sans-serif, sans-serif;
+  --font-hand: var(--font-caveat), cursive;
+
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -147,6 +150,39 @@
 }
 
 @layer utilities {
+  /* Faixa zebrada de sinalização de oficina */
+  .hazard {
+    background-image: repeating-linear-gradient(
+      -45deg,
+      #facc15 0 14px,
+      #18181b 14px 28px
+    );
+  }
+  /* Painel de ferramentas: furos em grade */
+  .pegboard {
+    background-image: radial-gradient(
+      color-mix(in oklab, var(--foreground) 16%, transparent) 2px,
+      transparent 2.5px
+    );
+    background-size: 28px 28px;
+  }
+  /* Chapa aparafusada: quatro parafusos nos cantos */
+  .rivets {
+    --rivet: color-mix(in oklab, var(--foreground) 24%, transparent);
+    background-image:
+      radial-gradient(circle at 11px 11px, var(--rivet) 2px, transparent 3px),
+      radial-gradient(circle at calc(100% - 11px) 11px, var(--rivet) 2px, transparent 3px),
+      radial-gradient(circle at 11px calc(100% - 11px), var(--rivet) 2px, transparent 3px),
+      radial-gradient(circle at calc(100% - 11px) calc(100% - 11px), var(--rivet) 2px, transparent 3px);
+  }
+  /* Linhas de formulário impresso (cópia carbono azul) */
+  .form-lines {
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0 31px,
+      color-mix(in oklab, #1e40af 22%, transparent) 31px 32px
+    );
+  }
   /* números alinhados em colunas: valores, placas, códigos */
   .num {
     font-variant-numeric: tabular-nums;

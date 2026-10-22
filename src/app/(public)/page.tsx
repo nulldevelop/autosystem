@@ -5,26 +5,20 @@ import {
   Car,
   Check,
   ClipboardList,
-  FileDown,
-  Link2,
-  MessageCircle,
   Moon,
   Package,
-  Send,
   Smartphone,
   TrendingUp,
-  Users,
   Wrench,
 } from "lucide-react";
 import Link from "next/link";
 import { Plate } from "@/components/app/plate";
 import { ThemeToggle } from "@/components/app/theme-toggle";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/ui/logo";
 import { cn } from "@/lib/utils";
-import { subscriptionPlans } from "@/utils/plans/subscription-plans";
 import { TRIAL_DAYS } from "@/utils/permissions/trial-limits";
+import { subscriptionPlans } from "@/utils/plans/subscription-plans";
 
 const brl = (value: number) =>
   new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(
@@ -32,193 +26,266 @@ const brl = (value: number) =>
   );
 
 const NAV = [
-  { href: "#como-funciona", label: "Como funciona" },
-  { href: "#recursos", label: "Recursos" },
-  { href: "#planos", label: "Planos" },
+  { href: "#caminho", label: "O caminho do carro" },
+  { href: "#bancada", label: "Na bancada" },
+  { href: "#planos", label: "Preços" },
 ];
 
-const STEPS = [
+/** Cada etapa é uma "estação" por onde o carro passa: a ordem importa. */
+const STATIONS = [
   {
-    icon: Users,
+    tag: "Balcão",
     title: "Cadastre cliente e veículo",
-    text: "Nome, documento, telefone e a placa. Tudo fica salvo para os próximos atendimentos.",
+    text: "Nome, documento, telefone e a placa. Fica salvo para o próximo atendimento.",
   },
   {
-    icon: ClipboardList,
+    tag: "Orçamento",
     title: "Monte o orçamento",
-    text: "Escolha peças e serviços do estoque, anexe fotos do veículo e gere o PDF.",
+    text: "Peças e serviços direto do estoque, fotos do veículo e PDF pronto para enviar.",
   },
   {
-    icon: MessageCircle,
-    title: "Envie e colha a assinatura",
-    text: "O cliente recebe o link no WhatsApp, confere os valores e assina na tela do celular.",
+    tag: "Aprovação",
+    title: "Cliente assina no celular",
+    text: "O link vai pelo WhatsApp. Ele confere os valores e assina com o dedo, sem imprimir.",
   },
   {
-    icon: Wrench,
+    tag: "Bancada",
     title: "Execute e receba",
-    text: "O orçamento aprovado vira ordem de serviço. Ao finalizar, a receita entra no financeiro.",
+    text: "O orçamento aprovado vira ordem de serviço. Ao finalizar, a receita cai no financeiro.",
   },
 ];
 
-const FEATURES = [
+const TOOLBOX = [
   {
     icon: ClipboardList,
-    title: "Orçamentos com assinatura digital",
-    text: "Itens, fotos do veículo, PDF e um link para o cliente aprovar. Você acompanha o que está pendente, aprovado ou rejeitado.",
+    title: "Orçamento com assinatura",
+    text: "Itens, fotos, PDF e link de aprovação. Veja o que está pendente, aprovado ou rejeitado.",
   },
   {
     icon: Wrench,
     title: "Ordens de serviço",
-    text: "Geradas a partir do orçamento aprovado. Acompanhe o andamento, baixe o PDF e finalize quando o carro sair.",
+    text: "Nascem do orçamento aprovado. Acompanhe o andamento e finalize quando o carro sair.",
   },
   {
     icon: Package,
-    title: "Estoque com quantidade mínima",
-    text: "Veja o que está baixo ou esgotado, registre entradas e saídas e exporte o relatório do inventário.",
+    title: "Estoque com mínimo",
+    text: "Alerta de peça baixa ou esgotada, entradas e saídas e relatório do inventário.",
   },
   {
     icon: Car,
     title: "Clientes e veículos",
-    text: "Cada carro ligado ao seu proprietário, com placa no padrão Mercosul e busca por nome, placa ou documento.",
+    text: "Cada carro ligado ao dono, com placa Mercosul e busca por nome, placa ou documento.",
   },
   {
     icon: TrendingUp,
     title: "Financeiro com lucro real",
-    text: "Receitas, despesas e custo de peças por serviço. O lucro líquido é calculado para você, com recibo em PDF.",
+    text: "Receitas, despesas e custo de peças. O lucro líquido sai calculado, com recibo em PDF.",
   },
   {
     icon: BarChart3,
-    title: "Relatórios por período",
-    text: "Faturamento, ticket médio, meios de pagamento e divisão por categoria. Exporte em PDF.",
+    title: "Relatórios do período",
+    text: "Faturamento, ticket médio, meios de pagamento e categorias. Exporta em PDF.",
+  },
+];
+
+const BOARD = [
+  {
+    plate: "KDF5M78",
+    car: "Chevrolet Onix LT 1.0",
+    status: "Em andamento",
+    chip: "bg-[#facc15]/15 text-[#facc15]",
+  },
+  {
+    plate: "GKR4C12",
+    car: "Honda Civic EXL 2.0",
+    status: "Aberta",
+    chip: "bg-sky-400/15 text-sky-300",
+  },
+  {
+    plate: "JAP9L31",
+    car: "Toyota Corolla XEI 2.0",
+    status: "Concluída",
+    chip: "bg-emerald-400/15 text-emerald-300",
+  },
+  {
+    plate: "HBD7J40",
+    car: "Volkswagen Saveiro CS 1.6",
+    status: "Aberta",
+    chip: "bg-sky-400/15 text-sky-300",
   },
 ];
 
 const ALSO = [
-  { icon: Bell, label: "Notificações de atividade" },
-  { icon: Smartphone, label: "Instalável no celular" },
+  { icon: Bell, label: "Avisos de atividade" },
+  { icon: Smartphone, label: "Instala como app" },
   { icon: Moon, label: "Tema claro e escuro" },
 ];
 
-function SectionHeading({
-  eyebrow,
-  title,
-  text,
+/** Etiqueta de sinalização: texto em caixa alta sobre fundo amarelo. */
+function Tape({
+  children,
+  className,
 }: {
-  eyebrow: string;
-  title: string;
-  text?: string;
+  children: React.ReactNode;
+  className?: string;
 }) {
   return (
-    <div className="mx-auto max-w-2xl text-center">
-      <p className="text-sm font-medium text-primary">{eyebrow}</p>
-      <h2 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-        {title}
-      </h2>
-      {text && <p className="mt-3 text-base text-muted-foreground">{text}</p>}
-    </div>
+    <span
+      className={cn(
+        "inline-block bg-[#facc15] px-2.5 py-1 font-mono text-xs font-semibold tracking-wider text-[#18181b] uppercase",
+        className,
+      )}
+    >
+      {children}
+    </span>
   );
 }
 
-/** Exemplo ilustrativo do orçamento e da assinatura, montado com os mesmos componentes do sistema. */
-function ProductMock() {
+/** Ordem de serviço de papel presa na prancheta, com a plaquinha do chaveiro. */
+function ServiceOrderSheet() {
+  const ink = "text-[#1e40af]";
+  const line = "border-b border-[#1e40af]/35";
+
   return (
     <div
       role="img"
-      aria-label="Exemplo de orçamento com placa, itens e total, e a assinatura do cliente aprovando"
+      aria-label="Exemplo de ordem de serviço preenchida à mão, aprovada e assinada pelo cliente"
       className="relative mx-auto w-full max-w-md lg:max-w-none"
     >
-      <div className="rounded-2xl border bg-card shadow-xl shadow-foreground/5">
-        <div className="flex items-center justify-between border-b px-5 py-3.5">
-          <span className="font-mono text-xs text-muted-foreground">
-            Orçamento #2cf9d72c
-          </span>
-          <Badge variant="warning">
-            <span className="size-1.5 rounded-full bg-current" />
-            Pendente
-          </Badge>
+      <div className="relative rounded-2xl bg-[#3b4048] p-3 pt-8 shadow-2xl shadow-black/30 lg:rotate-[1.5deg]">
+        <div
+          aria-hidden
+          className="absolute -top-2.5 left-1/2 h-9 w-28 -translate-x-1/2 rounded-md bg-gradient-to-b from-zinc-100 to-zinc-400 shadow-md"
+        >
+          <span className="absolute inset-x-4 top-2.5 h-1.5 rounded-full bg-zinc-600/40" />
         </div>
 
-        <div className="space-y-3 px-5 py-4">
-          <p className="font-display text-xl font-semibold">Luciana Mendes</p>
-          <div className="flex items-center gap-2.5">
-            <Plate value="KDF5M78" />
-            <span className="text-sm text-muted-foreground">
-              Chevrolet Onix LT 1.0
-            </span>
-          </div>
-        </div>
-
-        <dl className="divide-y border-y text-sm">
-          {[
-            ["Vela de ignição NGK BKR6E", "4 × R$ 32,90", "R$ 131,60"],
-            ["Mão de obra · troca de velas", "1 × R$ 90,00", "R$ 90,00"],
-          ].map(([name, calc, total]) => (
-            <div
-              key={name}
-              className="flex items-center justify-between gap-4 px-5 py-3"
-            >
-              <div className="min-w-0">
-                <dt className="truncate font-medium">{name}</dt>
-                <dd className="num text-xs text-muted-foreground">{calc}</dd>
-              </div>
-              <dd className="num shrink-0 font-medium">{total}</dd>
+        <div className="relative rounded-md bg-[#f8f8f4] px-5 pt-5 pb-6 text-[#15171c]">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="font-industrial text-3xl leading-none font-bold tracking-wide uppercase">
+                Ordem de serviço
+              </p>
+              <p className={cn("mt-1 text-xs font-medium", ink)}>
+                Auto Mecânica Exemplo
+              </p>
             </div>
-          ))}
-        </dl>
+            <p className="text-right">
+              <span
+                className={cn("block text-xs font-semibold uppercase", ink)}
+              >
+                Nº
+              </span>
+              <span className="font-mono text-xl font-bold text-[#c1121f]">
+                0047
+              </span>
+            </p>
+          </div>
 
-        <div className="flex items-center justify-between px-5 py-4">
-          <span className="text-sm text-muted-foreground">Total</span>
-          <span className="num font-display text-2xl font-semibold">
-            R$ 221,60
-          </span>
-        </div>
+          <dl className="mt-4 grid grid-cols-2 gap-x-5 gap-y-2">
+            {[
+              ["Cliente", "Luciana Mendes", true],
+              ["Veículo", "Chevrolet Onix LT 1.0", false],
+              ["Placa", "KDF5M78", false],
+              ["Quilometragem", "45.200 km", false],
+              ["Entrada", "21/10", false],
+            ].map(([label, value, wide]) => (
+              <div key={String(label)} className={cn(wide && "col-span-2")}>
+                <dt className={cn("text-xs font-semibold uppercase", ink)}>
+                  {label}
+                </dt>
+                <dd
+                  className={cn(
+                    "font-hand text-2xl leading-7 font-semibold",
+                    line,
+                  )}
+                >
+                  {value}
+                </dd>
+              </div>
+            ))}
+          </dl>
 
-        <div className="flex flex-wrap gap-2 rounded-b-2xl border-t bg-surface px-5 py-3">
-          {[
-            { icon: FileDown, label: "PDF" },
-            { icon: Link2, label: "Link" },
-            { icon: Send, label: "WhatsApp", accent: true },
-          ].map(({ icon: Icon, label, accent }) => (
-            <span
-              key={label}
-              className="inline-flex h-9 items-center gap-1.5 rounded-lg border bg-card px-3 text-sm font-medium"
+          <div className="mt-5">
+            <div
+              className={cn(
+                "grid grid-cols-[2.5rem_1fr_5.5rem] gap-x-2 text-xs font-semibold uppercase",
+                ink,
+              )}
             >
-              <Icon
-                className={cn("size-4", accent && "text-success")}
-                aria-hidden
-              />
-              {label}
-            </span>
-          ))}
+              <span>Qtd</span>
+              <span>Peças e serviços</span>
+              <span className="text-right">Valor</span>
+            </div>
+            {[
+              ["4", "Vela de ignição NGK", "131,60"],
+              ["1", "M.O. troca de velas", "90,00"],
+              ["", "", ""],
+            ].map(([qty, desc, price], i) => (
+              <div
+                // biome-ignore lint/suspicious/noArrayIndexKey: linhas estáticas do formulário
+                key={i}
+                className={cn(
+                  "grid h-8 grid-cols-[2.5rem_1fr_5.5rem] items-end gap-x-2 font-hand text-xl leading-7 font-semibold",
+                  line,
+                )}
+              >
+                <span>{qty}</span>
+                <span className="truncate">{desc}</span>
+                <span className="text-right">{price}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-4 flex items-end justify-between gap-4">
+            <div className="relative flex-1">
+              <svg
+                viewBox="0 0 120 36"
+                className="h-9 w-full text-[#1d4ed8]"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <title>Assinatura do cliente</title>
+                <path d="M4 26 C 12 4, 22 4, 26 22 S 40 34, 46 14 S 62 8, 68 24 S 88 30, 112 10" />
+              </svg>
+              <p
+                className={cn("border-t border-[#15171c]/50 pt-1 text-xs", ink)}
+              >
+                Assinatura do cliente
+              </p>
+            </div>
+            <div className="border-2 border-[#15171c] px-3 py-1 text-right">
+              <p className="text-xs font-semibold uppercase">Total</p>
+              <p className="font-industrial text-3xl leading-none font-bold">
+                R$ 221,60
+              </p>
+            </div>
+          </div>
+
+          <div
+            aria-hidden
+            className="pointer-events-none absolute right-28 bottom-[4.25rem] -rotate-12 rounded-md border-[3px] border-[oklch(0.5_0.14_152)] px-3 py-1 text-center text-[oklch(0.5_0.14_152)] opacity-90 mix-blend-multiply"
+          >
+            <p className="font-industrial text-3xl leading-none font-bold tracking-widest uppercase">
+              Aprovado
+            </p>
+            <p className="font-mono text-xs uppercase">pelo celular</p>
+          </div>
         </div>
       </div>
 
-      <div className="mt-4 rounded-2xl border bg-card p-4 shadow-xl shadow-foreground/5 lg:absolute lg:-bottom-36 lg:-left-12 lg:mt-0 lg:w-64 lg:-rotate-2">
-        <div className="flex items-center justify-between">
-          <span className="text-xs text-muted-foreground">
-            Assinatura do cliente
-          </span>
-          <Badge variant="success">
-            <Check className="size-3" aria-hidden />
-            Aprovado
-          </Badge>
+      <div className="-mt-4 ml-6 w-44 -rotate-3 sm:ml-10">
+        <div className="mx-auto -mb-3 size-6 rounded-full border-4 border-zinc-400" />
+        <div className="rounded-xl bg-[#facc15] p-3 pt-5 text-[#18181b] shadow-xl shadow-black/25">
+          <Plate value="KDF5M78" className="w-full justify-center" />
+          <p className="mt-2 text-center font-mono text-xs font-semibold uppercase">
+            Onix · baia 2
+          </p>
         </div>
-        <svg
-          viewBox="0 0 100 44"
-          className="mt-2 h-14 w-full text-foreground"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <title>Assinatura do cliente</title>
-          <path d="M6 32 C 12 8, 20 8, 24 26 S 36 40, 42 18 S 56 12, 62 28 S 78 36, 94 14" />
-        </svg>
-        <p className="border-t pt-2 text-xs text-muted-foreground">
-          Assinado pelo celular, sem imprimir nada
-        </p>
       </div>
     </div>
   );
@@ -229,11 +296,13 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-primary/25">
-      <header className="sticky top-0 z-40 border-b bg-background/85 backdrop-blur-md">
+      <div aria-hidden className="hazard h-1.5" />
+
+      <header className="sticky top-0 z-40 border-b bg-background/90 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
           <Link href="/" className="flex items-center gap-2.5">
             <Logo className="size-8" />
-            <span className="font-display text-lg font-semibold tracking-tight">
+            <span className="font-industrial text-2xl font-bold tracking-wide uppercase">
               Auto<span className="text-primary">System</span>
             </span>
           </Link>
@@ -246,7 +315,7 @@ export default function LandingPage() {
               <a
                 key={item.href}
                 href={item.href}
-                className="rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
               >
                 {item.label}
               </a>
@@ -259,45 +328,30 @@ export default function LandingPage() {
               <Link href="/auth">Entrar</Link>
             </Button>
             <Button asChild size="sm">
-              <Link href="/auth?mode=signup">Testar grátis</Link>
+              <Link href="/auth?mode=signup">
+                Testar<span className="hidden sm:inline"> grátis</span>
+              </Link>
             </Button>
           </div>
         </div>
       </header>
 
       <main>
-        {/* Hero */}
-        <section className="relative overflow-hidden">
+        {/* Entrada da oficina */}
+        <section className="pegboard relative overflow-hidden">
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0"
-            style={{
-              backgroundImage:
-                "radial-gradient(color-mix(in oklab, var(--foreground) 13%, transparent) 1px, transparent 1px)",
-              backgroundSize: "22px 22px",
-              maskImage:
-                "linear-gradient(to bottom, black 20%, transparent 85%)",
-              WebkitMaskImage:
-                "linear-gradient(to bottom, black 20%, transparent 85%)",
-            }}
+            className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-background/40 to-background"
           />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -top-32 right-0 size-[28rem] rounded-full bg-primary/15 blur-3xl"
-          />
-
-          <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-4 pt-14 pb-20 sm:px-6 sm:pt-20 lg:grid-cols-[1.05fr_1fr] lg:gap-10 lg:pb-32">
+          <div className="relative mx-auto grid max-w-6xl items-center gap-16 px-4 pt-14 pb-20 sm:px-6 sm:pt-20 lg:grid-cols-[1.05fr_1fr] lg:gap-14 lg:pb-32">
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
-              <Badge variant="neutral" className="mb-5">
-                Gestão para oficinas mecânicas
-              </Badge>
-              <h1 className="text-4xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">
-                Do orçamento ao recibo, sem papel e sem planilha.
+              <Tape>Para oficinas mecânicas</Tape>
+              <h1 className="font-industrial mt-5 text-5xl leading-[0.95] font-bold tracking-wide text-balance uppercase sm:text-6xl lg:text-7xl">
+                Do orçamento à entrega, sem papel solto na bancada.
               </h1>
-              <p className="mt-5 max-w-xl text-lg text-muted-foreground">
-                Monte o orçamento, envie pelo WhatsApp e o cliente assina no
-                celular. Aprovado, ele vira ordem de serviço e já entra no
-                financeiro.
+              <p className="mt-6 max-w-xl text-lg text-muted-foreground">
+                Cada carro com seu orçamento, sua ordem de serviço e seu recibo.
+                O cliente aprova pelo WhatsApp e assina no celular.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Button asChild size="lg">
@@ -306,100 +360,177 @@ export default function LandingPage() {
                   </Link>
                 </Button>
                 <Button asChild size="lg" variant="outline">
-                  <a href="#como-funciona">Ver como funciona</a>
+                  <a href="#caminho">Ver o passo a passo</a>
                 </Button>
               </div>
-              <p className="mt-5 text-sm text-muted-foreground">
-                Funciona no celular e no computador. Você instala como app, sem
-                loja.
-              </p>
+              <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 font-mono text-xs text-muted-foreground uppercase">
+                <li className="flex items-center gap-1.5">
+                  <Check className="size-4 text-primary" aria-hidden />
+                  Celular ou computador
+                </li>
+                <li className="flex items-center gap-1.5">
+                  <Check className="size-4 text-primary" aria-hidden />
+                  Placa no padrão Mercosul
+                </li>
+              </ul>
             </div>
 
-            <div className="animate-in fade-in slide-in-from-bottom-6 duration-700 delay-150 lg:pb-32">
-              <p className="mb-3 text-center text-xs text-muted-foreground lg:text-left">
+            <div className="animate-in fade-in slide-in-from-bottom-6 duration-700 delay-150 lg:pr-4">
+              <ServiceOrderSheet />
+              <p className="mt-4 text-center text-xs text-muted-foreground lg:text-left">
                 Exemplo ilustrativo com dados fictícios.
               </p>
-              <ProductMock />
             </div>
           </div>
         </section>
 
-        {/* Como funciona: a ordem importa, por isso os números */}
-        <section
-          id="como-funciona"
-          className="scroll-mt-16 border-y bg-surface py-16 sm:py-24"
-        >
+        <div aria-hidden className="hazard h-3" />
+
+        {/* O caminho do carro */}
+        <section id="caminho" className="scroll-mt-16 py-16 sm:py-24">
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
-            <SectionHeading
-              eyebrow="Como funciona"
-              title="Do balcão à aprovação em quatro passos"
-              text="O mesmo caminho que você já faz, só que sem anotar duas vezes."
-            />
+            <div className="max-w-2xl">
+              <Tape>Passo a passo</Tape>
+              <h2 className="font-industrial mt-4 text-4xl leading-none font-bold tracking-wide uppercase sm:text-5xl">
+                O caminho do carro dentro da oficina
+              </h2>
+              <p className="mt-4 text-muted-foreground">
+                O mesmo fluxo que você já faz no balcão, sem anotar duas vezes.
+              </p>
+            </div>
+
             <ol className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {STEPS.map(({ icon: Icon, title, text }, i) => (
+              {STATIONS.map(({ tag, title, text }, i) => (
                 <li
-                  key={title}
-                  className="relative rounded-xl border bg-card p-5"
+                  key={tag}
+                  className="relative overflow-hidden rounded-lg border-2 bg-card"
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex size-10 items-center justify-center rounded-lg bg-primary/12 text-primary">
-                      <Icon className="size-5" aria-hidden />
-                    </div>
-                    <span className="num font-display text-3xl font-semibold text-border">
-                      {i + 1}
+                  <div className="flex items-center justify-between bg-[#facc15] px-4 py-2 text-[#18181b]">
+                    <span className="font-mono text-xs font-semibold tracking-wider uppercase">
+                      {tag}
+                    </span>
+                    <span className="font-industrial text-2xl leading-none font-bold">
+                      {String(i + 1).padStart(2, "0")}
                     </span>
                   </div>
-                  <h3 className="mt-4 text-base font-semibold">{title}</h3>
-                  <p className="mt-1.5 text-sm text-muted-foreground">{text}</p>
+                  <div className="p-5">
+                    <h3 className="font-industrial text-2xl leading-tight font-semibold tracking-wide uppercase">
+                      {title}
+                    </h3>
+                    <p className="mt-2 text-sm text-muted-foreground">{text}</p>
+                  </div>
                 </li>
               ))}
             </ol>
           </div>
         </section>
 
-        {/* Recursos */}
-        <section id="recursos" className="scroll-mt-16 py-16 sm:py-24">
-          <div className="mx-auto max-w-6xl px-4 sm:px-6">
-            <SectionHeading
-              eyebrow="Recursos"
-              title="Tudo o que a oficina usa no dia a dia"
-            />
-            <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {FEATURES.map(({ icon: Icon, title, text }) => (
-                <article
-                  key={title}
-                  className="rounded-xl border bg-card p-6 transition-colors hover:border-primary/40"
-                >
-                  <div className="flex size-10 items-center justify-center rounded-lg bg-primary/12 text-primary">
-                    <Icon className="size-5" aria-hidden />
-                  </div>
-                  <h3 className="mt-4 text-base font-semibold">{title}</h3>
-                  <p className="mt-1.5 text-sm text-muted-foreground">{text}</p>
-                </article>
-              ))}
-            </div>
-            <ul className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
-              {ALSO.map(({ icon: Icon, label }) => (
-                <li key={label} className="inline-flex items-center gap-2">
-                  <Icon className="size-4 text-primary" aria-hidden />
-                  {label}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-
-        {/* Planos */}
+        {/* Na bancada: quadro de serviços e caixa de ferramentas */}
         <section
-          id="planos"
+          id="bancada"
           className="scroll-mt-16 border-t bg-surface py-16 sm:py-24"
         >
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
-            <SectionHeading
-              eyebrow="Planos"
-              title="Escolha o plano da sua oficina"
-              text={`Teste grátis por ${TRIAL_DAYS} dias. No plano anual você paga 10 meses e usa 12.`}
-            />
+            <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
+              <div>
+                <Tape>Quadro da oficina</Tape>
+                <h2 className="font-industrial mt-4 text-4xl leading-none font-bold tracking-wide text-balance uppercase sm:text-5xl">
+                  Todos os carros da oficina numa olhada só
+                </h2>
+                <p className="mt-4 text-muted-foreground">
+                  Veja quem está aberto, em andamento ou pronto para entrega,
+                  com a placa à vista. Nada de perguntar na bancada qual carro é
+                  de quem.
+                </p>
+              </div>
+
+              <div
+                role="img"
+                aria-label="Exemplo do quadro de ordens de serviço com placas, modelos e situação de cada carro"
+                className="overflow-hidden rounded-xl border-4 border-[#3b4048] bg-[#1f2328] text-white shadow-xl"
+              >
+                <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
+                  <span className="font-industrial text-xl font-bold tracking-widest uppercase">
+                    Ordens de serviço
+                  </span>
+                  <span className="font-mono text-xs text-white/60 uppercase">
+                    exemplo
+                  </span>
+                </div>
+                <ul className="divide-y divide-white/10">
+                  {BOARD.map((row) => (
+                    <li
+                      key={row.plate}
+                      className="flex items-center justify-between gap-3 px-4 py-3"
+                    >
+                      <div className="flex min-w-0 items-center gap-3">
+                        <Plate value={row.plate} />
+                        <span className="truncate text-sm text-white/80">
+                          {row.car}
+                        </span>
+                      </div>
+                      <span
+                        className={cn(
+                          "shrink-0 rounded px-2 py-1 font-mono text-xs font-semibold uppercase",
+                          row.chip,
+                        )}
+                      >
+                        {row.status}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            <div className="mt-16">
+              <h3 className="font-industrial text-3xl font-bold tracking-wide uppercase">
+                Caixa de ferramentas
+              </h3>
+              <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {TOOLBOX.map(({ icon: Icon, title, text }) => (
+                  <article
+                    key={title}
+                    className="rivets rounded-lg border bg-card p-7 transition-colors hover:border-primary/50"
+                  >
+                    <div className="flex size-10 items-center justify-center rounded-md border-2 border-foreground/80 text-foreground">
+                      <Icon className="size-5" aria-hidden />
+                    </div>
+                    <h4 className="font-industrial mt-4 text-2xl leading-tight font-semibold tracking-wide uppercase">
+                      {title}
+                    </h4>
+                    <p className="mt-1.5 text-sm text-muted-foreground">
+                      {text}
+                    </p>
+                  </article>
+                ))}
+              </div>
+              <ul className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 font-mono text-xs text-muted-foreground uppercase">
+                {ALSO.map(({ icon: Icon, label }) => (
+                  <li key={label} className="inline-flex items-center gap-2">
+                    <Icon className="size-4 text-primary" aria-hidden />
+                    {label}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        {/* Preços */}
+        <section id="planos" className="scroll-mt-16 border-t py-16 sm:py-24">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6">
+            <div className="max-w-2xl">
+              <Tape>Preços</Tape>
+              <h2 className="font-industrial mt-4 text-4xl leading-none font-bold tracking-wide uppercase sm:text-5xl">
+                Escolha o plano da sua oficina
+              </h2>
+              <p className="mt-4 text-muted-foreground">
+                Teste grátis por {TRIAL_DAYS} dias. No plano anual você paga 10
+                meses e usa 12.
+              </p>
+            </div>
+
             <div className="mt-12 grid gap-4 md:grid-cols-3">
               {subscriptionPlans.map((plan, index) => {
                 const featured = index === 1;
@@ -407,49 +538,63 @@ export default function LandingPage() {
                   <article
                     key={plan.slug}
                     className={cn(
-                      "relative flex flex-col rounded-xl border bg-card p-6",
-                      featured &&
-                        "border-primary/60 shadow-lg shadow-primary/10",
+                      "relative flex flex-col overflow-hidden rounded-lg border-2 bg-card",
+                      featured && "border-primary",
                     )}
                   >
-                    {featured && (
-                      <Badge className="absolute -top-2.5 left-6">
-                        Mais escolhido
-                      </Badge>
-                    )}
-                    <h3 className="text-lg font-semibold">{plan.name}</h3>
-                    <p className="mt-4 flex items-baseline gap-1">
-                      <span className="num font-display text-4xl font-semibold tracking-tight">
-                        {brl(plan.price.monthly)}
-                      </span>
-                      <span className="text-sm text-muted-foreground">
-                        /mês
-                      </span>
-                    </p>
-                    <p className="num mt-1 text-sm text-muted-foreground">
-                      ou {brl(plan.price.yearly)} por ano
-                    </p>
-                    <ul className="mt-6 flex-1 space-y-2.5 text-sm">
-                      {plan.features.map((feature) => (
-                        <li key={feature} className="flex items-start gap-2.5">
-                          <Check
-                            className="mt-0.5 size-4 shrink-0 text-primary"
-                            aria-hidden
-                          />
-                          <span className="text-muted-foreground">
-                            {feature}
+                    <div
+                      aria-hidden
+                      className={cn("h-2", featured ? "hazard" : "bg-border")}
+                    />
+                    <div className="flex flex-1 flex-col p-6">
+                      <div className="flex items-center justify-between">
+                        <h3 className="font-industrial text-3xl font-bold tracking-wide uppercase">
+                          {plan.name}
+                        </h3>
+                        {featured && (
+                          <span className="rounded bg-primary px-2 py-1 font-mono text-xs font-semibold text-primary-foreground uppercase">
+                            Mais escolhido
                           </span>
-                        </li>
-                      ))}
-                    </ul>
-                    <Button
-                      asChild
-                      size="lg"
-                      variant={featured ? "default" : "outline"}
-                      className="mt-6 w-full"
-                    >
-                      <Link href="/auth?mode=signup">Começar teste grátis</Link>
-                    </Button>
+                        )}
+                      </div>
+                      <p className="mt-4 flex items-baseline gap-1">
+                        <span className="num font-industrial text-5xl leading-none font-bold">
+                          {brl(plan.price.monthly)}
+                        </span>
+                        <span className="text-sm text-muted-foreground">
+                          /mês
+                        </span>
+                      </p>
+                      <p className="num mt-1 text-sm text-muted-foreground">
+                        ou {brl(plan.price.yearly)} por ano
+                      </p>
+                      <ul className="mt-6 flex-1 space-y-2.5 text-sm">
+                        {plan.features.map((feature) => (
+                          <li
+                            key={feature}
+                            className="flex items-start gap-2.5"
+                          >
+                            <Check
+                              className="mt-0.5 size-4 shrink-0 text-primary"
+                              aria-hidden
+                            />
+                            <span className="text-muted-foreground">
+                              {feature}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                      <Button
+                        asChild
+                        size="lg"
+                        variant={featured ? "default" : "outline"}
+                        className="mt-6 w-full"
+                      >
+                        <Link href="/auth?mode=signup">
+                          Começar teste grátis
+                        </Link>
+                      </Button>
+                    </div>
                   </article>
                 );
               })}
@@ -458,24 +603,26 @@ export default function LandingPage() {
         </section>
 
         {/* Chamada final */}
-        <section className="px-4 py-16 sm:px-6 sm:py-24">
-          <div className="mx-auto flex max-w-4xl flex-col items-center gap-6 rounded-2xl bg-primary px-6 py-12 text-center text-primary-foreground sm:px-12">
-            <h2 className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
-              Sua próxima ordem de serviço já pode nascer aqui.
-            </h2>
-            <p className="max-w-xl text-primary-foreground/85">
-              Crie sua conta e faça o primeiro orçamento hoje. São {TRIAL_DAYS}{" "}
-              dias para testar tudo.
-            </p>
-            <Button
-              asChild
-              size="lg"
-              className="bg-background text-foreground hover:bg-background/90"
-            >
-              <Link href="/auth?mode=signup">
-                Criar conta grátis <ArrowRight />
-              </Link>
-            </Button>
+        <section className="px-4 pb-16 sm:px-6 sm:pb-24">
+          <div className="mx-auto max-w-5xl overflow-hidden rounded-xl bg-[#1f2328] text-white">
+            <div aria-hidden className="hazard h-3" />
+            <div className="flex flex-col items-start gap-6 px-6 py-12 sm:px-12 md:flex-row md:items-center md:justify-between">
+              <div className="max-w-xl">
+                <h2 className="font-industrial text-4xl leading-none font-bold tracking-wide text-balance uppercase sm:text-5xl">
+                  Abra a primeira ordem de serviço hoje
+                </h2>
+                <p className="mt-3 text-white/75">
+                  Crie a conta, cadastre um cliente e faça o primeiro orçamento.
+                  São {TRIAL_DAYS} dias para testar tudo.
+                </p>
+              </div>
+              <Button asChild size="lg" className="shrink-0">
+                <Link href="/auth?mode=signup">
+                  Criar conta grátis <ArrowRight />
+                </Link>
+              </Button>
+            </div>
+            <div aria-hidden className="hazard h-3" />
           </div>
         </section>
       </main>
@@ -484,7 +631,7 @@ export default function LandingPage() {
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-8 text-sm text-muted-foreground sm:flex-row sm:px-6">
           <div className="flex items-center gap-2.5">
             <Logo className="size-6" />
-            <span>© {year} AutoSystem</span>
+            <span>© {year} AutoSystem · Feito para oficinas</span>
           </div>
           <nav aria-label="Rodapé" className="flex items-center gap-5">
             <Link href="/privacy" className="hover:text-foreground">
