@@ -6,15 +6,15 @@ import { Calendar, CreditCard, ShieldCheck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 interface CurrentPlanInfoProps {
-  // biome-ignore lint/suspicious/noExplicitAny: formato da assinatura vem do Stripe/Prisma
+  // biome-ignore lint/suspicious/noExplicitAny: formato da assinatura vem do Prisma
   subscription: any;
 }
 
 export function CurrentPlanInfo({ subscription }: CurrentPlanInfoProps) {
   if (!subscription) return null;
 
-  const nextPayment = subscription.stripeCurrentPeriodEnd
-    ? new Date(subscription.stripeCurrentPeriodEnd)
+  const nextPayment = subscription.currentPeriodEnd
+    ? new Date(subscription.currentPeriodEnd)
     : null;
   const amount = subscription.planDetails?.price.monthly || 0;
   const isActive = subscription.status === "active";

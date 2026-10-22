@@ -1,10 +1,9 @@
-import { addDays, isAfter } from "date-fns";
 import { redirect } from "next/navigation";
 import { getSubscription } from "@/app/(auth)/dashboard/_data-access/get-subscription";
 import type { Plan } from "@/generated/prisma/client";
 import { getSession } from "@/lib/getSession";
 import { planRoutes, trialRoutes } from "./plan-features";
-import { TRIAL_DAYS } from "./trial-limits";
+import { resolveAccess } from "./access";
 
 export async function checkPermission(page: string) {
   const session = await getSession();
@@ -17,18 +16,13 @@ export async function checkPermission(page: string) {
   let userPlan: Plan | "TRIAL" | "EXPIRED" = "EXPIRED";
   let allowedRoutes: string[] = [];
 
-  if (subscription && subscription.status === "active") {
-    userPlan = subscription.plan;
-    allowedRoutes = planRoutes[userPlan] || [];
-  } else {
-    const trialEndDate = addDays(new Date(session.user.createdAt), TRIAL_DAYS);
-    if (isAfter(new Date(), trialEndDate)) {
-      userPlan = "EXPIRED";
-      allowedRoutes = [];
-    } else {
-      userPlan = "TRIAL";
-      allowedRoutes = trialRoutes;
-    }
+  const access = resolveAccess(session.user.createdAt, subscription);
+  if (access.plan) {
+    userPlan = access.plan;
+    allowedRoutes = planRoutes[access.plan] || [];
+  } else if (access.kind === "TRIAL") {
+    userPlan = "TRIAL";
+    allowedRoutes = trialRoutes;
   }
 
   // Rotas que todos podem acessar no dashboard

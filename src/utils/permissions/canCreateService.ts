@@ -2,6 +2,7 @@
 
 import type { Subscription } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import { resolveAccess } from "@/utils/permissions/access";
 import { checkSubscriptionExpired } from "@/utils/permissions/checkSubscriptionExpired";
 import {
   TRIAL_BUDGET_LIMIT,
@@ -61,17 +62,19 @@ export async function canCreateService(
       },
     });
 
-    if (subscription && subscription.status === "active") {
-      const plan = subscription.plan;
+    const access = resolveAccess(session.user.createdAt, subscription);
+
+    if (access.plan) {
+      const plan = access.plan;
       const planLimits = await getPlan(plan);
 
       return {
         hasPermission:
           planLimits.maxServices === null ||
           serviceOrderCount < planLimits.maxServices,
-        planId: subscription.plan,
+        planId: plan,
         expired: false,
-        plan: PLANS_LIMITS[subscription.plan],
+        plan: PLANS_LIMITS[plan],
       };
     }
 

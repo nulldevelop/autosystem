@@ -1,4 +1,3 @@
-import { addDays, isAfter } from "date-fns";
 import {
   Car,
   FileText,
@@ -14,8 +13,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 // Imports de Permissão
 import { getSession } from "@/lib/getSession";
+import { resolveAccess } from "@/utils/permissions/access";
 import { planRoutes, trialRoutes } from "@/utils/permissions/plan-features"; // Importe os arrays de rotas
-import { TRIAL_DAYS } from "@/utils/permissions/trial-limits";
 import { getBudgetsCount } from "../_data-access/get-budgets-count";
 import { getCustomersCount } from "../_data-access/get-customers-count";
 import { getSubscription } from "../_data-access/get-subscription";
@@ -47,22 +46,11 @@ export async function DashboardStats() {
   let allowedRoutes: string[] = [];
 
   if (session) {
-    if (subscription && subscription.status === "active") {
-      allowedRoutes = planRoutes[subscription.plan] || [];
-    } else {
-      const trialEndDate = addDays(
-        new Date(session.user.createdAt),
-        TRIAL_DAYS,
-      );
-      if (!isAfter(new Date(), trialEndDate)) {
-        allowedRoutes = trialRoutes || [
-          "/dashboard/budget",
-          "/dashboard/service",
-          "/dashboard/customer",
-          "/dashboard/vehicle",
-          "/dashboard/product",
-        ];
-      }
+    const access = resolveAccess(session.user.createdAt, subscription);
+    if (access.plan) {
+      allowedRoutes = planRoutes[access.plan] || [];
+    } else if (access.kind === "TRIAL") {
+      allowedRoutes = trialRoutes;
     }
   }
 

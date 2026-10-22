@@ -41,3 +41,7 @@ yarn-error.log*
 next-env.d.ts
 
 /storage
+/scripts
+.claude
+# material de marketing (não versionar)
+/marcket/

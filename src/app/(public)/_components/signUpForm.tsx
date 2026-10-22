@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight, Eye, EyeOff, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -36,6 +37,7 @@ export function SignUpForm({
 }: {
   onSuccess?: (email: string) => void;
 }) {
+  const referralCode = useSearchParams().get("ref") ?? undefined;
   const [isPending, startTransition] = useTransition();
   const [showPassword, setShowPassword] = useState(false);
   const form = useForm<z.infer<typeof signUpSchema>>({
@@ -51,7 +53,7 @@ export function SignUpForm({
 
   function onSubmit(values: z.infer<typeof signUpSchema>) {
     startTransition(async () => {
-      const result = await signUp(values);
+      const result = await signUp({ ...values, referralCode });
 
       if (!result.success) {
         if (result.error.fieldErrors) {

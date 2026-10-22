@@ -2,6 +2,7 @@
 
 import * as z from "zod";
 import { auth } from "@/lib/auth";
+import { attachReferrer } from "@/lib/referral";
 
 const signUpSchema = z.object({
   name: z
@@ -24,6 +25,7 @@ const signUpSchema = z.object({
       message: "A senha deve conter pelo menos uma letra minúscula.",
     })
     .regex(/[0-9]/, { message: "A senha deve conter pelo menos um número." }),
+  referralCode: z.string().trim().max(32).optional(),
 });
 
 type SignUpResponse =
@@ -52,7 +54,7 @@ export async function signUp(data: unknown): Promise<SignUpResponse> {
   }
 
   try {
-    const { name, email, password } = result.data;
+    const { name, email, password, referralCode } = result.data;
 
     await auth.api.signUpEmail({
       body: {
@@ -61,6 +63,13 @@ export async function signUp(data: unknown): Promise<SignUpResponse> {
         password,
       },
     });
+
+    if (referralCode) {
+      // falha na indicação nunca deve impedir o cadastro
+      await attachReferrer(email, referralCode).catch((err) =>
+        console.error("Erro ao vincular indicação:", err),
+      );
+    }
 
     return { success: true, message: "Conta criada com sucesso!" };
   } catch (error) {

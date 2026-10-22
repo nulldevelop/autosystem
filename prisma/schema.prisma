@@ -22,6 +22,13 @@ model User {
   invitations  Invitation[]
   subscription Subscription?
 
+  referralCode       String?   @unique
+  referredById       String?
+  referredBy         User?     @relation("Referrals", fields: [referredById], references: [id], onDelete: SetNull)
+  referrals          User[]    @relation("Referrals")
+  referralRewardedAt DateTime?
+
+  @@index([referredById])
   @@map("user")
 }
 
@@ -399,11 +406,18 @@ model Subscription {
   plan   Plan    @default(BASIC)
   status String?
 
-  stripeCustomerId       String?   @unique @map("stripe_customer_id")
-  stripeSubscriptionId   String?   @unique @map("stripe_subscription_id")
-  stripePriceId          String?   @map("stripe_price_id")
-  stripeCurrentPeriodEnd DateTime? @map("stripe_current_period_end")
-  trialEndsAt            DateTime? @map("trial_ends_at")
+  abacatepayCustomerId     String?   @unique @map("abacatepay_customer_id")
+  abacatepaySubscriptionId String?   @unique @map("abacatepay_subscription_id")
+  abacatepayCheckoutId     String?   @map("abacatepay_checkout_id")
+  currentPeriodEnd         DateTime? @map("current_period_end")
+  trialEndsAt              DateTime? @map("trial_ends_at")
+
+  // Plano/intervalo escolhidos no checkout, aplicados quando o pagamento é confirmado
+  pendingPlan     Plan?   @map("pending_plan")
+  pendingInterval String? @map("pending_interval")
+
+  // Meses grátis ganhos por indicação: acesso liberado até esta data
+  bonusUntil DateTime? @map("bonus_until")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -47,7 +47,7 @@ export default function PrivacyPage() {
           <p>
             Não comercializamos seus dados com terceiros. O compartilhamento
             ocorre apenas quando indispensável para a prestação dos serviços
-            (como gateway de pagamento Stripe).
+            (como gateway de pagamento AbacatePay).
           </p>
         </section>
       </div>

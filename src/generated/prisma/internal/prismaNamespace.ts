@@ -1874,7 +1874,10 @@ export const UserScalarFieldEnum = {
   emailVerified: 'emailVerified',
   image: 'image',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  referralCode: 'referralCode',
+  referredById: 'referredById',
+  referralRewardedAt: 'referralRewardedAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -2127,11 +2130,14 @@ export const SubscriptionScalarFieldEnum = {
   userId: 'userId',
   plan: 'plan',
   status: 'status',
-  stripeCustomerId: 'stripeCustomerId',
-  stripeSubscriptionId: 'stripeSubscriptionId',
-  stripePriceId: 'stripePriceId',
-  stripeCurrentPeriodEnd: 'stripeCurrentPeriodEnd',
+  abacatepayCustomerId: 'abacatepayCustomerId',
+  abacatepaySubscriptionId: 'abacatepaySubscriptionId',
+  abacatepayCheckoutId: 'abacatepayCheckoutId',
+  currentPeriodEnd: 'currentPeriodEnd',
   trialEndsAt: 'trialEndsAt',
+  pendingPlan: 'pendingPlan',
+  pendingInterval: 'pendingInterval',
+  bonusUntil: 'bonusUntil',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

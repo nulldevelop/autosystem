@@ -1,12 +1,15 @@
-"use server";
-
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import type { Plan } from "@/generated/prisma/client";
+import {
+  type BillingInterval,
+  createCustomer,
+  createSubscriptionCheckout,
+  getProductId,
+} from "@/lib/abacatepay";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { subscriptionPlans } from "@/utils/plans/subscription-plans";
-import { stripe } from "@/utils/stripe";
 
 export async function POST(request: Request) {
   try {
@@ -18,12 +21,21 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
     }
 
-    const body = await request.json();
-    const { planSlug, billingInterval } = body;
+    const { planSlug, billingInterval } = (await request.json()) as {
+      planSlug?: string;
+      billingInterval?: string;
+    };
 
     if (!planSlug || !billingInterval) {
       return NextResponse.json(
         { error: "Plano e intervalo de cobrança são obrigatórios" },
+        { status: 400 },
+      );
+    }
+
+    if (billingInterval !== "monthly" && billingInterval !== "yearly") {
+      return NextResponse.json(
+        { error: "Intervalo de cobrança inválido" },
         { status: 400 },
       );
     }
@@ -36,83 +48,60 @@ export async function POST(request: Request) {
       );
     }
 
-    const priceId =
-      billingInterval === "yearly"
-        ? plan.priceIds.yearly
-        : plan.priceIds.monthly;
-
-    if (!priceId) {
+    const productId = getProductId(
+      plan.slug as Plan,
+      billingInterval as BillingInterval,
+    );
+    if (!productId) {
       return NextResponse.json(
-        { error: "Price ID não configurado para este plano" },
+        { error: "Produto não configurado para este plano" },
         { status: 400 },
       );
     }
 
-    // Buscar ou criar customer no Stripe
-    let customerId: string;
-    const subscription = await prisma.subscription.findUnique({
-      where: { userId: session.user.id },
+    const userId = session.user.id;
+    const existing = await prisma.subscription.findUnique({
+      where: { userId },
     });
 
-    if (subscription?.stripeCustomerId) {
-      customerId = subscription.stripeCustomerId;
-    } else {
-      const customer = await stripe.customers.create({
+    let customerId = existing?.abacatepayCustomerId;
+    if (!customerId) {
+      const customer = await createCustomer({
         email: session.user.email,
         name: session.user.name || undefined,
-        metadata: {
-          userId: session.user.id,
-        },
+        userId,
       });
       customerId = customer.id;
-
-      // Salvar customer ID no banco
-      await prisma.subscription.upsert({
-        where: { userId: session.user.id },
-        create: {
-          userId: session.user.id,
-          plan: planSlug as Plan, // Convert PlanSlug to Plan enum
-          stripeCustomerId: customerId,
-        },
-        update: {
-          stripeCustomerId: customerId,
-          plan: planSlug as Plan,
-        },
-      });
     }
 
-    // Criar checkout session
     const origin =
       process.env.NEXT_PUBLIC_APP_URL ||
       request.headers.get("origin") ||
       "http://localhost:3000";
-    const checkoutSession = await stripe.checkout.sessions.create({
-      customer: customerId,
-      allow_promotion_codes: true,
-      payment_method_types: ["card"],
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1,
-        },
-      ],
-      mode: "subscription",
-      subscription_data: {
-        metadata: {
-          userId: session.user.id,
-          planSlug: planSlug,
-        },
-      },
-      success_url: `${origin}/dashboard/plans/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/dashboard/plans`,
-      metadata: {
-        userId: session.user.id,
-        planSlug: planSlug,
-        billingInterval: billingInterval,
-      },
+
+    const checkout = await createSubscriptionCheckout({
+      productId,
+      customerId,
+      externalId: userId,
+      completionUrl: `${origin}/dashboard/plans/success`,
+      returnUrl: `${origin}/dashboard/plans`,
+      metadata: { userId, planSlug: plan.slug, billingInterval },
     });
 
-    return NextResponse.json({ url: checkoutSession.url });
+    // O plano só vira "ativo" quando o webhook confirma o pagamento
+    const pending = {
+      abacatepayCustomerId: customerId,
+      abacatepayCheckoutId: checkout.id,
+      pendingPlan: plan.slug as Plan,
+      pendingInterval: billingInterval,
+    };
+    await prisma.subscription.upsert({
+      where: { userId },
+      create: { userId, ...pending },
+      update: pending,
+    });
+
+    return NextResponse.json({ url: checkout.url });
   } catch (error) {
     console.error("Erro ao criar checkout:", error);
     return NextResponse.json(

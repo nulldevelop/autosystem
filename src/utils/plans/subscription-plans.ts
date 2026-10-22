@@ -15,10 +15,6 @@ export const subscriptionPlans: Array<{
     monthly: number;
     yearly: number;
   };
-  priceIds: {
-    monthly: string | undefined;
-    yearly: string | undefined;
-  };
   features: string[];
 }> = [
   {
@@ -31,10 +27,6 @@ export const subscriptionPlans: Array<{
     price: {
       monthly: 79.99,
       yearly: 799.9, // ~10 meses (desconto de 2 meses)
-    },
-    priceIds: {
-      monthly: process.env.NEXT_PUBLIC_STRIPE_BASIC_MONTHLY_PRICE_ID,
-      yearly: process.env.NEXT_PUBLIC_STRIPE_BASIC_YEARLY_PRICE_ID,
     },
     features: [
       "Até 20 ordens de serviço por mês",
@@ -57,10 +49,6 @@ export const subscriptionPlans: Array<{
       monthly: 119.99,
       yearly: 1199.9, // ~10 meses (desconto de 2 meses)
     },
-    priceIds: {
-      monthly: process.env.NEXT_PUBLIC_STRIPE_PLUS_MONTHLY_PRICE_ID,
-      yearly: process.env.NEXT_PUBLIC_STRIPE_PLUS_YEARLY_PRICE_ID,
-    },
     features: [
       "Ordens de serviço ilimitadas",
       "Gerenciamento de clientes e veículos",
@@ -77,10 +65,6 @@ export const subscriptionPlans: Array<{
     price: {
       monthly: 179.99,
       yearly: 1799.9, // ~10 meses (desconto de 2 meses)
-    },
-    priceIds: {
-      monthly: process.env.NEXT_PUBLIC_STRIPE_PRO_MONTHLY_PRICE_ID,
-      yearly: process.env.NEXT_PUBLIC_STRIPE_PRO_YEARLY_PRICE_ID,
     },
     features: [
       "Todos os recursos do plano Plus",

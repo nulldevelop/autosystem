@@ -45,7 +45,7 @@ export async function createCheckout({
       };
     }
 
-    // Redirecionar para o Stripe Checkout
+    // Redirecionar para o checkout da AbacatePay
     window.location.href = url;
 
     return {

@@ -1,12 +1,22 @@
 import { Suspense } from "react";
 import { PageHeader } from "@/components/app/page-header";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getSession } from "@/lib/getSession";
+import { getOrCreateReferralCode, getReferralStats } from "@/lib/referral";
 import { CurrentPlanInfo } from "./_components/current-plan-info";
 import { getCurrentSubscription } from "./_data-access/get-current-subscription";
 import { PlanCards } from "./plan-cars";
+import { ReferralCard } from "./_components/referral-card";
 
 export default async function PlansPage() {
   const subscription = await getCurrentSubscription();
+  const session = await getSession();
+  const [referralCode, referralStats] = session?.user
+    ? await Promise.all([
+        getOrCreateReferralCode(session.user.id),
+        getReferralStats(session.user.id),
+      ])
+    : [null, null];
 
   return (
     <div className="space-y-8">
@@ -16,7 +26,7 @@ export default async function PlansPage() {
       />
 
       <Suspense fallback={<Skeleton className="h-40 w-full rounded-xl" />}>
-        {/* biome-ignore lint/suspicious/noExplicitAny: formato da assinatura vem do Stripe/Prisma */}
+        {/* biome-ignore lint/suspicious/noExplicitAny: formato da assinatura vem do Prisma */}
         <CurrentPlanInfo subscription={subscription as any} />
       </Suspense>
 
@@ -31,6 +41,10 @@ export default async function PlansPage() {
         </div>
         <PlanCards />
       </section>
+
+      {referralCode && referralStats && (
+        <ReferralCard code={referralCode} stats={referralStats} />
+      )}
     </div>
   );
 }

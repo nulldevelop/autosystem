@@ -1,10 +1,10 @@
-import { addDays, differenceInDays } from "date-fns";
+import { differenceInDays } from "date-fns";
 import { CircleAlert, PartyPopper, Rocket } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { getSession } from "@/lib/getSession";
+import { resolveAccess } from "@/utils/permissions/access";
 import {
   TRIAL_BUDGET_LIMIT,
-  TRIAL_DAYS,
   TRIAL_SERVICES_LIMIT,
 } from "@/utils/permissions/trial-limits";
 import { getSubscription } from "../_data-access/get-subscription";
@@ -25,8 +25,13 @@ export async function SubscriptionStatusNotice() {
   let icon = <PartyPopper className="h-6 w-6 text-success" />;
   let cardClass = "bg-success/12 border-success/25";
 
-  if (subscription && subscription.status === "active") {
-    const expiryDate = subscription.stripeCurrentPeriodEnd;
+  const access = resolveAccess(session.user.createdAt, subscription);
+
+  if (access.kind === "BONUS" && access.endsAt) {
+    const daysRemaining = differenceInDays(access.endsAt, new Date());
+    message = `Meses grátis de indicação ativos: restam ${daysRemaining} dia(s).`;
+  } else if (access.kind === "ACTIVE" && subscription) {
+    const expiryDate = subscription.currentPeriodEnd;
     if (expiryDate) {
       const daysRemaining = differenceInDays(expiryDate, new Date());
       if (daysRemaining <= 7) {
@@ -39,8 +44,9 @@ export async function SubscriptionStatusNotice() {
     }
   } else {
     // Trial user
-    const trialEndDate = addDays(new Date(session.user.createdAt), TRIAL_DAYS);
-    const daysRemaining = differenceInDays(trialEndDate, new Date());
+    const daysRemaining = access.endsAt
+      ? differenceInDays(access.endsAt, new Date())
+      : 0;
 
     if (daysRemaining <= 0) {
       message = "Seu período de teste expirou.";

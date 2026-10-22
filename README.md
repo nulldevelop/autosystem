@@ -10,7 +10,7 @@ Orçamentos, ordens de serviço, estoque, financeiro e CRM — tudo em um só lu
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![Prisma](https://img.shields.io/badge/Prisma-7-2D3748?logo=prisma&logoColor=white)](https://www.prisma.io/)
-[![Stripe](https://img.shields.io/badge/Stripe-Payments-635BFF?logo=stripe&logoColor=white)](https://stripe.com)
+[![AbacatePay](https://img.shields.io/badge/AbacatePay-Payments-4CAF50)](https://abacatepay.com)
 
 [Funcionalidades](#-funcionalidades) • [Planos](#-planos) • [Stack](#-stack) • [Como rodar](#-como-rodar-localmente)
 
@@ -64,7 +64,7 @@ Orçamentos, ordens de serviço, estoque, financeiro e CRM — tudo em um só lu
 
 O **AutoSystem** resolve o caos administrativo das oficinas centralizando clientes, veículos, estoque e serviços — automatizando a criação de orçamentos e ordens de serviço (OS) com **geração de PDF profissional** e **assinatura digital** pelo cliente, via link público e sem login.
 
-Com arquitetura **multi-tenant**, cada oficina (organização) tem seus dados 100% isolados, e o sistema de **assinaturas via Stripe** permite monetizar a plataforma.
+Com arquitetura **multi-tenant**, cada oficina (organização) tem seus dados 100% isolados, e o sistema de **assinaturas via AbacatePay** permite monetizar a plataforma.
 
 ---
 
@@ -88,7 +88,7 @@ Com arquitetura **multi-tenant**, cada oficina (organização) tem seus dados 10
 - **Notificações** — sistema de alertas interno
 
 ### 💳 Monetização (SaaS)
-- **Planos via Stripe** — checkout, webhooks e atualização automática de assinaturas
+- **Planos via AbacatePay** — checkout, webhooks e atualização automática de assinaturas
 - **Trial de 14 dias** em todos os planos
 - **Limites de recursos** por plano
 
@@ -116,7 +116,7 @@ Com arquitetura **multi-tenant**, cada oficina (organização) tem seus dados 10
 |---|---|
 | **Frontend** | Next.js 16 (App Router), React 19, TypeScript, TailwindCSS 4, Shadcn UI, Framer Motion |
 | **Backend** | Prisma ORM, PostgreSQL, Better Auth (auth + multi-tenant) |
-| **Pagamentos** | Stripe (checkout, webhooks, assinaturas) |
+| **Pagamentos** | AbacatePay (checkout, webhooks, assinaturas) |
 | **Documentos** | @react-pdf/renderer |
 | **Qualidade** | Biome (lint + format) |
 
@@ -128,7 +128,7 @@ Com arquitetura **multi-tenant**, cada oficina (organização) tem seus dados 10
 
 - Node.js 20+
 - PostgreSQL
-- Stripe CLI _(opcional, para webhooks em desenvolvimento)_
+- Conta AbacatePay e chave de API
 
 ### Instalação
 
@@ -159,10 +159,17 @@ Crie um arquivo `.env` na raiz:
 ```env
 DATABASE_URL="postgresql://user:password@localhost:5432/autosystem"
 
-# Stripe
-STRIPE_SECRET_KEY="sk_test_..."
-STRIPE_WEBHOOK_SECRET="whsec_..."
-NEXT_PUBLIC_STRIPE_PUBLIC_KEY="pk_test_..."
+# AbacatePay
+ABACATEPAY_API_KEY="abc_..."
+# Segredo definido ao criar o webhook; chega em ?webhookSecret=... em cada entrega
+ABACATEPAY_WEBHOOK_SECRET="um_segredo_forte"
+# IDs dos produtos (criados no painel com cycle MONTHLY / ANNUALLY)
+ABACATEPAY_BASIC_MONTHLY_PRODUCT_ID="prod_..."
+ABACATEPAY_BASIC_YEARLY_PRODUCT_ID="prod_..."
+ABACATEPAY_PLUS_MONTHLY_PRODUCT_ID="prod_..."
+ABACATEPAY_PLUS_YEARLY_PRODUCT_ID="prod_..."
+ABACATEPAY_PRO_MONTHLY_PRODUCT_ID="prod_..."
+ABACATEPAY_PRO_YEARLY_PRODUCT_ID="prod_..."
 
 # Better Auth
 BETTER_AUTH_SECRET="seu_secret_aqui"
@@ -170,11 +177,11 @@ BETTER_AUTH_URL="https://autosystem.nulldev.com.br"
 NEXT_PUBLIC_APP_URL="https://autosystem.nulldev.com.br"
 ```
 
-### Webhooks do Stripe (dev)
+### Webhook da AbacatePay
 
-```bash
-npm run stripe:listem
-```
+Cadastre `https://SEU_DOMINIO/api/webhooks/abacatepay?webhookSecret=<ABACATEPAY_WEBHOOK_SECRET>`
+com os eventos `subscription.completed`, `subscription.renewed` e `subscription.cancelled`.
+Em desenvolvimento, exponha o localhost via túnel HTTPS (a AbacatePay exige URL pública).
 
 ---
 
@@ -194,9 +201,9 @@ src/
 ├── app/
 │   ├── (auth)/      # Rotas autenticadas (Dashboard, Clientes, OS...)
 │   ├── (public)/    # Páginas públicas (Landing, Login, Registro)
-│   └── api/         # Endpoints (Auth, Stripe Webhooks)
+│   └── api/         # Endpoints (Auth, AbacatePay Webhooks)
 ├── components/      # Componentes UI reutilizáveis (Shadcn)
-├── lib/             # Configurações (Prisma, Auth, Stripe)
+├── lib/             # Configurações (Prisma, Auth, AbacatePay)
 ├── types/           # Definições TypeScript
 └── utils/           # Utilitários e lógica de permissões/planos
 prisma/              # Schema do banco e migrações
