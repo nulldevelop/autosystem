@@ -1,5 +1,3 @@
-"use server";
-
 import { addDays, isAfter } from "date-fns";
 import type { ResultPermissionProp } from "./canPermission";
 import { getTrialStart } from "./access";

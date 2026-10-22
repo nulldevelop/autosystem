@@ -1,5 +1,3 @@
-"use server";
-
 import type { Subscription } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { resolveAccess } from "@/utils/permissions/access";

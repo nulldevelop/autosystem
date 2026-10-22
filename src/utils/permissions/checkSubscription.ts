@@ -1,5 +1,3 @@
-"use server";
-
 import { addDays, differenceInDays, isAfter } from "date-fns";
 import { prisma } from "@/lib/prisma";
 import { getTrialStart } from "./access";
