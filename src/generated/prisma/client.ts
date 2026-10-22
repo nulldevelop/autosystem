@@ -136,3 +136,13 @@ export type Subscription = Prisma.SubscriptionModel
  * 
  */
 export type Notification = Prisma.NotificationModel
+/**
+ * Model BillingEvent
+ * 
+ */
+export type BillingEvent = Prisma.BillingEventModel
+/**
+ * Model AdminAuditLog
+ * 
+ */
+export type AdminAuditLog = Prisma.AdminAuditLogModel

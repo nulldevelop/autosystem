@@ -37,6 +37,14 @@ export const auth = betterAuth({
   user: {
     additionalFields: {
       trialStartedAt: { type: "date", required: false, input: false },
+      // input:false => ninguém consegue se promover a admin pelo cadastro ou pela API
+      role: {
+        type: "string",
+        required: false,
+        input: false,
+        defaultValue: "user",
+      },
+      blockedAt: { type: "date", required: false, input: false },
     },
   },
 
@@ -80,6 +88,13 @@ export const auth = betterAuth({
     session: {
       create: {
         before: async (session) => {
+          // conta bloqueada pelo administrador não consegue abrir sessão
+          const user = await prisma.user.findUnique({
+            where: { id: session.userId },
+            select: { blockedAt: true },
+          });
+          if (user?.blockedAt) return false;
+
           const org = await getActiveOrganization(session.userId);
           if (org) {
             return {

@@ -11,7 +11,8 @@ export default async function middleware(request: NextRequest) {
   );
 
   const isAuthPage = pathname.startsWith("/auth");
-  const isDashboardPage = pathname.startsWith("/dashboard");
+  const isDashboardPage =
+    pathname.startsWith("/dashboard") || pathname.startsWith("/admin");
 
   // 1. Se não houver cookie de sessão e tentar acessar dashboard, vai para login
   if (!hasSessionCookie && isDashboardPage) {
@@ -29,5 +30,5 @@ export default async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/auth/:path*"],
+  matcher: ["/dashboard/:path*", "/admin/:path*", "/auth/:path*"],
 };

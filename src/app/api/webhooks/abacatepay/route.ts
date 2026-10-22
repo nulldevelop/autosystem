@@ -56,13 +56,30 @@ async function sendThanksEmail(
   }
 }
 
+async function recordBillingEvent(input: {
+  eventId?: string;
+  userId: string;
+  type: "completed" | "renewed" | "cancelled";
+  plan: Plan;
+  interval: string | null;
+  amount: number | null;
+  abacatepaySubscriptionId: string;
+}) {
+  try {
+    await prisma.billingEvent.create({ data: input });
+  } catch (error) {
+    // histórico é auxiliar: nunca pode derrubar o webhook
+    console.error("Erro ao registrar evento de cobrança:", error);
+  }
+}
+
 export async function POST(request: Request) {
   const url = new URL(request.url);
   if (!secretMatches(url.searchParams.get("webhookSecret"))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  let payload: { event?: string; data?: unknown };
+  let payload: { id?: string; event?: string; data?: unknown };
   try {
     payload = await request.json();
   } catch {
@@ -75,6 +92,16 @@ export async function POST(request: Request) {
   }
 
   try {
+    // Mesmo evento reenviado (retry da AbacatePay): já processado, não repete efeitos
+    const eventId = typeof payload.id === "string" ? payload.id : undefined;
+    if (eventId) {
+      const seen = await prisma.billingEvent.findUnique({
+        where: { eventId },
+        select: { id: true },
+      });
+      if (seen) return NextResponse.json({ received: true });
+    }
+
     const subscriptionId = findId(payload.data, "subs_");
     const customerId = findId(payload.data, "cust_");
     if (!subscriptionId && !customerId) {
@@ -135,6 +162,15 @@ export async function POST(request: Request) {
 
         // só agradece na primeira vez que esta assinatura é registrada (webhook pode repetir)
         if (previousId !== remote.id) {
+          await recordBillingEvent({
+            eventId,
+            userId: row.userId,
+            type: "completed",
+            plan: row.pendingPlan ?? row.plan,
+            interval: row.pendingInterval,
+            amount: remote.amount ?? null,
+            abacatepaySubscriptionId: remote.id,
+          });
           await sendThanksEmail(
             row.userId,
             row.pendingPlan ?? row.plan,
@@ -154,6 +190,15 @@ export async function POST(request: Request) {
           where: { id: row.id },
           data: { status: "active", currentPeriodEnd: addMonths(base, months) },
         });
+        await recordBillingEvent({
+          eventId,
+          userId: row.userId,
+          type: "renewed",
+          plan: row.plan,
+          interval: row.pendingInterval,
+          amount: remote.amount ?? null,
+          abacatepaySubscriptionId: remote.id,
+        });
         break;
       }
 
@@ -163,6 +208,15 @@ export async function POST(request: Request) {
         await prisma.subscription.update({
           where: { id: row.id },
           data: { status: "canceled" },
+        });
+        await recordBillingEvent({
+          eventId,
+          userId: row.userId,
+          type: "cancelled",
+          plan: row.plan,
+          interval: row.pendingInterval,
+          amount: null,
+          abacatepaySubscriptionId: remote.id,
         });
         break;
       }

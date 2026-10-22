@@ -476,6 +476,133 @@ describe("subscription.cancelled", () => {
   });
 });
 
+describe("histórico de pagamentos (BillingEvent)", () => {
+  const withId = (name: string, id?: string) => ({
+    id,
+    event: name,
+    data: { id: "subs_new" },
+  });
+
+  beforeEach(() => {
+    prismaMock.user.findUnique.mockResolvedValue({ email: "a@b.com", name: "A" });
+  });
+
+  it("nova assinatura registra plano, intervalo e valor", async () => {
+    vi.mocked(getSubscription).mockResolvedValue(remote({ amount: 119990 }));
+    prismaMock.subscription.findUnique.mockResolvedValue(
+      row({ pendingPlan: "PLUS", pendingInterval: "yearly" }),
+    );
+
+    await POST(webhook(withId("subscription.completed", "evt_1")));
+
+    expect(prismaMock.billingEvent.create).toHaveBeenCalledWith({
+      data: {
+        eventId: "evt_1",
+        userId: "user-1",
+        type: "completed",
+        plan: "PLUS",
+        interval: "yearly",
+        amount: 119990,
+        abacatepaySubscriptionId: "subs_new",
+      },
+    });
+  });
+
+  it("amount ausente na API vira null", async () => {
+    vi.mocked(getSubscription).mockResolvedValue(remote({ amount: undefined }));
+    prismaMock.subscription.findUnique.mockResolvedValue(row());
+
+    await POST(webhook(withId("subscription.completed")));
+
+    expect(prismaMock.billingEvent.create.mock.calls[0][0].data.amount).toBeNull();
+  });
+
+  it("renovação registra o valor cobrado", async () => {
+    vi.mocked(getSubscription).mockResolvedValue(remote({ amount: 11999 }));
+    prismaMock.subscription.findUnique.mockResolvedValue(
+      row({ abacatepaySubscriptionId: "subs_new", plan: "PLUS" }),
+    );
+
+    await POST(webhook(withId("subscription.renewed", "evt_2")));
+
+    expect(prismaMock.billingEvent.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        eventId: "evt_2",
+        type: "renewed",
+        plan: "PLUS",
+        amount: 11999,
+      }),
+    });
+  });
+
+  it("cancelamento registra sem valor", async () => {
+    vi.mocked(getSubscription).mockResolvedValue(remote({ status: "CANCELLED" }));
+    prismaMock.subscription.findUnique.mockResolvedValue(
+      row({ abacatepaySubscriptionId: "subs_new" }),
+    );
+
+    await POST(webhook(withId("subscription.cancelled", "evt_3")));
+
+    expect(prismaMock.billingEvent.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({ type: "cancelled", amount: null }),
+    });
+  });
+
+  it("evento repetido (mesmo ID) é ignorado por completo", async () => {
+    prismaMock.billingEvent.findUnique.mockResolvedValue({ id: "ja-visto" });
+
+    const res = await POST(webhook(withId("subscription.renewed", "evt_2")));
+
+    expect(res.status).toBe(200);
+    expect(prismaMock.billingEvent.findUnique).toHaveBeenCalledWith({
+      where: { eventId: "evt_2" },
+      select: { id: true },
+    });
+    expect(getSubscription).not.toHaveBeenCalled();
+    expect(prismaMock.subscription.update).not.toHaveBeenCalled();
+  });
+
+  it("sem ID de evento não consulta duplicidade", async () => {
+    vi.mocked(getSubscription).mockResolvedValue(remote());
+    prismaMock.subscription.findUnique.mockResolvedValue(row());
+
+    await POST(webhook(withId("subscription.completed")));
+
+    expect(prismaMock.billingEvent.findUnique).not.toHaveBeenCalled();
+  });
+
+  it("não registra quando o webhook de assinatura repete (mesmo ID de assinatura)", async () => {
+    vi.mocked(getSubscription).mockResolvedValue(remote());
+    prismaMock.subscription.findUnique.mockResolvedValue(
+      row({ abacatepaySubscriptionId: "subs_new" }),
+    );
+
+    await POST(webhook(withId("subscription.completed")));
+
+    expect(prismaMock.billingEvent.create).not.toHaveBeenCalled();
+  });
+
+  it("não registra eventos ignorados", async () => {
+    vi.mocked(getSubscription).mockResolvedValue(remote({ status: "PENDING" }));
+    prismaMock.subscription.findUnique.mockResolvedValue(row());
+
+    await POST(webhook(withId("subscription.completed")));
+
+    expect(prismaMock.billingEvent.create).not.toHaveBeenCalled();
+  });
+
+  it("falha ao gravar o histórico não derruba o webhook", async () => {
+    vi.mocked(getSubscription).mockResolvedValue(remote());
+    prismaMock.subscription.findUnique.mockResolvedValue(row());
+    prismaMock.billingEvent.create.mockRejectedValue(new Error("unique"));
+
+    const res = await POST(webhook(withId("subscription.completed", "evt_9")));
+
+    expect(res.status).toBe(200);
+    expect(sendEmail).toHaveBeenCalled();
+  });
+});
+
 describe("falhas internas", () => {
   it("devolve 500 para a AbacatePay tentar de novo quando a API cai", async () => {
     vi.mocked(getSubscription).mockRejectedValue(new Error("timeout"));

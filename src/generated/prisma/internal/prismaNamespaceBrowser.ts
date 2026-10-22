@@ -69,7 +69,9 @@ export const ModelName = {
   ServiceOrderItem: 'ServiceOrderItem',
   Transaction: 'Transaction',
   Subscription: 'Subscription',
-  Notification: 'Notification'
+  Notification: 'Notification',
+  BillingEvent: 'BillingEvent',
+  AdminAuditLog: 'AdminAuditLog'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -99,7 +101,9 @@ export const UserScalarFieldEnum = {
   referralCode: 'referralCode',
   referredById: 'referredById',
   referralRewardedAt: 'referralRewardedAt',
-  trialStartedAt: 'trialStartedAt'
+  trialStartedAt: 'trialStartedAt',
+  role: 'role',
+  blockedAt: 'blockedAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -381,6 +385,34 @@ export const NotificationScalarFieldEnum = {
 } as const
 
 export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
+
+
+export const BillingEventScalarFieldEnum = {
+  id: 'id',
+  eventId: 'eventId',
+  userId: 'userId',
+  type: 'type',
+  plan: 'plan',
+  interval: 'interval',
+  amount: 'amount',
+  abacatepaySubscriptionId: 'abacatepaySubscriptionId',
+  createdAt: 'createdAt'
+} as const
+
+export type BillingEventScalarFieldEnum = (typeof BillingEventScalarFieldEnum)[keyof typeof BillingEventScalarFieldEnum]
+
+
+export const AdminAuditLogScalarFieldEnum = {
+  id: 'id',
+  adminId: 'adminId',
+  action: 'action',
+  targetType: 'targetType',
+  targetId: 'targetId',
+  details: 'details',
+  createdAt: 'createdAt'
+} as const
+
+export type AdminAuditLogScalarFieldEnum = (typeof AdminAuditLogScalarFieldEnum)[keyof typeof AdminAuditLogScalarFieldEnum]
 
 
 export const SortOrder = {

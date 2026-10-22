@@ -36,6 +36,8 @@ export type UserMinAggregateOutputType = {
   referredById: string | null
   referralRewardedAt: Date | null
   trialStartedAt: Date | null
+  role: string | null
+  blockedAt: Date | null
 }
 
 export type UserMaxAggregateOutputType = {
@@ -50,6 +52,8 @@ export type UserMaxAggregateOutputType = {
   referredById: string | null
   referralRewardedAt: Date | null
   trialStartedAt: Date | null
+  role: string | null
+  blockedAt: Date | null
 }
 
 export type UserCountAggregateOutputType = {
@@ -64,6 +68,8 @@ export type UserCountAggregateOutputType = {
   referredById: number
   referralRewardedAt: number
   trialStartedAt: number
+  role: number
+  blockedAt: number
   _all: number
 }
 
@@ -80,6 +86,8 @@ export type UserMinAggregateInputType = {
   referredById?: true
   referralRewardedAt?: true
   trialStartedAt?: true
+  role?: true
+  blockedAt?: true
 }
 
 export type UserMaxAggregateInputType = {
@@ -94,6 +102,8 @@ export type UserMaxAggregateInputType = {
   referredById?: true
   referralRewardedAt?: true
   trialStartedAt?: true
+  role?: true
+  blockedAt?: true
 }
 
 export type UserCountAggregateInputType = {
@@ -108,6 +118,8 @@ export type UserCountAggregateInputType = {
   referredById?: true
   referralRewardedAt?: true
   trialStartedAt?: true
+  role?: true
+  blockedAt?: true
   _all?: true
 }
 
@@ -195,6 +207,8 @@ export type UserGroupByOutputType = {
   referredById: string | null
   referralRewardedAt: Date | null
   trialStartedAt: Date | null
+  role: string
+  blockedAt: Date | null
   _count: UserCountAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
   _max: UserMaxAggregateOutputType | null
@@ -230,6 +244,8 @@ export type UserWhereInput = {
   referredById?: Prisma.StringNullableFilter<"User"> | string | null
   referralRewardedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   trialStartedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  role?: Prisma.StringFilter<"User"> | string
+  blockedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   sessions?: Prisma.SessionListRelationFilter
   accounts?: Prisma.AccountListRelationFilter
   members?: Prisma.MemberListRelationFilter
@@ -251,6 +267,8 @@ export type UserOrderByWithRelationInput = {
   referredById?: Prisma.SortOrderInput | Prisma.SortOrder
   referralRewardedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   trialStartedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  role?: Prisma.SortOrder
+  blockedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   sessions?: Prisma.SessionOrderByRelationAggregateInput
   accounts?: Prisma.AccountOrderByRelationAggregateInput
   members?: Prisma.MemberOrderByRelationAggregateInput
@@ -275,6 +293,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   referredById?: Prisma.StringNullableFilter<"User"> | string | null
   referralRewardedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   trialStartedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  role?: Prisma.StringFilter<"User"> | string
+  blockedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   sessions?: Prisma.SessionListRelationFilter
   accounts?: Prisma.AccountListRelationFilter
   members?: Prisma.MemberListRelationFilter
@@ -296,6 +316,8 @@ export type UserOrderByWithAggregationInput = {
   referredById?: Prisma.SortOrderInput | Prisma.SortOrder
   referralRewardedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   trialStartedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  role?: Prisma.SortOrder
+  blockedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
   _min?: Prisma.UserMinOrderByAggregateInput
@@ -316,6 +338,8 @@ export type UserScalarWhereWithAggregatesInput = {
   referredById?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   referralRewardedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   trialStartedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+  role?: Prisma.StringWithAggregatesFilter<"User"> | string
+  blockedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
 }
 
 export type UserCreateInput = {
@@ -329,6 +353,8 @@ export type UserCreateInput = {
   referralCode?: string | null
   referralRewardedAt?: Date | string | null
   trialStartedAt?: Date | string | null
+  role?: string
+  blockedAt?: Date | string | null
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   members?: Prisma.MemberCreateNestedManyWithoutUserInput
@@ -350,6 +376,8 @@ export type UserUncheckedCreateInput = {
   referredById?: string | null
   referralRewardedAt?: Date | string | null
   trialStartedAt?: Date | string | null
+  role?: string
+  blockedAt?: Date | string | null
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   members?: Prisma.MemberUncheckedCreateNestedManyWithoutUserInput
@@ -369,6 +397,8 @@ export type UserUpdateInput = {
   referralCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referralRewardedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   trialStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   members?: Prisma.MemberUpdateManyWithoutUserNestedInput
@@ -390,6 +420,8 @@ export type UserUncheckedUpdateInput = {
   referredById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referralRewardedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   trialStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   members?: Prisma.MemberUncheckedUpdateManyWithoutUserNestedInput
@@ -410,6 +442,8 @@ export type UserCreateManyInput = {
   referredById?: string | null
   referralRewardedAt?: Date | string | null
   trialStartedAt?: Date | string | null
+  role?: string
+  blockedAt?: Date | string | null
 }
 
 export type UserUpdateManyMutationInput = {
@@ -423,6 +457,8 @@ export type UserUpdateManyMutationInput = {
   referralCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referralRewardedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   trialStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type UserUncheckedUpdateManyInput = {
@@ -437,6 +473,8 @@ export type UserUncheckedUpdateManyInput = {
   referredById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referralRewardedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   trialStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type UserNullableScalarRelationFilter = {
@@ -466,6 +504,8 @@ export type UserCountOrderByAggregateInput = {
   referredById?: Prisma.SortOrder
   referralRewardedAt?: Prisma.SortOrder
   trialStartedAt?: Prisma.SortOrder
+  role?: Prisma.SortOrder
+  blockedAt?: Prisma.SortOrder
 }
 
 export type UserMaxOrderByAggregateInput = {
@@ -480,6 +520,8 @@ export type UserMaxOrderByAggregateInput = {
   referredById?: Prisma.SortOrder
   referralRewardedAt?: Prisma.SortOrder
   trialStartedAt?: Prisma.SortOrder
+  role?: Prisma.SortOrder
+  blockedAt?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
@@ -494,6 +536,8 @@ export type UserMinOrderByAggregateInput = {
   referredById?: Prisma.SortOrder
   referralRewardedAt?: Prisma.SortOrder
   trialStartedAt?: Prisma.SortOrder
+  role?: Prisma.SortOrder
+  blockedAt?: Prisma.SortOrder
 }
 
 export type UserScalarRelationFilter = {
@@ -660,6 +704,8 @@ export type UserCreateWithoutReferralsInput = {
   referralCode?: string | null
   referralRewardedAt?: Date | string | null
   trialStartedAt?: Date | string | null
+  role?: string
+  blockedAt?: Date | string | null
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   members?: Prisma.MemberCreateNestedManyWithoutUserInput
@@ -680,6 +726,8 @@ export type UserUncheckedCreateWithoutReferralsInput = {
   referredById?: string | null
   referralRewardedAt?: Date | string | null
   trialStartedAt?: Date | string | null
+  role?: string
+  blockedAt?: Date | string | null
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   members?: Prisma.MemberUncheckedCreateNestedManyWithoutUserInput
@@ -703,6 +751,8 @@ export type UserCreateWithoutReferredByInput = {
   referralCode?: string | null
   referralRewardedAt?: Date | string | null
   trialStartedAt?: Date | string | null
+  role?: string
+  blockedAt?: Date | string | null
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   members?: Prisma.MemberCreateNestedManyWithoutUserInput
@@ -722,6 +772,8 @@ export type UserUncheckedCreateWithoutReferredByInput = {
   referralCode?: string | null
   referralRewardedAt?: Date | string | null
   trialStartedAt?: Date | string | null
+  role?: string
+  blockedAt?: Date | string | null
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   members?: Prisma.MemberUncheckedCreateNestedManyWithoutUserInput
@@ -762,6 +814,8 @@ export type UserUpdateWithoutReferralsInput = {
   referralCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referralRewardedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   trialStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   members?: Prisma.MemberUpdateManyWithoutUserNestedInput
@@ -782,6 +836,8 @@ export type UserUncheckedUpdateWithoutReferralsInput = {
   referredById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referralRewardedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   trialStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   members?: Prisma.MemberUncheckedUpdateManyWithoutUserNestedInput
@@ -820,6 +876,8 @@ export type UserScalarWhereInput = {
   referredById?: Prisma.StringNullableFilter<"User"> | string | null
   referralRewardedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   trialStartedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  role?: Prisma.StringFilter<"User"> | string
+  blockedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
 }
 
 export type UserCreateWithoutSessionsInput = {
@@ -833,6 +891,8 @@ export type UserCreateWithoutSessionsInput = {
   referralCode?: string | null
   referralRewardedAt?: Date | string | null
   trialStartedAt?: Date | string | null
+  role?: string
+  blockedAt?: Date | string | null
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   members?: Prisma.MemberCreateNestedManyWithoutUserInput
   invitations?: Prisma.InvitationCreateNestedManyWithoutUserInput
@@ -853,6 +913,8 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   referredById?: string | null
   referralRewardedAt?: Date | string | null
   trialStartedAt?: Date | string | null
+  role?: string
+  blockedAt?: Date | string | null
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   members?: Prisma.MemberUncheckedCreateNestedManyWithoutUserInput
   invitations?: Prisma.InvitationUncheckedCreateNestedManyWithoutUserInput
@@ -887,6 +949,8 @@ export type UserUpdateWithoutSessionsInput = {
   referralCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referralRewardedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   trialStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   members?: Prisma.MemberUpdateManyWithoutUserNestedInput
   invitations?: Prisma.InvitationUpdateManyWithoutUserNestedInput
@@ -907,6 +971,8 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   referredById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referralRewardedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   trialStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   members?: Prisma.MemberUncheckedUpdateManyWithoutUserNestedInput
   invitations?: Prisma.InvitationUncheckedUpdateManyWithoutUserNestedInput
@@ -925,6 +991,8 @@ export type UserCreateWithoutAccountsInput = {
   referralCode?: string | null
   referralRewardedAt?: Date | string | null
   trialStartedAt?: Date | string | null
+  role?: string
+  blockedAt?: Date | string | null
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   members?: Prisma.MemberCreateNestedManyWithoutUserInput
   invitations?: Prisma.InvitationCreateNestedManyWithoutUserInput
@@ -945,6 +1013,8 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   referredById?: string | null
   referralRewardedAt?: Date | string | null
   trialStartedAt?: Date | string | null
+  role?: string
+  blockedAt?: Date | string | null
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   members?: Prisma.MemberUncheckedCreateNestedManyWithoutUserInput
   invitations?: Prisma.InvitationUncheckedCreateNestedManyWithoutUserInput
@@ -979,6 +1049,8 @@ export type UserUpdateWithoutAccountsInput = {
   referralCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referralRewardedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   trialStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   members?: Prisma.MemberUpdateManyWithoutUserNestedInput
   invitations?: Prisma.InvitationUpdateManyWithoutUserNestedInput
@@ -999,6 +1071,8 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   referredById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referralRewardedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   trialStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   members?: Prisma.MemberUncheckedUpdateManyWithoutUserNestedInput
   invitations?: Prisma.InvitationUncheckedUpdateManyWithoutUserNestedInput
@@ -1017,6 +1091,8 @@ export type UserCreateWithoutMembersInput = {
   referralCode?: string | null
   referralRewardedAt?: Date | string | null
   trialStartedAt?: Date | string | null
+  role?: string
+  blockedAt?: Date | string | null
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   invitations?: Prisma.InvitationCreateNestedManyWithoutUserInput
@@ -1037,6 +1113,8 @@ export type UserUncheckedCreateWithoutMembersInput = {
   referredById?: string | null
   referralRewardedAt?: Date | string | null
   trialStartedAt?: Date | string | null
+  role?: string
+  blockedAt?: Date | string | null
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   invitations?: Prisma.InvitationUncheckedCreateNestedManyWithoutUserInput
@@ -1071,6 +1149,8 @@ export type UserUpdateWithoutMembersInput = {
   referralCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referralRewardedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   trialStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   invitations?: Prisma.InvitationUpdateManyWithoutUserNestedInput
@@ -1091,6 +1171,8 @@ export type UserUncheckedUpdateWithoutMembersInput = {
   referredById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referralRewardedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   trialStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   invitations?: Prisma.InvitationUncheckedUpdateManyWithoutUserNestedInput
@@ -1109,6 +1191,8 @@ export type UserCreateWithoutInvitationsInput = {
   referralCode?: string | null
   referralRewardedAt?: Date | string | null
   trialStartedAt?: Date | string | null
+  role?: string
+  blockedAt?: Date | string | null
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   members?: Prisma.MemberCreateNestedManyWithoutUserInput
@@ -1129,6 +1213,8 @@ export type UserUncheckedCreateWithoutInvitationsInput = {
   referredById?: string | null
   referralRewardedAt?: Date | string | null
   trialStartedAt?: Date | string | null
+  role?: string
+  blockedAt?: Date | string | null
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   members?: Prisma.MemberUncheckedCreateNestedManyWithoutUserInput
@@ -1163,6 +1249,8 @@ export type UserUpdateWithoutInvitationsInput = {
   referralCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referralRewardedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   trialStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   members?: Prisma.MemberUpdateManyWithoutUserNestedInput
@@ -1183,6 +1271,8 @@ export type UserUncheckedUpdateWithoutInvitationsInput = {
   referredById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referralRewardedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   trialStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   members?: Prisma.MemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1201,6 +1291,8 @@ export type UserCreateWithoutSubscriptionInput = {
   referralCode?: string | null
   referralRewardedAt?: Date | string | null
   trialStartedAt?: Date | string | null
+  role?: string
+  blockedAt?: Date | string | null
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   members?: Prisma.MemberCreateNestedManyWithoutUserInput
@@ -1221,6 +1313,8 @@ export type UserUncheckedCreateWithoutSubscriptionInput = {
   referredById?: string | null
   referralRewardedAt?: Date | string | null
   trialStartedAt?: Date | string | null
+  role?: string
+  blockedAt?: Date | string | null
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   members?: Prisma.MemberUncheckedCreateNestedManyWithoutUserInput
@@ -1255,6 +1349,8 @@ export type UserUpdateWithoutSubscriptionInput = {
   referralCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referralRewardedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   trialStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   members?: Prisma.MemberUpdateManyWithoutUserNestedInput
@@ -1275,6 +1371,8 @@ export type UserUncheckedUpdateWithoutSubscriptionInput = {
   referredById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referralRewardedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   trialStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   members?: Prisma.MemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1293,6 +1391,8 @@ export type UserCreateManyReferredByInput = {
   referralCode?: string | null
   referralRewardedAt?: Date | string | null
   trialStartedAt?: Date | string | null
+  role?: string
+  blockedAt?: Date | string | null
 }
 
 export type UserUpdateWithoutReferredByInput = {
@@ -1306,6 +1406,8 @@ export type UserUpdateWithoutReferredByInput = {
   referralCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referralRewardedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   trialStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   members?: Prisma.MemberUpdateManyWithoutUserNestedInput
@@ -1325,6 +1427,8 @@ export type UserUncheckedUpdateWithoutReferredByInput = {
   referralCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referralRewardedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   trialStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   members?: Prisma.MemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1344,6 +1448,8 @@ export type UserUncheckedUpdateManyWithoutReferredByInput = {
   referralCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referralRewardedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   trialStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -1425,6 +1531,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   referredById?: boolean
   referralRewardedAt?: boolean
   trialStartedAt?: boolean
+  role?: boolean
+  blockedAt?: boolean
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>
   members?: boolean | Prisma.User$membersArgs<ExtArgs>
@@ -1447,6 +1555,8 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   referredById?: boolean
   referralRewardedAt?: boolean
   trialStartedAt?: boolean
+  role?: boolean
+  blockedAt?: boolean
   referredBy?: boolean | Prisma.User$referredByArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1462,6 +1572,8 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   referredById?: boolean
   referralRewardedAt?: boolean
   trialStartedAt?: boolean
+  role?: boolean
+  blockedAt?: boolean
   referredBy?: boolean | Prisma.User$referredByArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1477,9 +1589,11 @@ export type UserSelectScalar = {
   referredById?: boolean
   referralRewardedAt?: boolean
   trialStartedAt?: boolean
+  role?: boolean
+  blockedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "emailVerified" | "image" | "createdAt" | "updatedAt" | "referralCode" | "referredById" | "referralRewardedAt" | "trialStartedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "emailVerified" | "image" | "createdAt" | "updatedAt" | "referralCode" | "referredById" | "referralRewardedAt" | "trialStartedAt" | "role" | "blockedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>
@@ -1520,6 +1634,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     referredById: string | null
     referralRewardedAt: Date | null
     trialStartedAt: Date | null
+    role: string
+    blockedAt: Date | null
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -1961,6 +2077,8 @@ export interface UserFieldRefs {
   readonly referredById: Prisma.FieldRef<"User", 'String'>
   readonly referralRewardedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly trialStartedAt: Prisma.FieldRef<"User", 'DateTime'>
+  readonly role: Prisma.FieldRef<"User", 'String'>
+  readonly blockedAt: Prisma.FieldRef<"User", 'DateTime'>
 }
     
 

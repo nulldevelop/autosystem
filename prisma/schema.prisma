@@ -30,6 +30,10 @@ model User {
   // início do teste grátis: preenchido quando o e-mail é confirmado (senão vale createdAt)
   trialStartedAt     DateTime?
 
+  // "user" (padrão) ou "admin". Só pode ser alterado direto no banco (scripts/make-admin.mjs).
+  role      String    @default("user")
+  blockedAt DateTime?
+
   @@index([referredById])
   @@map("user")
 }
@@ -461,4 +465,37 @@ model Notification {
   @@index([organizationId, read])
   @@index([createdAt])
   @@map("notification")
+}
+
+// Histórico de cobranças recebidas da AbacatePay (uma linha por evento do webhook)
+model BillingEvent {
+  id                       String   @id @default(uuid())
+  // ID do evento no webhook: o mesmo evento reenviado não é processado duas vezes
+  eventId                  String?  @unique
+  userId                   String?
+  type                     String // completed | renewed | cancelled
+  plan                     Plan?
+  interval                 String?
+  amount                   Int? // centavos
+  abacatepaySubscriptionId String?
+  createdAt                DateTime @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+  @@map("billing_event")
+}
+
+// Registro de tudo que um administrador faz no painel
+model AdminAuditLog {
+  id         String   @id @default(uuid())
+  adminId    String
+  action     String
+  targetType String
+  targetId   String
+  details    Json?
+  createdAt  DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([adminId])
+  @@map("admin_audit_log")
 }
