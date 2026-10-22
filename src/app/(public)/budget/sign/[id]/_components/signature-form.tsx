@@ -55,10 +55,10 @@ export function SignatureForm({ budgetId }: { budgetId: string }) {
       <div className="relative group">
         <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-blue-500/20 rounded-[2rem] blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
         <Card className="relative border-border bg-card rounded-[2rem] overflow-hidden">
-          <CardContent className="p-0">
+          <CardContent className="bg-white p-0">
             <SignatureCanvas
               ref={sigCanvas}
-              penColor="#fff"
+              penColor="#0f172a"
               canvasProps={{
                 className: "w-full h-64 cursor-crosshair",
               }}

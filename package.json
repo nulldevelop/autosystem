@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "demo:video": "node scripts/make-demo-video.cjs",
+    "demo:video:mobile": "node scripts/make-demo-video-mobile.cjs",
     "lint": "biome check",
     "format": "biome format --write",
     "stripe:listem": "stripe listen --forward-to https://autosystem.nulldev.com.br/api/webhooks/stripe"

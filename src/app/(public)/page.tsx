@@ -26,6 +26,7 @@ const brl = (value: number) =>
   );
 
 const NAV = [
+  { href: "#demonstracao", label: "Demonstração" },
   { href: "#caminho", label: "O caminho do carro" },
   { href: "#bancada", label: "Na bancada" },
   { href: "#planos", label: "Preços" },
@@ -385,6 +386,53 @@ export default function LandingPage() {
         </section>
 
         <div aria-hidden className="hazard h-3" />
+
+        {/* Demonstração em vídeo */}
+        <section
+          id="demonstracao"
+          className="scroll-mt-16 border-b py-16 sm:py-24"
+        >
+          <div className="mx-auto max-w-5xl px-4 sm:px-6">
+            <div className="max-w-2xl">
+              <Tape>Demonstração</Tape>
+              <h2 className="font-industrial mt-4 text-4xl leading-none font-bold tracking-wide text-balance uppercase sm:text-5xl">
+                Veja o AutoSystem funcionando
+              </h2>
+              <p className="mt-4 text-muted-foreground">
+                Do cadastro do cliente ao orçamento assinado, em poucos minutos.
+              </p>
+            </div>
+
+            <div className="mx-auto mt-10 max-w-xs overflow-hidden rounded-xl border-4 border-[#3b4048] bg-black shadow-xl md:hidden">
+              {/* biome-ignore lint/a11y/useMediaCaption: demonstração sem áudio */}
+              <video
+                controls
+                playsInline
+                preload="none"
+                poster="/videos/autosystem-demo-mobile-poster.jpg"
+                className="aspect-[9/16] w-full"
+              >
+                <source
+                  src="/videos/autosystem-demo-mobile.mp4"
+                  type="video/mp4"
+                />
+              </video>
+            </div>
+
+            <div className="mt-10 hidden overflow-hidden rounded-xl border-4 border-[#3b4048] bg-black shadow-xl md:block">
+              {/* biome-ignore lint/a11y/useMediaCaption: demonstração sem áudio */}
+              <video
+                controls
+                playsInline
+                preload="none"
+                poster="/videos/autosystem-demo-poster.jpg"
+                className="aspect-video w-full"
+              >
+                <source src="/videos/autosystem-demo.mp4" type="video/mp4" />
+              </video>
+            </div>
+          </div>
+        </section>
 
         {/* O caminho do carro */}
         <section id="caminho" className="scroll-mt-16 py-16 sm:py-24">
