@@ -1,7 +1,9 @@
 "use server";
 
+import { headers } from "next/headers";
 import * as z from "zod";
 import { auth } from "@/lib/auth";
+import { getClientIp, hashKey, rateLimit } from "@/lib/rate-limit";
 import { attachReferrer } from "@/lib/referral";
 
 const signUpSchema = z.object({
@@ -57,6 +59,26 @@ export async function signUp(data: unknown): Promise<SignUpResponse> {
 
   try {
     const { name, email, password, referralCode } = result.data;
+
+    // auth.api.* chamado no servidor não passa pelo limitador do better-auth:
+    // sem isto dá para criar contas em massa e gastar a cota de e-mails.
+    const ip = getClientIp(await headers());
+    const [byIp, byEmail] = await Promise.all([
+      rateLimit(`signup:ip:${ip}`, { limit: 10, windowSeconds: 3600 }),
+      rateLimit(`signup:email:${hashKey(email)}`, {
+        limit: 3,
+        windowSeconds: 3600,
+      }),
+    ]);
+    if (!byIp.allowed || !byEmail.allowed) {
+      const wait = Math.max(byIp.retryAfterSeconds, byEmail.retryAfterSeconds);
+      return {
+        success: false,
+        error: {
+          message: `Muitas tentativas. Tente novamente em ${Math.ceil(wait / 60)} minuto(s).`,
+        },
+      };
+    }
 
     await auth.api.signUpEmail({
       body: {

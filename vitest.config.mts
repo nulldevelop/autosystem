@@ -19,6 +19,7 @@ export default defineConfig({
         "src/lib/prisma-errors.ts",
         "src/lib/tenant.ts",
         "src/lib/files.ts",
+        "src/lib/rate-limit.ts",
         "src/lib/admin/**/*.ts",
         "src/lib/utils.ts",
         "src/lib/email/**/*.ts",

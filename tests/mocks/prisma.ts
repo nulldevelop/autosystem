@@ -55,7 +55,7 @@ export const prismaMock = new Proxy({} as Record<string, Model>, {
     }
     return model;
   },
-}) as Record<string, Model> & { $transaction: Fn; $extends: Fn };
+}) as Record<string, Model> & { $transaction: Fn; $extends: Fn; $queryRaw: Fn };
 
 defaultTransaction();
 

@@ -499,3 +499,14 @@ model AdminAuditLog {
   @@index([adminId])
   @@map("admin_audit_log")
 }
+
+// Contadores do limite de tentativas (cadastro etc.). Fica no banco porque em
+// ambiente serverless cada requisição pode cair em uma instância diferente.
+model RateLimitBucket {
+  key     String   @id
+  count   Int
+  resetAt DateTime
+
+  @@index([resetAt])
+  @@map("rate_limit")
+}
