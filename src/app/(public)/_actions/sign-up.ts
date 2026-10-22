@@ -61,6 +61,7 @@ export async function signUp(data: unknown): Promise<SignUpResponse> {
         name,
         email,
         password,
+        callbackURL: "/dashboard",
       },
     });
 

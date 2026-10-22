@@ -171,6 +171,10 @@ ABACATEPAY_PLUS_YEARLY_PRODUCT_ID="prod_..."
 ABACATEPAY_PRO_MONTHLY_PRODUCT_ID="prod_..."
 ABACATEPAY_PRO_YEARLY_PRODUCT_ID="prod_..."
 
+# Resend (e-mails: confirmação de conta, redefinir senha, agradecimento)
+RESEND_API_KEY="re_..."
+EMAIL_FROM="AutoSystem <nao-responda@seudominio.com.br>"
+
 # Better Auth
 BETTER_AUTH_SECRET="seu_secret_aqui"
 BETTER_AUTH_URL="https://autosystem.nulldev.com.br"

@@ -70,7 +70,9 @@ export function SignUpForm({
           toast.error(result.error.message);
         }
       } else {
-        toast.success("Conta criada. Entre com seu e-mail e senha.");
+        toast.success(
+          "Conta criada! Enviamos um e-mail para confirmar seu endereço.",
+        );
         onSuccess?.(values.email);
       }
     });

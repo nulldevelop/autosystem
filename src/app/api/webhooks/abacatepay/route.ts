@@ -1,9 +1,13 @@
 import { timingSafeEqual } from "node:crypto";
 import { addMonths } from "date-fns";
 import { NextResponse } from "next/server";
+import type { Plan } from "@/generated/prisma/client";
 import { cancelSubscription, getSubscription } from "@/lib/abacatepay";
+import { sendEmail } from "@/lib/email";
+import { purchaseThanksTemplate } from "@/lib/email/templates";
 import { prisma } from "@/lib/prisma";
 import { rewardReferrerForFirstPayment } from "@/lib/referral";
+import { PLANS } from "@/utils/plans";
 
 function secretMatches(received: string | null) {
   const expected = process.env.ABACATEPAY_WEBHOOK_SECRET;
@@ -25,6 +29,31 @@ function findId(value: unknown, prefix: string): string | undefined {
     }
   }
   return undefined;
+}
+
+async function sendThanksEmail(
+  userId: string,
+  plan: Plan,
+  interval: "monthly" | "yearly",
+) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { email: true, name: true },
+    });
+    if (!user) return;
+
+    const origin = process.env.NEXT_PUBLIC_APP_URL || "";
+    const { subject, html } = purchaseThanksTemplate(user, {
+      planName: PLANS[plan].name,
+      interval,
+      dashboardUrl: `${origin}/dashboard`,
+    });
+    await sendEmail({ to: user.email, subject, html });
+  } catch (error) {
+    // e-mail nunca deve fazer o webhook falhar e ser reenviado
+    console.error("Erro ao enviar e-mail de agradecimento:", error);
+  }
 }
 
 export async function POST(request: Request) {
@@ -103,6 +132,15 @@ export async function POST(request: Request) {
         }
 
         await rewardReferrerForFirstPayment(row.userId);
+
+        // só agradece na primeira vez que esta assinatura é registrada (webhook pode repetir)
+        if (previousId !== remote.id) {
+          await sendThanksEmail(
+            row.userId,
+            row.pendingPlan ?? row.plan,
+            row.pendingInterval === "yearly" ? "yearly" : "monthly",
+          );
+        }
         break;
       }
 

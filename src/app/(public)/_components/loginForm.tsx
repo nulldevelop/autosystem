@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight, Eye, EyeOff, Loader2 } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -57,7 +58,18 @@ export function LoginForm({ defaultEmail = "" }: { defaultEmail?: string }) {
         {
           onError: (ctx) => {
             if (ctx.error.status === 403) {
-              toast.error("Confirme seu e-mail antes de entrar.");
+              toast.error("Confirme seu e-mail antes de entrar.", {
+                action: {
+                  label: "Reenviar e-mail",
+                  onClick: async () => {
+                    await authClient.sendVerificationEmail({
+                      email: values.email,
+                      callbackURL: "/dashboard",
+                    });
+                    toast.success("E-mail de confirmação reenviado.");
+                  },
+                },
+              });
               return;
             }
             toast.error(ctx.error.message || "E-mail ou senha incorretos.");
@@ -116,7 +128,15 @@ export function LoginForm({ defaultEmail = "" }: { defaultEmail?: string }) {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Senha</FormLabel>
+              <div className="flex items-center justify-between">
+                <FormLabel>Senha</FormLabel>
+                <Link
+                  href="/forgot-password"
+                  className="text-sm text-primary hover:underline"
+                >
+                  Esqueci a senha
+                </Link>
+              </div>
               <div className="relative">
                 <FormControl>
                   <Input
