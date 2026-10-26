@@ -16,6 +16,7 @@ import { Plate } from "@/components/app/plate";
 import { ThemeToggle } from "@/components/app/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/ui/logo";
+import { company, companyAddressLine } from "@/config/company";
 import { cn } from "@/lib/utils";
 import { TRIAL_DAYS } from "@/utils/permissions/trial-limits";
 import { subscriptionPlans } from "@/utils/plans/subscription-plans";
@@ -676,10 +677,27 @@ export default function LandingPage() {
       </main>
 
       <footer className="border-t">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-8 text-sm text-muted-foreground sm:flex-row sm:px-6">
-          <div className="flex items-center gap-2.5">
-            <Logo className="size-6" />
-            <span>© {year} AutoSystem · Feito para oficinas</span>
+        <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-8 text-sm text-muted-foreground sm:px-6 md:flex-row md:items-start md:justify-between">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2.5">
+              <Logo className="size-6" />
+              <span className="font-semibold text-foreground">
+                {company.brand}
+              </span>
+            </div>
+            <p>
+              © {year} {company.legalName}
+            </p>
+            <p>CNPJ {company.cnpj}</p>
+            <p>{companyAddressLine}</p>
+            <p>
+              <a
+                href={`mailto:${company.email}`}
+                className="hover:text-foreground"
+              >
+                {company.email}
+              </a>
+            </p>
           </div>
           <nav aria-label="Rodapé" className="flex items-center gap-5">
             <Link href="/privacy" className="hover:text-foreground">

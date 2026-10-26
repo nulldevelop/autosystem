@@ -1,4 +1,5 @@
 import { Image, StyleSheet, Text, View } from "@react-pdf/renderer";
+import { company } from "@/config/company";
 
 const styles = StyleSheet.create({
   footer: {
@@ -63,6 +64,10 @@ export function PDFFooter({ documentId }: PDFFooterProps) {
           </Text>
           <Text style={styles.footerText}>
             Este documento foi gerado eletronicamente e é autêntico.
+          </Text>
+          <Text style={styles.footerText}>
+            Gerado por {company.brand} · {company.legalName} · CNPJ{" "}
+            {company.cnpj} · {company.email}
           </Text>
           {documentId ? (
             <Text style={[styles.footerText, { fontFamily: "Courier" }]}>
