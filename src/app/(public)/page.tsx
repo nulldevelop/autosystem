@@ -706,6 +706,9 @@ export default function LandingPage() {
             <Link href="/terms" className="hover:text-foreground">
               Termos
             </Link>
+            <Link href="/data-deletion" className="hover:text-foreground">
+              Exclusão de dados
+            </Link>
             <Link href="/auth" className="hover:text-foreground">
               Entrar
             </Link>

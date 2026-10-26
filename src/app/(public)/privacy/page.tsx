@@ -97,6 +97,17 @@ export default function PrivacyPage() {
         a ela, que é a controladora dos seus dados.
       </p>
 
+      <p>
+        Para excluir sua conta e seus dados, veja a página{" "}
+        <a
+          href="/data-deletion"
+          className="underline underline-offset-4 hover:text-foreground"
+        >
+          Exclusão de Dados
+        </a>
+        .
+      </p>
+
       <h2>7. Cookies</h2>
       <p>
         Utilizamos cookies essenciais para autenticação e funcionamento da
