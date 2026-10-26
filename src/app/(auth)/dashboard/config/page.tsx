@@ -2,6 +2,7 @@ import { PageHeader } from "@/components/app/page-header";
 import { getSession } from "@/lib/getSession";
 import { prisma } from "@/lib/prisma";
 import { ConfigForm } from "./_components/config-form";
+import { DeleteAccountSection } from "./_components/delete-account-section";
 
 export default async function ConfigPage() {
   const session = await getSession();
@@ -18,6 +19,7 @@ export default async function ConfigPage() {
         description="Dados da oficina que aparecem em orçamentos e ordens de serviço."
       />
       <ConfigForm organization={organization} />
+      <DeleteAccountSection />
     </div>
   );
 }
